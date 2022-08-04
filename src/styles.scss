@@ -1,0 +1,31 @@
+/* You can add global styles to this file, and also import other style files */
+
+@use '@angular/material' as mat;
+@import '../node_modules/@angular/material/theming';
+@include mat.core();
+
+html, body { height: 100%; }
+
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+$primary: #63a7a7;
+$secondary: #a76363;
+$success: #63a785;
+$warning: #ffce8f;
+$info: #6385a7;
+$danger: #d23632;
+
+/* Importing Bootstrap SCSS file. */
+@import '~bootstrap/scss/bootstrap';
+@import 'src/light-theme';
+@import 'src/dark-theme';
+
+.light-theme {
+  @include mat.all-component-themes($CommanderDash3-theme-light);
+}
+
+.dark-theme {
+  @include mat.all-component-themes($CommanderDash3-theme-dark)
+}

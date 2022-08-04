@@ -1,0 +1,76 @@
+@use '@angular/material' as mat;
+@import '../node_modules/@angular/material/theming';
+
+@include mat.core();
+
+$CommanderDash3-p-dark: (
+  50 : #ecf4f4,
+  100 : #d0e5e5,
+  200 : #b1d3d3,
+  300 : #92c1c1,
+  400 : #7ab4b4,
+  500 : #63a7a7,
+  600 : #5b9f9f,
+  700 : #519696,
+  800 : #478c8c,
+  900 : #357c7c,
+  A100 : #c9ffff,
+  A200 : #96ffff,
+  A400 : #63ffff,
+  A700 : #4affff,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #000000,
+    600 : #000000,
+    700 : #000000,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+
+$CommanderDash3-a-dark: (
+  50 : #f4ecec,
+  100 : #e5d0d0,
+  200 : #d3b1b1,
+  300 : #c19292,
+  400 : #b47a7a,
+  500 : #a76363,
+  600 : #9f5b5b,
+  700 : #965151,
+  800 : #8c4747,
+  900 : #7c3535,
+  A100 : #ffc9c9,
+  A200 : #ff9696,
+  A400 : #ff6363,
+  A700 : #ff4a4a,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+
+$CommanderDash3-palette-primary-dark: mat.define-palette($CommanderDash3-p-dark);
+$CommanderDash3-palette-accent-dark: mat.define-palette($CommanderDash3-a-dark);
+
+$CommanderDash3-theme-dark: mat.define-dark-theme($CommanderDash3-palette-primary-dark, $CommanderDash3-palette-accent-dark);
+

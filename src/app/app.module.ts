@@ -1,16 +1,61 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OverlayModule} from '@angular/cdk/overlay';
 
 import { AppComponent } from './app.component';
+import { RouterModule } from "@angular/router";
+import { DeckListComponent } from './deck-list/deck-list.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import {MatSidenavModule} from "@angular/material/sidenav";
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatListModule} from "@angular/material/list";
+import {MatIconModule} from "@angular/material/icon";
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
+import {MatSliderModule} from "@angular/material/slider";
+import {MatGridListModule} from "@angular/material/grid-list";
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {ReactiveFormsModule} from "@angular/forms";
+import {MatCardModule} from "@angular/material/card";
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import {MatButtonModule} from "@angular/material/button";
+
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DeckListComponent,
+    NavbarComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    BrowserAnimationsModule,
+    OverlayModule,
+    RouterModule.forRoot([
+      {path: '', redirectTo: 'decks', pathMatch: 'full'},
+      {path: 'decks', component: DeckListComponent}
+    ]),
+    MatSidenavModule,
+    MatToolbarModule,
+    MatListModule,
+    MatIconModule,
+    MatButtonToggleModule,
+    MatSliderModule,
+    MatGridListModule,
+    NgbModule,
+    MatSlideToggleModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatExpansionModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatButtonModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }

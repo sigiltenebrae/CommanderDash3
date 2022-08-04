@@ -1,0 +1,95 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+@import '../node_modules/@angular/material/theming';
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+/* For use in src/lib/core/theming/_palette.scss */
+$CommanderDash3-p-light: (
+  50 : #f0f8f8,
+  100 : #daeeee,
+  200 : #c1e3e3,
+  300 : #a8d8d8,
+  400 : #95cfcf,
+  500 : #82c7c7,
+  600 : #7ac1c1,
+  700 : #6fbaba,
+  800 : #65b3b3,
+  900 : #52a6a6,
+  A100 : #ffffff,
+  A200 : #d5ffff,
+  A400 : #a2ffff,
+  A700 : #89ffff,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #000000,
+    600 : #000000,
+    700 : #000000,
+    800 : #000000,
+    900 : #000000,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+
+$CommanderDash3-a-light: (
+  50 : #fbf2f2,
+  100 : #f4dede,
+  200 : #edc8c8,
+  300 : #e5b2b1,
+  400 : #e0a2a1,
+  500 : #da9190,
+  600 : #d68988,
+  700 : #d07e7d,
+  800 : #cb7473,
+  900 : #c26261,
+  A100 : #ffffff,
+  A200 : #fffcfc,
+  A400 : #ffcac9,
+  A700 : #ffb1b0,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #000000,
+    600 : #000000,
+    700 : #000000,
+    800 : #000000,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+
+$CommanderDash3-palette-primary-light: mat.define-palette($CommanderDash3-p-light);
+$CommanderDash3-palette-accent-light: mat.define-palette($CommanderDash3-a-light);
+
+// The warn palette is optional (defaults to red).
+$CommanderDash3-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$CommanderDash3-theme-light: mat.define-light-theme($CommanderDash3-palette-primary-light, $CommanderDash3-palette-accent-light);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
