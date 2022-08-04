@@ -2,11 +2,11 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayModule} from '@angular/cdk/overlay';
+import { FlexLayoutModule } from "@angular/flex-layout";
 
 import { AppComponent } from './app.component';
 import { RouterModule } from "@angular/router";
 import { DeckListComponent } from './deck-list/deck-list.component';
-import { NavbarComponent } from './navbar/navbar.component';
 import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatListModule} from "@angular/material/list";
@@ -27,13 +27,13 @@ import {MatButtonModule} from "@angular/material/button";
 @NgModule({
   declarations: [
     AppComponent,
-    DeckListComponent,
-    NavbarComponent
+    DeckListComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     OverlayModule,
+    FlexLayoutModule,
     RouterModule.forRoot([
       {path: '', redirectTo: 'decks', pathMatch: 'full'},
       {path: 'decks', component: DeckListComponent}

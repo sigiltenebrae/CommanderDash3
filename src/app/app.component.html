@@ -1,20 +1,69 @@
-<div class="mat-typography mat-app-background">
-  <h1>Angular Material Theming System: Complete Guide</h1>
-  <button
-    mat-icon-button
-    (click)="toggleDarkTheme()"
-    class="theme-toggle"
-    aria-label="Toggle Dark Theme"
-  >
-    <mat-icon>{{ isDark ? "dark_mode" : "light_mode" }}</mat-icon>
-  </button>
+<body class="mat-typography mat-app-background">
+  <div>
+    <mat-toolbar color="primary">
+      <!--<mat-toolbar-row>
+        <h1>SimpleCRM</h1>
+        <span class="menu-spacer"></span>
+        <div>
+          <a mat-button href="#"> Accounts </a>
+          <a mat-button href="#"> Create Account </a>
+          <a mat-button href="#"> Contacts </a>
+          <a mat-button href="#"> Create Contact </a>
+          <a mat-button href="#"> Activities </a>
+          <a mat-button href="#"> Create Activity </a>
 
-  <link rel="stylesheet" href="/src/dark-theme.scss" *ngIf="isDark">
-  <link rel="stylesheet" href="/src/light-theme.scss" *ngIf="!isDark">
+        </div>
+      </mat-toolbar-row>-->
+      <div fxHide.gt-xs>
+        <button mat-icon-button (click)="sidenav.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </div>
+      <div fxFlex fxHide.xs>
+        <img class="magic-nav-logo" src="assets/magic-logo.webp" alt="Commander" loading="lazy">
+      </div>
+      <div fxFlex fxLayout fxLayoutAlign="end" fxHide.xs>
+        <button mat-button>
+          Create
+        </button>
+        <button mat-button>
+          Stats
+        </button>
+        <button mat-button>
+          Recs
+        </button>
+        <button
+          mat-icon-button
+          (click)="toggleDarkTheme()"
+          class="theme-toggle"
+          aria-label="Toggle Dark Theme">
+          <mat-icon>{{ isDark ? "dark_mode" : "light_mode" }}</mat-icon>
+        </button>
+      </div>
+      <div fxFlex fxLayout fxLayoutAlign="end" fxHide.gt-xs>
+        <img class="magic-nav-logo" src="assets/magic-logo.webp" alt="Commander" loading="lazy">
+      </div>
+    </mat-toolbar>
 
-  <div class="demo-buttons">
-    <button mat-raised-button color="primary" (click)="onSetTheme('default-theme')">Default</button>
-    <button mat-raised-button color="primary" (click)="onSetTheme('dark-theme')">Dark</button>
-    <button mat-raised-button color="primary" (click)="onSetTheme('light-theme')">Light</button>
+    <mat-sidenav-container>
+      <mat-sidenav #sidenav>
+        <mat-nav-list>
+
+          <a mat-list-item href="#"> Create </a>
+          <a mat-list-item href="#"> Stats </a>
+          <a mat-list-item href="#"> Recommendations </a>
+          <a mat-list-item (click)="sidenav.toggle()" href="">Close</a>
+
+        </mat-nav-list>
+      </mat-sidenav>
+      <mat-sidenav-content>
+        <main>
+          <router-outlet></router-outlet>
+        </main>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+
+
+    <h1>Angular Material Theming System: Complete Guide</h1>
   </div>
-</div>
+</body>

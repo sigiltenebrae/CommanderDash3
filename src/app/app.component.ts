@@ -1,4 +1,4 @@
-import {Component, HostBinding} from '@angular/core';
+import {Component, HostBinding, OnInit} from '@angular/core';
 import {OverlayContainer} from "@angular/cdk/overlay";
 
 @Component({
@@ -6,15 +6,26 @@ import {OverlayContainer} from "@angular/cdk/overlay";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'CommanderDash3';
 
-  isDark = false;
+  isDark = true;
 
   constructor(public overlayContainer: OverlayContainer) {}
 
+  ngOnInit(): void {
+        this.onSetTheme('dark-theme');
+    }
+
   toggleDarkTheme() {
-    this.isDark = ! this.isDark;
+    if (this.isDark) {
+      this.onSetTheme('light-theme');
+      this.isDark = false;
+    }
+    else {
+      this.onSetTheme('dark-theme');
+      this.isDark = true;
+    }
   }
 
   @HostBinding('class') componentCssClass: any;
@@ -22,11 +33,5 @@ export class AppComponent {
   onSetTheme(theme: any) {
     this.overlayContainer.getContainerElement().classList.add(theme);
     this.componentCssClass = theme;
-    if (theme === 'dark-theme') {
-      this.isDark = true;
-    }
-    else if (theme === 'light-theme') {
-      this.isDark = false;
-    }
   }
 }

@@ -7,7 +7,7 @@
 html, body { height: 100%; }
 
 body {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Beleren, "Helvetica Neue", sans-serif;
 }
 
 $primary: #63a7a7;
@@ -24,8 +24,46 @@ $danger: #d23632;
 
 .light-theme {
   @include mat.all-component-themes($CommanderDash3-theme-light);
+
+
+  .magic-nav-logo:hover {
+    filter: drop-shadow(0 0 0.5rem red);
+  }
 }
 
 .dark-theme {
-  @include mat.all-component-themes($CommanderDash3-theme-dark)
+  @include mat.all-component-themes($CommanderDash3-theme-dark);
+
+  .magic-nav-logo:hover {
+    filter: drop-shadow(0 0 0.5rem blue);
+  }
+}
+
+.magic-nav-logo {
+  height: 32px;
+}
+
+.commander-viewer {
+  font-family: Beleren, "Helvetica Neue", sans-serif;
+  position: relative;
+  float: left;
+  overflow: hidden;
+  width: 100%;
+  text-align: center;
+  height: 372px;
+  border: none;
+}
+
+.background-card {
+  float: left;
+  width: 300px;
+  height: 200px;
+  overflow: hidden;
+}
+
+.background {
+  height: 560px;
+  width: 380px;
+  margin-left: -30px;
+  margin-top: -60px;
 }
