@@ -2,10 +2,10 @@
   <div class="row justify-content-center">
     <div class="col-auto">
       <mat-card class="commander-viewer">
-        <div class="commander-background-card">
+        <div [ngClass]="{'commander-background-card-closed': hovered, 'commander-background-card-open': !hovered}">
           <img src="assets/adrix.jpg" class="commander-crop">
         </div>
-        <div class="commander-background-themes">
+        <div class="commander-background-themes" [ngClass]="{'commander-background-themes-in': hovered}">
           <div class="container-fluid">
             <div class="row">
               <div class="col-6">Test Theme</div>
@@ -20,22 +20,27 @@
             </div>
           </div>
         </div>
-        <mat-card-content class="commander-content">
-          <h2>Test Deck of Clones & Stuff</h2>
-          <h4 class="commander-name">Adrix and Nev, Twincasters</h4>
-        </mat-card-content>
-        <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">
-<!--          <img class="commander-color" src="assets/color_symbols/W.png">-->
-          <img class="commander-color" src="assets/color_symbols/U.png">
-<!--          <img class="commander-color" src="assets/color_symbols/B.png">-->
-<!--          <img class="commander-color" src="assets/color_symbols/R.png">-->
-          <img class="commander-color" src="assets/color_symbols/G.png">
+        <mat-card-content class="commander-content" (mouseenter)="hovered=true;" (mouseleave)="hovered=false;">
+          <div class="commander-content-holder">
+            <h2>Test Deck of Clones & Stuff</h2>
+            <h4 class="commander-name">Adrix and Nev, Twincasters</h4>
+            <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">
+              <!--          <img class="commander-color" src="assets/color_symbols/W.png">-->
+              <img class="commander-color" src="assets/color_symbols/U.png">
+              <!--          <img class="commander-color" src="assets/color_symbols/B.png">-->
+              <!--          <img class="commander-color" src="assets/color_symbols/R.png">-->
+              <img class="commander-color" src="assets/color_symbols/G.png">
 
-        </div>
-        <div fxLayout="row" fxLayoutAlign="center center" class="commander-ratings">
-          <mat-icon class="commander-rating" color="primary">star</mat-icon>
-          <mat-icon class="commander-rating" color="primary">star</mat-icon>
-        </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="center" class="commander-ratings">
+              <mat-icon class="commander-rating" color="primary">star</mat-icon>
+              <mat-icon class="commander-rating" color="primary">star</mat-icon>
+              <mat-icon class="commander-rating" color="primary">star</mat-icon>
+              <mat-icon class="commander-rating" color="primary">star</mat-icon>
+              <mat-icon class="commander-rating" color="primary">star</mat-icon>
+            </div>
+          </div>
+        </mat-card-content>
 
       </mat-card>
 

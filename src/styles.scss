@@ -57,7 +57,7 @@ a, h1, h2, h3, h4, .nav-button{
   border: none;
 }
 
-.commander-viewer .commander-background-card {
+.commander-viewer .commander-background-card-open {
   position: absolute;
   top: 0;
   left: 0;
@@ -67,15 +67,25 @@ a, h1, h2, h3, h4, .nav-button{
   overflow: hidden;
   clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
   animation-name: commander-card-down-animation;
-  animation-duration: 0.25s;
+  animation-duration: 0.15s;
   z-index: 1;
 }
 
-.commander-viewer:hover .commander-background-card {
+.commander-viewer .commander-background-card-closed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  float: left;
+  width: 300px;
+  height: 200px;
+  overflow: hidden;
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+  z-index: 1;
   animation-name: commander-card-up-animation;
-  animation-duration: 0.25s;
+  animation-duration: 0.15s;
   animation-fill-mode: forwards;
 }
+
 @keyframes commander-card-up-animation {
   0% { clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%); }
   20% { clip-path: polygon(0 0, 100% 0%, 100% 60%, 0% 80%); }
@@ -96,7 +106,8 @@ a, h1, h2, h3, h4, .nav-button{
 
 
 
-.commander-viewer .commander-background-card .commander-crop {
+.commander-viewer .commander-background-card-open .commander-crop,
+.commander-viewer .commander-background-card-closed .commander-crop {
   position: absolute;
   top: 0;
   left: 0;
@@ -107,6 +118,10 @@ a, h1, h2, h3, h4, .nav-button{
   opacity: 0.9;
 }
 
+.commander-viewer .commander-background-card-open .commander-crop:hover {
+  filter: grayscale(100%);
+}
+
 .commander-viewer .commander-background-themes {
   position: absolute;
   top: 20px;
@@ -115,11 +130,12 @@ a, h1, h2, h3, h4, .nav-button{
   width: 300px;
   height: 200px;
   overflow: hidden;
-  z-index: 1;
+  display: none;
   opacity: 0;
 }
 
-.commander-viewer:hover .commander-background-themes {
+.commander-background-themes-in {
+  display: block !important;
   animation-delay: 0.5s;
   animation-name: commander-themes-in;
   animation-duration: 1s;
@@ -132,6 +148,15 @@ a, h1, h2, h3, h4, .nav-button{
 }
 
 .commander-viewer .commander-content {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  float: left;
+  left: 0;
+  top: 0;
+}
+
+.commander-viewer .commander-content-holder {
   position: absolute;
   height: 162px;
   width: 300px;
@@ -161,19 +186,20 @@ a, h1, h2, h3, h4, .nav-button{
 
 .commander-viewer .commander-ratings {
   position: absolute;
+  pointer-events: none;
   width: 100%;
-  height: 100%;
-  bottom: 6px;
+  height: 162px;
+  top: -42px;
   left: 0;
   z-index: 5;
   transform: rotate(-7.5deg);
   animation-name: commander-ratings-in;
-  animation-duration: 0.25s;
+  animation-duration: 0.15s;
 }
 
-.commander-viewer:hover .commander-ratings {
+.commander-viewer .commander-content:hover .commander-ratings {
   animation-name: commander-ratings-out;
-  animation-duration: 0.25s;
+  animation-duration: 0.15s;
   animation-fill-mode: forwards;
 }
 @keyframes commander-ratings-in {
