@@ -22,6 +22,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import {MatButtonModule} from "@angular/material/button";
+import {MatChipsModule} from "@angular/material/chips";
 
 
 @NgModule({
@@ -52,7 +53,8 @@ import {MatButtonModule} from "@angular/material/button";
     MatExpansionModule,
     MatCheckboxModule,
     MatFormFieldModule,
-    MatButtonModule
+    MatButtonModule,
+    MatChipsModule
   ],
   providers: [],
   bootstrap: [AppComponent],
