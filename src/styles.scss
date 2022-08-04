@@ -66,8 +66,35 @@ a, h1, h2, h3, h4, .nav-button{
   height: 200px;
   overflow: hidden;
   clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+  animation-name: commander-card-down-animation;
+  animation-duration: 0.25s;
   z-index: 1;
 }
+
+.commander-viewer:hover .commander-background-card {
+  animation-name: commander-card-up-animation;
+  animation-duration: 0.25s;
+  animation-fill-mode: forwards;
+}
+@keyframes commander-card-up-animation {
+  0% { clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%); }
+  20% { clip-path: polygon(0 0, 100% 0%, 100% 60%, 0% 80%); }
+  40% { clip-path: polygon(0 0, 100% 0%, 100% 40%, 0% 60%); }
+  60% { clip-path: polygon(0 0, 100% 0%, 100% 20%, 0% 40%); }
+  80% { clip-path: polygon(0 0, 100% 0, 100% 0%, 0% 20%); }
+  100% { clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); }
+}
+
+@keyframes commander-card-down-animation {
+  0% { clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); }
+  20% { clip-path: polygon(0 0, 100% 0, 100% 0%, 0% 20%); }
+  40% { clip-path: polygon(0 0, 100% 0%, 100% 20%, 0% 40%); }
+  60% { clip-path: polygon(0 0, 100% 0%, 100% 40%, 0% 60%); }
+  80% { clip-path: polygon(0 0, 100% 0%, 100% 60%, 0% 80%); }
+  100% { clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%); }
+}
+
+
 
 .commander-viewer .commander-background-card .commander-crop {
   position: absolute;
@@ -80,6 +107,30 @@ a, h1, h2, h3, h4, .nav-button{
   opacity: 0.9;
 }
 
+.commander-viewer .commander-background-themes {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  float: left;
+  width: 300px;
+  height: 200px;
+  overflow: hidden;
+  z-index: 1;
+  opacity: 0;
+}
+
+.commander-viewer:hover .commander-background-themes {
+  animation-delay: 0.5s;
+  animation-name: commander-themes-in;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes commander-themes-in {
+  from {opacity: 0}
+  to {opacity: 1}
+}
+
 .commander-viewer .commander-content {
   position: absolute;
   height: 162px;
@@ -89,7 +140,7 @@ a, h1, h2, h3, h4, .nav-button{
   z-index: 2;
 }
 
-.commander-viewer .deck-title {
+.commander-viewer .commander-name {
   margin-top:-10px !important;
   opacity: 0.7;
 }
@@ -116,9 +167,21 @@ a, h1, h2, h3, h4, .nav-button{
   left: 0;
   z-index: 5;
   transform: rotate(-7.5deg);
+  animation-name: commander-ratings-in;
+  animation-duration: 0.25s;
 }
 
-.commander-viewer .commander-ratings .commander-rating {
-
+.commander-viewer:hover .commander-ratings {
+  animation-name: commander-ratings-out;
+  animation-duration: 0.25s;
+  animation-fill-mode: forwards;
+}
+@keyframes commander-ratings-in {
+  from {transform: rotate(0)}
+  to {transform: rotate(-7.5deg)}
 }
 
+@keyframes commander-ratings-out {
+  from {transform: rotate(-7.5deg)}
+  to {transform: rotate(0)}
+}
