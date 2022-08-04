@@ -4,6 +4,7 @@
       <mat-card class="commander-viewer">
         <div [ngClass]="{'commander-background-card-closed': hovered, 'commander-background-card-open': !hovered}">
           <img src="assets/adrix.jpg" class="commander-crop">
+          <button class="commander-edit" mat-icon-button><mat-icon>edit</mat-icon></button>
         </div>
         <div class="commander-background-themes" [ngClass]="{'commander-background-themes-in': hovered}">
           <div class="container-fluid">
