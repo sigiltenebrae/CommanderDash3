@@ -8,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class DeckListComponent implements OnInit {
 
   hovered = false;
+  edit_hovered = false;
 
   constructor() { }
 

@@ -133,7 +133,11 @@ a, h1, h2, h3, h4, .nav-button{
   display: none;
 }
 
-.commander-viewer .commander-background-card-open .commander-crop:hover {
+.commander-viewer .commander-background-card-open:hover .commander-edit {
+  display: block;
+}
+
+.commander-viewer .commander-background-card-open:hover .commander-crop {
   filter: grayscale(100%);
 }
 
@@ -151,7 +155,7 @@ a, h1, h2, h3, h4, .nav-button{
 
 .commander-background-themes-in {
   display: block !important;
-  animation-delay: 0.5s;
+  animation-delay: 0.3s;
   animation-name: commander-themes-in;
   animation-duration: 1s;
   animation-fill-mode: forwards;
