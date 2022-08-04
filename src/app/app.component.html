@@ -1,19 +1,23 @@
-<body class="mat-typography mat-app-background">
-  <div>
+<mat-sidenav-container>
+  <mat-sidenav #sidenav>
     <mat-toolbar color="primary">
-      <!--<mat-toolbar-row>
-        <h1>SimpleCRM</h1>
-        <span class="menu-spacer"></span>
-        <div>
-          <a mat-button href="#"> Accounts </a>
-          <a mat-button href="#"> Create Account </a>
-          <a mat-button href="#"> Contacts </a>
-          <a mat-button href="#"> Create Contact </a>
-          <a mat-button href="#"> Activities </a>
-          <a mat-button href="#"> Create Activity </a>
+      <div fxFlex fxLayout fxLayoutAlign="end">
+        <button mat-icon-button (click)="sidenav.toggle()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </mat-toolbar>
+    <mat-nav-list>
+      <a mat-list-item href="#"> Create </a>
+      <a mat-list-item href="#"> Stats </a>
+      <a mat-list-item href="#"> Recommendations </a>
+    </mat-nav-list>
+  </mat-sidenav>
 
-        </div>
-      </mat-toolbar-row>-->
+
+
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" style="position: fixed">
       <div fxHide.gt-xs>
         <button mat-icon-button (click)="sidenav.toggle()">
           <mat-icon>menu</mat-icon>
@@ -23,13 +27,13 @@
         <img class="magic-nav-logo" src="assets/magic-logo.webp" alt="Commander" loading="lazy">
       </div>
       <div fxFlex fxLayout fxLayoutAlign="end" fxHide.xs>
-        <button mat-button>
+        <button mat-button class="nav-button">
           Create
         </button>
-        <button mat-button>
+        <button mat-button class="nav-button">
           Stats
         </button>
-        <button mat-button>
+        <button mat-button class="nav-button">
           Recs
         </button>
         <button
@@ -44,26 +48,11 @@
         <img class="magic-nav-logo" src="assets/magic-logo.webp" alt="Commander" loading="lazy">
       </div>
     </mat-toolbar>
+    <main style="margin-top: 80px;">
+      <body class="mat-typography mat-app-background">
+        <router-outlet></router-outlet>
+      </body>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
 
-    <mat-sidenav-container>
-      <mat-sidenav #sidenav>
-        <mat-nav-list>
-
-          <a mat-list-item href="#"> Create </a>
-          <a mat-list-item href="#"> Stats </a>
-          <a mat-list-item href="#"> Recommendations </a>
-          <a mat-list-item (click)="sidenav.toggle()" href="">Close</a>
-
-        </mat-nav-list>
-      </mat-sidenav>
-      <mat-sidenav-content>
-        <main>
-          <router-outlet></router-outlet>
-        </main>
-      </mat-sidenav-content>
-    </mat-sidenav-container>
-
-
-    <h1>Angular Material Theming System: Complete Guide</h1>
-  </div>
-</body>
