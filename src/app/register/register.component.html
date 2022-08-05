@@ -1,0 +1,64 @@
+<div style="height: 90%">
+  <div fxLayout="row" fxLayout.xs="col" fxFlexFill fxLayoutAlign="center center">
+    <mat-card class="register-card">
+      <div class="register-form" fxLayout="row wrap" fxLayoutAlign="center center" >
+
+        <h2 *ngIf="!isSuccessful">Register</h2>
+
+        <form *ngIf="!isSuccessful" name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
+          <div class="form-group register-field">
+            <mat-form-field appearance="outline" class="register-field">
+              <mat-label>Username</mat-label>
+              <input matInput [type]="'text'"
+                     name="username" [(ngModel)]="form.username"
+                     required minlength="3" maxlength="30"
+                     #username="ngModel">
+            </mat-form-field>
+            <div class="alert-danger" *ngIf="username.errors && f.submitted">
+              <div *ngIf="username.errors['required']">Username is required</div>
+              <div *ngIf="username.errors['minlength']">
+                Username must be at least 3 characters
+              </div>
+              <div *ngIf="username.errors['maxlength']">
+                Username must be at most 20 characters
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group register-field">
+            <mat-form-field appearance="outline" class="register-field">
+              <mat-label>Password</mat-label>
+              <input matInput [type]="hide_password_1 ? 'password' : 'text'"
+                     name="password" [(ngModel)]="form.password"
+                     required minlength="6" #password="ngModel">
+              <button type="button" mat-icon-button matSuffix (click)="hide_password_1 = !hide_password_1" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide_password_1">
+                <mat-icon>{{hide_password_1 ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </mat-form-field>
+            <div class="alert-danger" *ngIf="password.errors && f.submitted">
+              <div *ngIf="password.errors['required']">Password is required</div>
+              <div *ngIf="password.errors['minlength']">
+                Password must be at least 6 characters
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" fxLayout="row" fxLayoutAlign="end">
+            <button mat-raised-button color="primary" type="submit">Sign Up</button>
+          </div>
+          <div class="alert alert-warning" *ngIf="f.submitted && isSignUpFailed">
+            Signup failed!<br />{{ errorMessage }}
+          </div>
+        </form>
+        <div *ngIf="isSuccessful" style="width: 100%; text-align: center">
+          <h2>
+            Your registration is successful!
+          </h2>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>
+
+
+

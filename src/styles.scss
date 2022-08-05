@@ -46,6 +46,22 @@ a, h1, h2, h3, h4, .nav-button{
   height: 32px;
 }
 
+.register-card {
+  font-family: Beleren, "Helvetica Neue", sans-serif;
+  height: 372px;
+  width: 300px;
+  float: left;
+}
+
+.register-card .register-form {
+  height: 100%;
+  width: 100%;
+}
+
+.register-card .register-form .register-field {
+  width: 100%;
+}
+
 .commander-viewer {
   font-family: Beleren, "Helvetica Neue", sans-serif;
   position: relative;
