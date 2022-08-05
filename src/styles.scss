@@ -143,18 +143,20 @@ a, h1, h2, h3, h4, .nav-button{
 
 .commander-viewer .commander-background-themes {
   position: absolute;
-  top: 20px;
+  top: 0;
   left: 0;
   float: left;
-  width: 300px;
+  width: 275px;
   height: 200px;
   overflow: hidden;
   display: none;
   opacity: 0;
+  margin: 15px 15px 0 15px;
 }
 
 .commander-background-themes-in {
   display: block !important;
+  z-index: 5;
   animation-delay: 0.3s;
   animation-name: commander-themes-in;
   animation-duration: 1s;
@@ -211,12 +213,15 @@ a, h1, h2, h3, h4, .nav-button{
   top: -42px;
   left: 0;
   z-index: 5;
+}
+
+.commander-viewer .commander-ratings-tilt {
   transform: rotate(-7.5deg);
   animation-name: commander-ratings-in;
   animation-duration: 0.15s;
 }
 
-.commander-viewer .commander-content:hover .commander-ratings {
+.commander-viewer .commander-ratings-flat {
   animation-name: commander-ratings-out;
   animation-duration: 0.15s;
   animation-fill-mode: forwards;
