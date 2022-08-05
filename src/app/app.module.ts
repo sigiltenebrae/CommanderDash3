@@ -32,6 +32,7 @@ import { DeckListComponent } from './deck-list/deck-list.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { ProfileComponent } from './profile/profile.component';
+import { DeckEditComponent } from './deck-edit/deck-edit.component';
 
 
 
@@ -42,6 +43,7 @@ import { ProfileComponent } from './profile/profile.component';
     LoginComponent,
     RegisterComponent,
     ProfileComponent,
+    DeckEditComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,10 +56,12 @@ import { ProfileComponent } from './profile/profile.component';
     HttpClientModule,
     RouterModule.forRoot([
       {path: '', redirectTo: 'decks', pathMatch: 'full'},
-      {path: 'decks', component: DeckListComponent},
       {path: 'register', component: RegisterComponent},
       {path: 'login', component: LoginComponent},
-      {path: 'profile', component: ProfileComponent}
+      {path: 'profile', component: ProfileComponent},
+
+      {path: 'decks', component: DeckListComponent},
+      {path: 'deckedit', component: DeckEditComponent}
     ]),
     MatSidenavModule,
     MatToolbarModule,
