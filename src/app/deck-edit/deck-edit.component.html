@@ -73,6 +73,25 @@
           </mat-form-field>
         </div>
         <div fxLayout="row" fxLayoutAlign="center">
+          <img class="mtg-card" src="{{form.image_url}}">
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center">
+          <mat-slider
+            class="commander-slider"
+            name="commander-slider"
+            [disabled]="false"
+            [invert]="false"
+            [max]="deck_images.length - 1"
+            [min]="0"
+            [step]="1"
+            [thumbLabel]="false"
+            [(ngModel)]="image_index"
+            [vertical]="false"
+            aria-labelledby="commander-slide"
+            (ngModelChange)="changeImage()">
+          </mat-slider>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center">
           <h2>Preview</h2>
         </div>
         <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="space-between">

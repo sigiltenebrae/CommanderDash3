@@ -290,3 +290,13 @@ a, h1, h2, h3, h4, .nav-button{
 .filled { //also for ngb-rating
   color: $secondary;
 }
+
+.mtg-card {
+  height: 384px;
+  width: 275px;
+  border-radius: 10px;
+}
+
+.commander-slider {
+  width: 275px;
+}

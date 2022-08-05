@@ -39,6 +39,22 @@ export class DeckEditComponent implements OnInit {
     ],
     "deleteThemes": []
   }
+  deck_images: any = [
+    "https://c1.scryfall.com/file/scryfall-cards/png/front/e/f/ef55cb9e-27ab-4a85-9246-873f699be0f3.png?1651796695",
+    "https://c1.scryfall.com/file/scryfall-cards/png/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.png?1562622151",
+    "https://c1.scryfall.com/file/scryfall-cards/png/front/e/5/e5f336d8-12a4-482d-8ffd-c205858c72ba.png?1562941160",
+    "https://c1.scryfall.com/file/scryfall-cards/png/front/e/f/ef55cb9e-27ab-4a85-9246-873f699be0f3.png?1651796695",
+    "https://c1.scryfall.com/file/scryfall-cards/png/front/3/4/349e598a-aa12-44b7-b9de-067c9b85fcec.png?1562905628",
+    "https://c1.scryfall.com/file/scryfall-cards/png/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.png?1562622151",
+    "https://c1.scryfall.com/file/scryfall-cards/png/front/e/5/e5f336d8-12a4-482d-8ffd-c205858c72ba.png?1562941160",
+    "https://c1.scryfall.com/file/scryfall-cards/png/front/e/f/ef55cb9e-27ab-4a85-9246-873f699be0f3.png?1651796695",
+    "https://c1.scryfall.com/file/scryfall-cards/png/front/3/4/349e598a-aa12-44b7-b9de-067c9b85fcec.png?1562905628",
+    "https://c1.scryfall.com/file/scryfall-cards/png/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.png?1562622151",
+    "https://c1.scryfall.com/file/scryfall-cards/png/front/e/5/e5f336d8-12a4-482d-8ffd-c205858c72ba.png?1562941160",
+    "https://c1.scryfall.com/file/scryfall-cards/png/front/e/f/ef55cb9e-27ab-4a85-9246-873f699be0f3.png?1651796695",
+    "https://c1.scryfall.com/file/scryfall-cards/png/front/3/4/349e598a-aa12-44b7-b9de-067c9b85fcec.png?1562905628"
+  ]
+  image_index = -1;
 
   form: any = {
     commander: null,
@@ -61,6 +77,9 @@ export class DeckEditComponent implements OnInit {
     this.form.active = this.current_deck.active;
     this.form.themes = this.current_deck.themes;
     this.form.image_url = this.current_deck.image_url;
+
+    this.deck_images.unshift(this.current_deck.image_url);
+    this.image_index = 0;
   }
 
   addTheme(event: MatChipInputEvent): void {
@@ -75,6 +94,12 @@ export class DeckEditComponent implements OnInit {
     const index = this.form.themes.indexOf(theme);
     if (index > -1) {
       this.form.themes.splice(index, 1);
+    }
+  }
+
+  changeImage(): void {
+    if (this.image_index > -1) {
+      this.form.image_url = this.deck_images[this.image_index];
     }
   }
 
