@@ -1,22 +1,77 @@
 <div fxLayout="row wrap" fxFlex="100" fxLayoutAlign="center">
   <mat-card fxFlex="40" fxFlex.md="70" fxFlex.lt-md="90">
     <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
-      <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px" fxLayoutAlign="center">
-        <mat-form-field appearance="outline" fxFlex="45">
-          <mat-label>Commander</mat-label>
-          <input matInput [type]="'text'"
-                 name="commander" [(ngModel)]="form.commander"
-                 #commander="ngModel">
-        </mat-form-field>
-        <mat-form-field *ngIf="form.partner_commander" appearance="outline" fxFlex="45">
-          <mat-label>Partner</mat-label>
-          <input matInput [type]="'text'"
-                 name="partner_commander" [(ngModel)]="form.partner_commander"
-                 #partner_commander="ngModel">
-        </mat-form-field>
-      </div>
-      <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px" style="margin-left: 20px">
+      <div style="margin: 0 20px 0 20px">
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px" fxLayoutAlign="center">
+          <div *ngIf="!form.partner_commander" fxFlex="100">
+            <mat-form-field appearance="outline" fxFlex="100">
+              <mat-label>Commander</mat-label>
+              <input matInput [type]="'text'"
+                     name="commander" [(ngModel)]="form.commander"
+                     required minlength="1" #commander="ngModel">
+            </mat-form-field>
+          </div>
+          <div *ngIf="form.partner_commander" fxFlex="100" fxLayoutGap="20px">
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Commander</mat-label>
+              <input matInput [type]="'text'"
+                     name="commander" [(ngModel)]="form.commander"
+                     #commander="ngModel">
+            </mat-form-field>
+            <mat-form-field appearance="outline" fxFlex="50">
+              <mat-label>Partner</mat-label>
+              <input matInput [type]="'text'"
+                     name="partner_commander" [(ngModel)]="form.partner_commander"
+                     #partner_commander="ngModel">
+            </mat-form-field>
+          </div>
 
+        </div>
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px">
+          <mat-form-field appearance="outline" fxFlex="100">
+            <mat-label>Deck Name</mat-label>
+            <input matInput [type]="'text'"
+                   name="friendly_name" [(ngModel)]="form.friendly_name"
+                   #friendly_name="ngModel" required minlength="1">
+          </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px">
+          <mat-form-field appearance="outline" fxFlex="100">
+            <mat-label>Deck Url</mat-label>
+            <input matInput [type]="'text'"
+                   name="deck_url" [(ngModel)]="form.deck_url"
+                   #deck_url="ngModel">
+          </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="space-between">
+          <div fxLayout="row">
+            <p>Rating: </p>&nbsp;
+            <ngb-rating [(rate)]="form.play_rating" [max]="5">
+              <ng-template let-fill="fill" let-index="index">
+                <span class="star" [class.filled]="fill === 100">&#9733;</span>
+              </ng-template>
+            </ngb-rating>
+          </div>
+          <mat-slide-toggle name="active" [(ngModel)]="form.active" #active="ngModel">Active</mat-slide-toggle>
+        </div>
+        <div fxLayout="row">
+          <mat-form-field style="width:100%">
+            <mat-label>Themes</mat-label>
+            <mat-chip-list #themeList aria-label="Themes">
+              <mat-chip *ngFor="let theme of form.themes" (removed)="removeTheme(theme)">
+                {{theme.name}}
+                <button matChipRemove>
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </mat-chip>
+              <input placeholder="New Theme..."
+                     [matChipInputFor]="themeList"
+                     [matChipInputSeparatorKeyCodes]="seperatorKeysCodes"
+                     [matChipInputAddOnBlur]="true"
+                     (matChipInputTokenEnd)="addTheme($event)">
+            </mat-chip-list>
+          </mat-form-field>
+        </div>
       </div>
     </form>
   </mat-card>

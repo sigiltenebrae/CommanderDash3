@@ -252,3 +252,12 @@ a, h1, h2, h3, h4, .nav-button{
   from {transform: rotate(-7.5deg)}
   to {transform: rotate(0)}
 }
+
+.star { //for ngb-rating
+  font-size: 1.5rem;
+  color: rgba($secondary, 0.4);
+}
+
+.filled { //also for ngb-rating
+  color: $secondary;
+}

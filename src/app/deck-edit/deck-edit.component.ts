@@ -1,4 +1,6 @@
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { Component, OnInit } from '@angular/core';
+import {MatChipInputEvent} from '@angular/material/chips';
 
 @Component({
   selector: 'app-deck-edit',
@@ -6,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./deck-edit.component.scss']
 })
 export class DeckEditComponent implements OnInit {
+  readonly  seperatorKeysCodes = [ENTER, COMMA] as const;
 
   current_deck: any = {
     "id": 54,
@@ -36,6 +39,7 @@ export class DeckEditComponent implements OnInit {
     ],
     "deleteThemes": []
   }
+
   form: any = {
     commander: null,
     partner_commander: null,
@@ -45,6 +49,7 @@ export class DeckEditComponent implements OnInit {
     active: null,
     themes: null
   }
+
   constructor() { }
 
   ngOnInit(): void {
@@ -57,7 +62,20 @@ export class DeckEditComponent implements OnInit {
     this.form.themes = this.current_deck.themes;
   }
 
+  addTheme(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+    if (value) {
+      this.form.themes.push({name: value, id: -1});
+    }
+    event.chipInput!.clear();
+  }
 
+  removeTheme(theme: any): void {
+    const index = this.form.themes.indexOf(theme);
+    if (index > -1) {
+      this.form.themes.splice(index, 1);
+    }
+  }
 
   onSubmit() {}
 }
