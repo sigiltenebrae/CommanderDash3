@@ -23,6 +23,7 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import {MatButtonModule} from "@angular/material/button";
 import {MatChipsModule} from "@angular/material/chips";
+import {MatRippleModule} from "@angular/material/core";
 
 
 @NgModule({
@@ -54,7 +55,8 @@ import {MatChipsModule} from "@angular/material/chips";
     MatCheckboxModule,
     MatFormFieldModule,
     MatButtonModule,
-    MatChipsModule
+    MatChipsModule,
+    MatRippleModule
   ],
   providers: [],
   bootstrap: [AppComponent],

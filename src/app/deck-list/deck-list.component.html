@@ -1,7 +1,7 @@
 <div class="container-fluid" style="margin-top: 20px;">
   <div class="row justify-content-center">
     <div *ngFor="let deck of decks" class="col-auto" style="margin: 10px 0 10px 0">
-      <mat-card class="commander-viewer">
+      <mat-card class="commander-viewer" matRipple [matRippleCentered]="false" [matRippleDisabled]="!deck.hovered">
         <div [ngClass]="{'commander-background-card-closed': deck.hovered, 'commander-background-card-open': !deck.hovered}">
           <img src="{{deck.image_url}}" class="commander-crop">
           <button class="commander-edit" mat-icon-button><mat-icon>edit</mat-icon></button>
