@@ -1,5 +1,5 @@
 <div fxLayout="row wrap" fxFlex="100" fxLayoutAlign="center">
-  <mat-card fxFlex="40" fxFlex.md="70" fxFlex.lt-md="90">
+  <mat-card fxFlex="40" fxFlex.md="70" fxFlex.lt-md="90" [class.mat-elevation-z3]>
     <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
       <div style="margin: 0 20px 0 20px">
         <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px" fxLayoutAlign="center">
@@ -41,6 +41,14 @@
             <input matInput [type]="'text'"
                    name="deck_url" [(ngModel)]="form.deck_url"
                    #deck_url="ngModel">
+          </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px">
+          <mat-form-field appearance="outline" fxFlex="100">
+            <mat-label>Image Url</mat-label>
+            <input matInput [type]="'text'"
+                   name="image_url" [(ngModel)]="form.image_url"
+                   #image_url="ngModel">
           </mat-form-field>
         </div>
         <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="space-between">
@@ -153,6 +161,12 @@
               </div>
             </mat-card-content>
           </mat-card>
+        </div>
+        &nbsp;
+        <div fxLayout="row" fxLayoutAlign="end">
+          <button mat-raised-button color="primary" type="submit">
+            Submit
+          </button>
         </div>
       </div>
     </form>
