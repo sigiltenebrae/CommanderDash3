@@ -36,19 +36,28 @@ export class DeckEditComponent implements OnInit {
     ],
     "deleteThemes": []
   }
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
   form: any = {
     commander: null,
+    partner_commander: null,
     friendly_name: null,
     deck_url: null,
-    fun_to_build: null,
+    play_rating: null,
     active: null,
     themes: null
   }
+  constructor() { }
 
+  ngOnInit(): void {
+    this.form.commander = this.current_deck.commander;
+    this.form.partner_commander = this.current_deck.partner_commander;
+    this.form.friendly_name = this.current_deck.friendly_name;
+    this.form.deck_url = this.current_deck.deck_url;
+    this.form.play_rating = this.current_deck.play_rating;
+    this.form.active = this.current_deck.active;
+    this.form.themes = this.current_deck.themes;
+  }
+
+
+
+  onSubmit() {}
 }
