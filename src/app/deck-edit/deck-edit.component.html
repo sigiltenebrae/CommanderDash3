@@ -1,5 +1,5 @@
-<div fxLayout="row wrap" fxFlex="100" fxLayoutAlign="center">
-  <mat-card fxFlex="40" fxFlex.md="70" fxFlex.lt-md="90" [class.mat-elevation-z3]>
+<div fxLayout="row wrap" fxFlex="100" fxLayoutAlign="center" style="margin-bottom: 20px">
+  <mat-card fxFlex="40" fxFlex.md="70" fxFlex.lt-md="90" [class.mat-elevation-z3]="true">
     <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
       <div style="margin: 0 20px 0 20px">
         <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px" fxLayoutAlign="center">

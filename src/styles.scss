@@ -244,6 +244,8 @@ a, h1, h2, h3, h4, .nav-button{
   height: 16px;
   width: 16px;
   margin: 0 2px 0 2px;
+  border-radius: 50%;
+  @include mat.elevation(2);
 }
 
 .commander-viewer .commander-ratings {
@@ -280,6 +282,10 @@ a, h1, h2, h3, h4, .nav-button{
 @keyframes commander-ratings-out {
   from {transform: rotate(-7.5deg)}
   to {transform: rotate(0)}
+}
+
+.commander-ratings .commander-rating {
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
 }
 
 .star { //for ngb-rating
