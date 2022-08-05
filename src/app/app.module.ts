@@ -59,7 +59,8 @@ import {MatInputModule} from "@angular/material/input";
       {path: '', redirectTo: 'decks', pathMatch: 'full'},
       {path: 'decks', component: DeckListComponent},
       {path: 'register', component: RegisterComponent},
-      {path: 'login', component: LoginComponent}
+      {path: 'login', component: LoginComponent},
+      {path: 'profile', component: ProfileComponent}
     ]),
     MatSidenavModule,
     MatToolbarModule,
