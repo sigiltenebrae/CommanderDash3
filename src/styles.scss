@@ -74,7 +74,8 @@ a, h1, h2, h3, h4, .nav-button{
   border: none;
 }
 
-.commander-viewer .commander-background-card-open {
+.commander-viewer .commander-background-card-open,
+.commander-viewer .commander-background-card-open-no-anim {
   position: absolute;
   top: 0;
   left: 0;
@@ -83,24 +84,35 @@ a, h1, h2, h3, h4, .nav-button{
   height: 200px;
   overflow: hidden;
   clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+  z-index: 1;
+}
+
+.commander-viewer .commander-background-card-open {
   animation-name: commander-card-down-animation;
   animation-duration: 0.15s;
+}
+
+.commander-viewer .commander-background-card-closed,
+.commander-viewer .commander-background-card-closed-no-anim {
+  position: absolute;
+  top: 0;
+  left: 0;
+  float: left;
+  width: 300px;
+  height: 200px;
+  overflow: hidden;
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
   z-index: 1;
 }
 
 .commander-viewer .commander-background-card-closed {
-  position: absolute;
-  top: 0;
-  left: 0;
-  float: left;
-  width: 300px;
-  height: 200px;
-  overflow: hidden;
-  clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
-  z-index: 1;
   animation-name: commander-card-up-animation;
   animation-duration: 0.15s;
   animation-fill-mode: forwards;
+}
+
+.commander-viewer .commander-background-card-closed-no-anim {
+  clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
 }
 
 @keyframes commander-card-up-animation {
@@ -124,7 +136,9 @@ a, h1, h2, h3, h4, .nav-button{
 
 
 .commander-viewer .commander-background-card-open .commander-crop,
-.commander-viewer .commander-background-card-closed .commander-crop {
+.commander-viewer .commander-background-card-closed .commander-crop,
+.commander-viewer .commander-background-card-closed-no-anim .commander-crop,
+.commander-viewer .commander-background-card-open-no-anim .commander-crop {
   position: absolute;
   top: 0;
   left: 0;
@@ -136,7 +150,9 @@ a, h1, h2, h3, h4, .nav-button{
 }
 
 .commander-viewer .commander-background-card-open .commander-edit,
-.commander-viewer .commander-background-card-closed .commander-edit {
+.commander-viewer .commander-background-card-closed .commander-edit,
+.commander-viewer .commander-background-card-closed-no-anim .commander-edit,
+.commander-viewer .commander-background-card-open-no-anim .commander-edit {
   position: absolute;
   color: white;
   top: 5px;
@@ -171,13 +187,21 @@ a, h1, h2, h3, h4, .nav-button{
   margin: 15px 15px 0 15px;
 }
 
-.commander-background-themes-in {
+.commander-background-themes-in,
+.commander-background-themes-in-no-anim {
   display: block !important;
   z-index: 5;
+}
+
+.commander-background-themes-in {
   animation-delay: 0.3s;
   animation-name: commander-themes-in;
   animation-duration: 1s;
   animation-fill-mode: forwards;
+}
+
+.commander-background-themes-in-no-anim {
+  opacity: 1;
 }
 
 @keyframes commander-themes-in {
@@ -232,6 +256,10 @@ a, h1, h2, h3, h4, .nav-button{
   z-index: 5;
 }
 
+.commander-viewer .commander-ratings-tilt-no-anim {
+  transform: rotate(-7.5deg);
+}
+
 .commander-viewer .commander-ratings-tilt {
   transform: rotate(-7.5deg);
   animation-name: commander-ratings-in;
@@ -243,6 +271,7 @@ a, h1, h2, h3, h4, .nav-button{
   animation-duration: 0.15s;
   animation-fill-mode: forwards;
 }
+
 @keyframes commander-ratings-in {
   from {transform: rotate(0)}
   to {transform: rotate(-7.5deg)}

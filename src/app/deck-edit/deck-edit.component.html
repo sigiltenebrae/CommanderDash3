@@ -72,6 +72,69 @@
             </mat-chip-list>
           </mat-form-field>
         </div>
+        <div fxLayout="row" fxLayoutAlign="center">
+          <h2>Preview</h2>
+        </div>
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="space-between">
+          <mat-card class="commander-viewer" matRipple [matRippleCentered]="false"
+                      [matRippleDisabled]="true" [class.mat-elevation-z8]="true">
+              <div class="commander-background-card-open-no-anim">
+                <img src="{{form.image_url}}" class="commander-crop">
+                <button class="commander-edit" mat-icon-button><mat-icon>edit</mat-icon></button>
+              </div>
+              <mat-card-content class="commander-content">
+                <div class="commander-content-holder">
+                  <h2>{{form.friendly_name}}</h2>
+                  <h4 class="commander-name">{{form.commander}}</h4>
+                  <h4 *ngIf="form.partner_commander" class="commander-name">{{form.partner_commander}}</h4>
+                  <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">
+                    <!--          <img class="commander-color" src="assets/color_symbols/W.png">-->
+                    <img class="commander-color" src="assets/color_symbols/U.png">
+                    <!--          <img class="commander-color" src="assets/color_symbols/B.png">-->
+                    <!--          <img class="commander-color" src="assets/color_symbols/R.png">-->
+                    <img class="commander-color" src="assets/color_symbols/G.png">
+
+                  </div>
+                  <div fxLayout="row" fxLayoutAlign="center" class="commander-ratings commander-ratings-tilt-no-anim">
+                    <mat-icon *ngFor="let i of [].constructor(form.play_rating)" class="commander-rating" color="primary">star</mat-icon>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          &nbsp;
+          <mat-card class="commander-viewer" matRipple [matRippleCentered]="false"
+                    [matRippleDisabled]="true" [class.mat-elevation-z8]="true">
+            <div class="commander-background-card-closed-no-anim">
+              <img src="{{form.image_url}}" class="commander-crop">
+              <button class="commander-edit" mat-icon-button><mat-icon>edit</mat-icon></button>
+            </div>
+            <div class="commander-background-themes" class="commander-background-themes-in-no-anim">
+              <mat-chip-list>
+                <mat-chip *ngFor="let theme of form.themes" color="accent" selected>
+                  {{theme.name}}
+                </mat-chip>
+              </mat-chip-list>
+            </div>
+            <mat-card-content class="commander-content">
+              <div class="commander-content-holder">
+                <h2>{{form.friendly_name}}</h2>
+                <h4 class="commander-name">{{form.commander}}</h4>
+                <h4 *ngIf="form.partner_commander" class="commander-name">{{form.partner_commander}}</h4>
+                <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">
+                  <!--          <img class="commander-color" src="assets/color_symbols/W.png">-->
+                  <img class="commander-color" src="assets/color_symbols/U.png">
+                  <!--          <img class="commander-color" src="assets/color_symbols/B.png">-->
+                  <!--          <img class="commander-color" src="assets/color_symbols/R.png">-->
+                  <img class="commander-color" src="assets/color_symbols/G.png">
+
+                </div>
+                <div fxLayout="row" fxLayoutAlign="center" class="commander-ratings">
+                  <mat-icon *ngFor="let i of [].constructor(form.play_rating)" class="commander-rating" color="primary">star</mat-icon>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
       </div>
     </form>
   </mat-card>

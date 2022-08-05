@@ -60,6 +60,7 @@ export class DeckEditComponent implements OnInit {
     this.form.play_rating = this.current_deck.play_rating;
     this.form.active = this.current_deck.active;
     this.form.themes = this.current_deck.themes;
+    this.form.image_url = this.current_deck.image_url;
   }
 
   addTheme(event: MatChipInputEvent): void {
