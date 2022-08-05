@@ -386,8 +386,8 @@ export class DeckListComponent implements OnInit {
       ],
       "deleteThemes": []
     }
-  ]
-  hovered = false;
+  ];
+
 
   constructor() { }
 

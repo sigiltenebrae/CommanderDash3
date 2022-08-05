@@ -4,7 +4,7 @@
       <mat-card class="commander-viewer" matRipple [matRippleCentered]="false" [matRippleDisabled]="!deck.hovered">
         <div [ngClass]="{'commander-background-card-closed': deck.hovered, 'commander-background-card-open': !deck.hovered}">
           <img src="{{deck.image_url}}" class="commander-crop">
-          <button class="commander-edit" mat-icon-button><mat-icon>edit</mat-icon></button>
+          <button class="commander-edit" (click)="deck.editing=true;" mat-icon-button><mat-icon>edit</mat-icon></button>
         </div>
         <div class="commander-background-themes" [ngClass]="{'commander-background-themes-in': deck.hovered}"
              (mouseenter)="deck.hovered=true;" (mouseleave)="deck.hovered=false;">
@@ -32,9 +32,7 @@
             </div>
           </div>
         </mat-card-content>
-
       </mat-card>
-
     </div>
   </div>
 </div>
