@@ -25,15 +25,14 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatButtonModule } from "@angular/material/button";
 import { MatChipsModule } from "@angular/material/chips";
 import { MatRippleModule } from "@angular/material/core";
+import {MatInputModule} from "@angular/material/input";
 
 import { AppComponent } from './app.component';
 import { DeckListComponent } from './deck-list/deck-list.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { ProfileComponent } from './profile/profile.component';
-import { BoardAdminComponent } from './board-admin/board-admin.component';
-import { BoardUserComponent } from './board-user/board-user.component';
-import {MatInputModule} from "@angular/material/input";
+
 
 
 @NgModule({
@@ -43,8 +42,6 @@ import {MatInputModule} from "@angular/material/input";
     LoginComponent,
     RegisterComponent,
     ProfileComponent,
-    BoardAdminComponent,
-    BoardUserComponent
   ],
   imports: [
     BrowserModule,
