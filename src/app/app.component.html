@@ -11,6 +11,7 @@
       <a mat-list-item href="#"> Create </a>
       <a mat-list-item href="#"> Stats </a>
       <a mat-list-item href="#"> Recommendations </a>
+      <a mat-list-item href="#"> Sign Out </a>
     </mat-nav-list>
   </mat-sidenav>
 
@@ -35,6 +36,9 @@
         </button>
         <button mat-button class="nav-button">
           Recs
+        </button>
+        <button mat-button class="nav-button" (click)="signOut()">
+          Sign Out
         </button>
         <button
           mat-icon-button

@@ -1,5 +1,6 @@
 import {Component, HostBinding, OnInit} from '@angular/core';
 import {OverlayContainer} from "@angular/cdk/overlay";
+import {TokenStorageService} from "../services/token-storage.service";
 
 @Component({
   selector: 'app-root',
@@ -11,11 +12,15 @@ export class AppComponent implements OnInit {
 
   isDark = true;
 
-  constructor(public overlayContainer: OverlayContainer) {}
+  constructor(public overlayContainer: OverlayContainer, private tokenStorage: TokenStorageService) {}
 
   ngOnInit(): void {
         this.onSetTheme('dark-theme');
-    }
+  }
+
+  signOut():void {
+    this.tokenStorage.signOut();
+  }
 
   toggleDarkTheme() {
     if (this.isDark) {
