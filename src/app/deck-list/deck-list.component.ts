@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DeckDataService } from "../../services/deck-data.service";
 
 @Component({
   selector: 'app-deck-list',
@@ -389,9 +390,14 @@ export class DeckListComponent implements OnInit {
   ];
 
 
-  constructor() { }
+  constructor(private deckData: DeckDataService) { }
 
   ngOnInit(): void {
+    this.deckData.getDecks().then(
+      (temp) => {
+        console.log(temp);
+      }
+    );
     for (let deck of this.decks) {
       deck.hovered = false;
     }
