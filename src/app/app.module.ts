@@ -26,6 +26,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatChipsModule } from "@angular/material/chips";
 import { MatRippleModule } from "@angular/material/core";
 import {MatInputModule} from "@angular/material/input";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 import { AppComponent } from './app.component';
 import { DeckListComponent } from './deck-list/deck-list.component';
@@ -34,6 +35,7 @@ import { RegisterComponent } from './register/register.component';
 import { ProfileComponent } from './profile/profile.component';
 import { DeckEditComponent } from './deck-edit/deck-edit.component';
 import { DeckStatsComponent } from './deck-stats/deck-stats.component';
+
 
 
 
@@ -82,7 +84,8 @@ import { DeckStatsComponent } from './deck-stats/deck-stats.component';
     MatButtonModule,
     MatChipsModule,
     MatRippleModule,
-    MatInputModule
+    MatInputModule,
+    MatProgressSpinnerModule
   ],
   exports: [RouterModule],
   providers: [],

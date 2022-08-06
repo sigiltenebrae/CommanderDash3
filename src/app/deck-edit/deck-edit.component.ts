@@ -16,6 +16,8 @@ export class DeckEditComponent implements OnInit {
   readonly  seperatorKeysCodes = [ENTER, COMMA] as const;
 
   new_deck = false;
+  deleting = false;
+  loading = false;
 
   current_user: any = null;
   current_deck: any = null;
@@ -56,6 +58,7 @@ export class DeckEditComponent implements OnInit {
       this.router.navigate(['/']);
     }
     else {
+      this.loading = true;
       this.deckData.getDeck(deckId).then((deck) => {
       this.current_deck = deck;
 
@@ -68,8 +71,10 @@ export class DeckEditComponent implements OnInit {
       this.form.themes = this.current_deck.themes;
       this.form.image_url = this.current_deck.image_url;
       this.image_index = 0;
+      this.loading = false;
       });
     }
+    this.deleting = false;
   }
 
   addTheme(event: MatChipInputEvent): void {

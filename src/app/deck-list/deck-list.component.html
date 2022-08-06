@@ -1,4 +1,4 @@
-<div class="container-fluid" style="margin-top: 20px;">
+<div *ngIf="!loading" class="container-fluid" style="margin-top: 20px;">
   <div *ngIf="decks" class="row justify-content-center">
     <div *ngFor="let deck of decks" class="col-auto" style="margin: 10px 0 10px 0">
       <mat-card class="commander-viewer" matRipple [matRippleCentered]="false" [matRippleDisabled]="!deck.hovered">
@@ -34,4 +34,7 @@
       </mat-card>
     </div>
   </div>
+</div>
+<div *ngIf="loading" fxLayout="row" fxFlex="100" fxLayoutAlign="center center" style="margin: 20px;">
+  <mat-spinner></mat-spinner>
 </div>

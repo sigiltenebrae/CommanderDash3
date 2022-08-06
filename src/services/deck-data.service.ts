@@ -12,8 +12,9 @@ import {environment} from "../environments/environment";
 export class DeckDataService {
   constructor(private http: HttpClient, private token: TokenStorageService) { }
 
-  all_decks: any = null;
-  my_decks: any = null;
+  private all_decks: any = null;
+  private my_decks: any = null;
+  private themes: any = null;
 
   public async getDecks(): Promise<any> {
     return new Promise<any>((resolve_decks, reject) => {
@@ -106,6 +107,21 @@ export class DeckDataService {
         }
         resolve_scryfall();
       });
+    });
+  }
+
+  public async getThemeList(): Promise<any> {
+    return new Promise<any>((resolve) => {
+      if (this.themes) {
+        resolve(this.themes);
+      }
+      else {
+        this.http.get(environment.themes_url).subscribe((theme_data) => {
+          this.themes = theme_data;
+          this.themes.sort((a: any, b: any) => (a.name > b.name) ? 1: -1);
+          resolve(this.themes);
+        });
+      }
     });
   }
 }
