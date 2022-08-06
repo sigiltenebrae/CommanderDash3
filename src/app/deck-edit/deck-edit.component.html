@@ -1,4 +1,4 @@
-<div *ngIf="current_deck && !new_deck" fxLayout="row wrap" fxFlex="100" fxLayoutAlign="center" style="margin-bottom: 20px">
+<div *ngIf="current_deck || new_deck" fxLayout="row wrap" fxFlex="100" fxLayoutAlign="center" style="margin-bottom: 20px">
   <mat-card fxFlex="40" fxFlex.md="70" fxFlex.lt-md="90" [class.mat-elevation-z3]="true">
     <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
       <div style="margin: 0 20px 0 20px">
@@ -81,7 +81,7 @@
           </mat-form-field>
         </div>
         <div fxLayout="row" fxLayoutAlign="center">
-          <img class="mtg-card" src="{{form.image_url}}" loading="lazy">
+          <img class="mtg-card" src="{{form.image_url}}" alt="{{form.commander}}" loading="lazy">
         </div>
         <div fxLayout="row" fxLayoutAlign="center">
           <mat-slider
@@ -106,7 +106,7 @@
           <mat-card class="commander-viewer" matRipple [matRippleCentered]="false"
                       [matRippleDisabled]="true" [class.mat-elevation-z8]="true">
               <div class="commander-background-card-open-no-anim">
-                <img src="{{form.image_url}}" class="commander-crop">
+                <img src="{{form.image_url}}" alt="{{form.commander}}" class="commander-crop">
                 <button class="commander-edit" mat-icon-button><mat-icon>edit</mat-icon></button>
               </div>
               <mat-card-content class="commander-content">
@@ -131,7 +131,7 @@
           <mat-card class="commander-viewer" matRipple [matRippleCentered]="false"
                     [matRippleDisabled]="true" [class.mat-elevation-z8]="true">
             <div class="commander-background-card-closed-no-anim">
-              <img src="{{form.image_url}}" class="commander-crop">
+              <img src="{{form.image_url}}" alt="{{form.commander}}" class="commander-crop">
               <button class="commander-edit" mat-icon-button><mat-icon>edit</mat-icon></button>
             </div>
             <div class="commander-background-themes" class="commander-background-themes-in-no-anim">

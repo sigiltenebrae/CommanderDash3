@@ -46,7 +46,9 @@ export class DeckEditComponent implements OnInit {
 
     if (deckId == -1) {
       this.new_deck = true;
-      this.current_deck = null;
+      this.current_deck = {};
+      this.current_deck.images = [];
+      this.current_deck.colors = [];
       this.form.friendly_name = "";
       this.form.deck_url = "";
       this.form.image_url = "";
