@@ -1,6 +1,11 @@
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { Component, OnInit } from '@angular/core';
+import {ActivatedRoute, Router} from "@angular/router";
+
 import {MatChipInputEvent} from '@angular/material/chips';
+
+import {DeckDataService} from "../../services/deck-data.service";
+import {TokenStorageService} from "../../services/token-storage.service";
 
 @Component({
   selector: 'app-deck-edit',
@@ -10,51 +15,10 @@ import {MatChipInputEvent} from '@angular/material/chips';
 export class DeckEditComponent implements OnInit {
   readonly  seperatorKeysCodes = [ENTER, COMMA] as const;
 
-  current_deck: any = {
-    "id": 54,
-    "friendly_name": "Discard Upgraded",
-    "commander": "Crosis, the Purger",
-    "url": "https://www.archidekt.com/decks/2822705#Crosis_-_Grixis_-_Discard_Upgraded",
-    "build_rating": 5,
-    "play_rating": 3,
-    "win_rating": 5,
-    "active": true,
-    "image_url": "https://c1.scryfall.com/file/scryfall-cards/png/front/e/f/ef55cb9e-27ab-4a85-9246-873f699be0f3.png?1651796695",
-    "creator": 1,
-    "partner_commander": null,
-    "partner_image_url": null,
-    "themes": [
-      {
-        "id": 42,
-        "name": "Wheels"
-      },
-      {
-        "id": 53,
-        "name": "Discard"
-      },
-      {
-        "id": 121,
-        "name": "Card Draw"
-      }
-    ],
-    "deleteThemes": []
-  }
-  deck_images: any = [
-    "https://c1.scryfall.com/file/scryfall-cards/png/front/e/f/ef55cb9e-27ab-4a85-9246-873f699be0f3.png?1651796695",
-    "https://c1.scryfall.com/file/scryfall-cards/png/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.png?1562622151",
-    "https://c1.scryfall.com/file/scryfall-cards/png/front/e/5/e5f336d8-12a4-482d-8ffd-c205858c72ba.png?1562941160",
-    "https://c1.scryfall.com/file/scryfall-cards/png/front/e/f/ef55cb9e-27ab-4a85-9246-873f699be0f3.png?1651796695",
-    "https://c1.scryfall.com/file/scryfall-cards/png/front/3/4/349e598a-aa12-44b7-b9de-067c9b85fcec.png?1562905628",
-    "https://c1.scryfall.com/file/scryfall-cards/png/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.png?1562622151",
-    "https://c1.scryfall.com/file/scryfall-cards/png/front/e/5/e5f336d8-12a4-482d-8ffd-c205858c72ba.png?1562941160",
-    "https://c1.scryfall.com/file/scryfall-cards/png/front/e/f/ef55cb9e-27ab-4a85-9246-873f699be0f3.png?1651796695",
-    "https://c1.scryfall.com/file/scryfall-cards/png/front/3/4/349e598a-aa12-44b7-b9de-067c9b85fcec.png?1562905628",
-    "https://c1.scryfall.com/file/scryfall-cards/png/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.png?1562622151",
-    "https://c1.scryfall.com/file/scryfall-cards/png/front/e/5/e5f336d8-12a4-482d-8ffd-c205858c72ba.png?1562941160",
-    "https://c1.scryfall.com/file/scryfall-cards/png/front/e/f/ef55cb9e-27ab-4a85-9246-873f699be0f3.png?1651796695",
-    "https://c1.scryfall.com/file/scryfall-cards/png/front/3/4/349e598a-aa12-44b7-b9de-067c9b85fcec.png?1562905628"
-  ]
+  current_user: any = null;
+  current_deck: any = null;
   image_index = -1;
+  decks: any = [];
 
   form: any = {
     commander: null,
@@ -66,20 +30,33 @@ export class DeckEditComponent implements OnInit {
     themes: null
   }
 
-  constructor() { }
+  constructor(private router: Router, private route: ActivatedRoute,
+              private deckData: DeckDataService, private token: TokenStorageService) {}
 
   ngOnInit(): void {
-    this.form.commander = this.current_deck.commander;
-    this.form.partner_commander = this.current_deck.partner_commander;
-    this.form.friendly_name = this.current_deck.friendly_name;
-    this.form.deck_url = this.current_deck.deck_url;
-    this.form.play_rating = this.current_deck.play_rating;
-    this.form.active = this.current_deck.active;
-    this.form.themes = this.current_deck.themes;
-    this.form.image_url = this.current_deck.image_url;
+    const routeParams = this.route.snapshot.paramMap;
+    const deckId = Number(routeParams.get('deckId'));
 
-    this.deck_images.unshift(this.current_deck.image_url);
-    this.image_index = 0;
+    if (deckId < 0) {
+      this.current_deck = null;
+    }
+    else {
+      this.deckData.getDecks().then((temp) => {
+        this.decks = temp;
+        this.deckData.getDeck(deckId).then((deck) => {
+        this.current_deck = deck;
+        this.form.commander = this.current_deck.commander;
+        this.form.partner_commander = this.current_deck.partner_commander;
+        this.form.friendly_name = this.current_deck.friendly_name;
+        this.form.deck_url = this.current_deck.deck_url;
+        this.form.play_rating = this.current_deck.play_rating;
+        this.form.active = this.current_deck.active;
+        this.form.themes = this.current_deck.themes;
+        this.form.image_url = this.current_deck.image_url;
+        this.image_index = 0;
+        });
+      });
+    }
   }
 
   addTheme(event: MatChipInputEvent): void {
@@ -99,7 +76,7 @@ export class DeckEditComponent implements OnInit {
 
   changeImage(): void {
     if (this.image_index > -1) {
-      this.form.image_url = this.deck_images[this.image_index];
+      this.form.image_url = this.current_deck.images[this.image_index];
     }
   }
 

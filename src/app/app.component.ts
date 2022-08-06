@@ -1,6 +1,6 @@
 import {Component, HostBinding, OnInit} from '@angular/core';
 import {OverlayContainer} from "@angular/cdk/overlay";
-import {TokenStorageService} from "../services/token-storage.service";
+import { TokenStorageService } from "../services/token-storage.service";
 import {Router} from "@angular/router";
 
 @Component({
@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
   constructor(public overlayContainer: OverlayContainer, private tokenStorage: TokenStorageService, private router: Router) {}
 
   ngOnInit(): void {
-        this.onSetTheme('dark-theme');
+    this.onSetTheme('dark-theme');
   }
 
   signOut():void {

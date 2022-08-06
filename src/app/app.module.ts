@@ -7,7 +7,7 @@ import { FlexLayoutModule } from "@angular/flex-layout";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from "@angular/forms";
 import { ReactiveFormsModule } from "@angular/forms";
-import {HttpClientModule } from "@angular/common/http";
+import { HttpClientModule } from "@angular/common/http";
 import { RouterModule } from "@angular/router";
 
 import { MatSidenavModule } from "@angular/material/sidenav";
@@ -58,13 +58,15 @@ import { DeckStatsComponent } from './deck-stats/deck-stats.component';
     HttpClientModule,
     RouterModule.forRoot([
       {path: '', redirectTo: 'decks', pathMatch: 'full'},
+
       {path: 'register', component: RegisterComponent},
       {path: 'login', component: LoginComponent},
       {path: 'profile', component: ProfileComponent},
 
       {path: 'decks', component: DeckListComponent},
-      {path: 'deckedit', component: DeckEditComponent}
-    ]),
+      {path: 'decks/:deckId', component: DeckEditComponent},
+
+    ], {useHash: true}),
     MatSidenavModule,
     MatToolbarModule,
     MatListModule,
@@ -82,6 +84,7 @@ import { DeckStatsComponent } from './deck-stats/deck-stats.component';
     MatRippleModule,
     MatInputModule
   ],
+  exports: [RouterModule],
   providers: [],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

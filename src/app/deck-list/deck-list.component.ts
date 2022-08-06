@@ -7,7 +7,7 @@ import { DeckDataService } from "../../services/deck-data.service";
   styleUrls: ['./deck-list.component.scss']
 })
 export class DeckListComponent implements OnInit {
-  decks: any = null;
+  decks: any[] = [];
 
   constructor(private deckData: DeckDataService) { }
 
