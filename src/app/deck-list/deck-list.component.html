@@ -20,12 +20,11 @@
             <h4 class="commander-name">{{deck.commander}}</h4>
             <h4 *ngIf="deck.partner_commander" class="commander-name">{{deck.partner_commander}}</h4>
             <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">
-              <!--          <img class="commander-color" src="assets/color_symbols/W.png">-->
-              <img class="commander-color" src="assets/color_symbols/U.png">
-              <!--          <img class="commander-color" src="assets/color_symbols/B.png">-->
-              <!--          <img class="commander-color" src="assets/color_symbols/R.png">-->
-              <img class="commander-color" src="assets/color_symbols/G.png">
-
+              <img *ngIf="deck.colors.includes('W');" class="commander-color" src="assets/color_symbols/W.png">
+              <img *ngIf="deck.colors.includes('U');" class="commander-color" src="assets/color_symbols/U.png">
+              <img *ngIf="deck.colors.includes('B');" class="commander-color" src="assets/color_symbols/B.png">
+              <img *ngIf="deck.colors.includes('R');" class="commander-color" src="assets/color_symbols/R.png">
+              <img *ngIf="deck.colors.includes('G');" class="commander-color" src="assets/color_symbols/G.png">
             </div>
             <div fxLayout="row" fxLayoutAlign="center" [ngClass]="{'commander-ratings-tilt': !deck.hovered, 'commander-ratings-flat': deck.hovered}" class="commander-ratings">
               <mat-icon *ngFor="let i of [].constructor(deck.play_rating)" class="commander-rating" color="primary">star</mat-icon>
