@@ -16,18 +16,23 @@
               </button>
             </mat-form-field>
           </div>
-          <div *ngIf="has_partner" fxFlex="100" fxLayoutGap="20px">
-            <mat-form-field appearance="outline" fxFlex="50">
+          <div *ngIf="has_partner" fxLayout="row" fxLayout.lt-sm="column" fxFlex="100" fxLayoutGap="20px" fxLayoutAlign="center">
+            <mat-form-field appearance="outline" fxFlex="45">
               <mat-label>Commander</mat-label>
               <input matInput [type]="'text'"
                      name="commander" [(ngModel)]="form.commander"
-                     required minlength="1" #commander="ngModel">
+                     required minlength="1" #commander="ngModel"
+                     [ngbTypeahead]="card_search" value="{{form.commander}}"
+                     (ngModelChange)="updateCommander()" [editable]="false">
             </mat-form-field>
-            <mat-form-field appearance="outline" fxFlex="50">
+            <button mat-icon-button type="button" (click)="swapCommanderPartner()"><mat-icon>compare_arrows</mat-icon></button>
+            <mat-form-field appearance="outline" fxFlex="45">
               <mat-label>Partner</mat-label>
               <input matInput [type]="'text'"
                      name="partner_commander" [(ngModel)]="form.partner_commander"
-                     required minlength="1" #partner_commander="ngModel">
+                     required minlength="1" #partner_commander="ngModel"
+                     [ngbTypeahead]="card_search" value="{{form.partner_commander}}"
+                     (ngModelChange)="updatePartner()" [editable]="false">
               <button mat-icon-button matSuffix [attr.aria-label]="'Add Partner'" type="button" (click)="has_partner=false;">
                 <mat-icon>clear</mat-icon>
               </button>

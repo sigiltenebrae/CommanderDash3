@@ -150,6 +150,43 @@ export class DeckEditComponent implements OnInit {
     }
   }
 
+  async updatePartner() {
+    if (this.form.partner_commander && this.form.partner_commander !== "") {
+      this.form.partner_image_url = "";
+      this.current_deck.partner_images = [];
+      let cur = await Scry.Cards.byName(this.form.partner_commander);
+      let cur_prints = await cur.getPrints();
+      cur_prints.forEach((print: any) => {
+        if (print.image_uris?.png) {
+          this.current_deck.partner_images.push(print.image_uris?.png);
+        }
+      });
+      this.partner_image_index = 0;
+      this.form.partner_image_url = this.current_deck.partner_images[0];
+    }
+  }
+
+  swapCommanderPartner() {
+    if (this.form.commander && this.form.commander !== "" &&
+      this.form.partner_commander && this.form.partner_commander !== "") {
+      let temp: any = {};
+      temp.commander = this.form.commander;
+      temp.image_url = this.form.image_url;
+      temp.images = this.current_deck.images;
+      temp.index = this.image_index;
+
+      this.form.commander = this.form.partner_commander;
+      this.form.image_url = this.form.partner_image_url;
+      this.current_deck.images = this.current_deck.partner_images;
+      this.image_index = this.partner_image_index;
+
+      this.form.partner_commander = temp.commander;
+      this.form.partner_image_url = temp.image_url;
+      this.current_deck.partner_imager = temp.images;
+      this.partner_image_index = temp.index;
+    }
+  }
+
   onSubmit() {
     console.log('submit');
   }
