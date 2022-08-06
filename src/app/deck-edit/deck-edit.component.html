@@ -111,7 +111,7 @@
         </div>
         <div *ngIf="!has_partner">
           <div fxLayout="row" fxLayoutAlign="center">
-            <img class="mtg-card" src="{{form.image_url}}" alt="{{form.commander}}" loading="lazy">
+            <img [class.mat-elevation-z4]="true" class="mtg-card" src="{{form.image_url}}" alt="{{form.commander}}" loading="lazy">
           </div>
           <div fxLayout="row" fxLayoutAlign="center">
             <mat-slider
@@ -133,7 +133,7 @@
         <div *ngIf="has_partner" fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="space-between">
           <div>
             <div fxLayout="row" fxLayoutAlign="center">
-              <img class="mtg-card" src="{{form.image_url}}" alt="{{form.commander}}" loading="lazy">
+              <img [class.mat-elevation-z4]="true" class="mtg-card" src="{{form.image_url}}" alt="{{form.commander}}" loading="lazy">
             </div>
             <div fxLayout="row" fxLayoutAlign="center">
               <mat-slider
@@ -154,7 +154,7 @@
           </div>
           <div>
             <div fxLayout="row" fxLayoutAlign="center">
-              <img class="mtg-card" src="{{form.partner_image_url}}" alt="{{form.partner_commander}}" loading="lazy">
+              <img [class.mat-elevation-z4]="true" class="mtg-card" src="{{form.partner_image_url}}" alt="{{form.partner_commander}}" loading="lazy">
             </div>
             <div fxLayout="row" fxLayoutAlign="center">
               <mat-slider
