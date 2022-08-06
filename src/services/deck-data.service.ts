@@ -29,6 +29,8 @@ export class DeckDataService {
           }
           this.my_decks = decks;
           resolve_decks(this.my_decks);
+        }, (error) => {
+          resolve_decks([]);
         });
       }
     });
@@ -74,6 +76,8 @@ export class DeckDataService {
             }
           }
           resolve(deck);
+        }, (error) => {
+          resolve({});
         });
       });
     });
@@ -105,6 +109,8 @@ export class DeckDataService {
           })
         }
         resolve_scryfall();
+      }, (error) => {
+        resolve_scryfall();
       });
     });
   }
@@ -119,6 +125,8 @@ export class DeckDataService {
           this.themes = theme_data;
           this.themes.sort((a: any, b: any) => (a.name > b.name) ? 1: -1);
           resolve(this.themes);
+        }, (error) => {
+          resolve([]);
         });
       }
     });

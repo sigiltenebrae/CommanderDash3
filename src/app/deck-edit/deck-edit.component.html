@@ -92,11 +92,20 @@
                   <mat-icon>cancel</mat-icon>
                 </button>
               </mat-chip>
+              <ng-template #themert let-r="result" let-t="term">
+                <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
+              </ng-template>
               <input placeholder="New Theme..."
+                     name="theme_input"
                      [matChipInputFor]="themeList"
                      [matChipInputSeparatorKeyCodes]="seperatorKeysCodes"
                      [matChipInputAddOnBlur]="true"
-                     (matChipInputTokenEnd)="addTheme($event)">
+                     (matChipInputTokenEnd)="addTheme($event)"
+                     [(ngModel)]="temp_theme"
+                     [ngbTypeahead]="theme_search"
+                     [inputFormatter]="theme_formatter"
+                     [resultTemplate]="themert"
+                     [editable]="false">
             </mat-chip-list>
           </mat-form-field>
         </div>

@@ -18,6 +18,9 @@ import {TokenStorageService} from "../../services/token-storage.service";
 export class DeckEditComponent implements OnInit {
   readonly  seperatorKeysCodes = [ENTER, COMMA] as const;
 
+  themes: any[] = [];
+  temp_theme: any = null;
+
   new_deck = false;
   deleting = false;
   loading = false;
@@ -28,7 +31,6 @@ export class DeckEditComponent implements OnInit {
   current_deck: any = null;
   image_index = -1;
   partner_image_index = -1;
-  decks: any = [];
 
   form: any = {
     commander: null,
@@ -90,6 +92,10 @@ export class DeckEditComponent implements OnInit {
       });
     }
     this.deleting = false;
+    this.deckData.getThemeList().then((themes) => {
+      this.themes = themes;
+      console.log(this.themes);
+    })
   }
 
   // @ts-ignore
@@ -106,6 +112,15 @@ export class DeckEditComponent implements OnInit {
       tap(() => {
         this.searching = false;
       }));
+
+  theme_search: OperatorFunction<string, readonly {id: number, name: string}[]> = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      map(term => term === '' ? this.themes
+        : this.themes.filter(v => v.name.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
+    );
+
+  theme_formatter = (x: {name: string}) => x.name;
 
   addTheme(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
