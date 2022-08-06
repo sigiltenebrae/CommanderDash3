@@ -46,7 +46,6 @@ export class DeckDataService {
 
   public async getDeck(deckId: number): Promise<any> {
     return new Promise<any>((resolve) => {
-      console.log('getting deck');
       this.getDecks().then((decks) => {
         decks.forEach((deck: any) => {
           if(deck.id == deckId) { resolve(deck) }

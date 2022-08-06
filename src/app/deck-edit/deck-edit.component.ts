@@ -1,6 +1,9 @@
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
+import {debounceTime, distinctUntilChanged, map, Observable, OperatorFunction, switchMap, tap} from "rxjs";
+
+import * as Scry from "scryfall-sdk";
 
 import {MatChipInputEvent} from '@angular/material/chips';
 
@@ -19,10 +22,12 @@ export class DeckEditComponent implements OnInit {
   deleting = false;
   loading = false;
   has_partner = false;
+  searching = false;
 
   current_user: any = null;
   current_deck: any = null;
   image_index = -1;
+  partner_image_index = -1;
   decks: any = [];
 
   form: any = {
@@ -54,6 +59,7 @@ export class DeckEditComponent implements OnInit {
       this.form.friendly_name = "";
       this.form.deck_url = "";
       this.form.image_url = "";
+      this.form.partner_image_url = "";
       this.form.play_rating = 1;
       this.form.themes = [];
       this.form.active = true;
@@ -75,12 +81,31 @@ export class DeckEditComponent implements OnInit {
       this.form.active = this.current_deck.active;
       this.form.themes = this.current_deck.themes;
       this.form.image_url = this.current_deck.image_url;
+      this.form.partner_image_url = this.current_deck.partner_image_url;
       this.image_index = 0;
+      if (this.form.partner_image_url) {
+        this.partner_image_index = 0;
+      }
       this.loading = false;
       });
     }
     this.deleting = false;
   }
+
+  // @ts-ignore
+  card_search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(() => this.searching = true),
+      // @ts-ignore
+      switchMap(async term => {
+        this.searching = true;
+        return await Scry.Cards.autoCompleteName(term);
+      }),
+      tap(() => {
+        this.searching = false;
+      }));
 
   addTheme(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
@@ -100,6 +125,28 @@ export class DeckEditComponent implements OnInit {
   changeImage(): void {
     if (this.image_index > -1) {
       this.form.image_url = this.current_deck.images[this.image_index];
+    }
+  }
+
+  changePartnerImage(): void {
+    if (this.partner_image_index > -1) {
+      this.form.partner_image_url = this.current_deck.partner_images[this.partner_image_index];
+    }
+  }
+
+  async updateCommander() {
+    if (this.form.commander && this.form.commander !== "") {
+      this.form.image_url = "";
+      this.current_deck.images = [];
+      let cur = await Scry.Cards.byName(this.form.commander);
+      let cur_prints = await cur.getPrints();
+      cur_prints.forEach((print: any) => {
+        if (print.image_uris?.png) {
+          this.current_deck.images.push(print.image_uris?.png);
+        }
+      });
+      this.image_index = 0;
+      this.form.image_url = this.current_deck.images[0];
     }
   }
 

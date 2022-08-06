@@ -8,7 +8,9 @@
               <mat-label>Commander</mat-label>
               <input matInput [type]="'text'"
                      name="commander" [(ngModel)]="form.commander"
-                     required minlength="1" #commander="ngModel">
+                     required minlength="1" #commander="ngModel"
+                     [ngbTypeahead]="card_search" value="{{form.commander}}"
+                      (ngModelChange)="updateCommander()" [editable]="false">
               <button mat-icon-button matSuffix [attr.aria-label]="'Add Partner'" type="button" (click)="has_partner=true;">
                 <mat-icon>add</mat-icon>
               </button>
@@ -56,6 +58,14 @@
                    #image_url="ngModel">
           </mat-form-field>
         </div>
+        <div *ngIf="has_partner" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px">
+          <mat-form-field appearance="outline" fxFlex="100">
+            <mat-label>Partner Image Url</mat-label>
+            <input matInput [type]="'text'"
+                   name="partner_image_url" [(ngModel)]="form.partner_image_url"
+                   #partner_image_url="ngModel">
+          </mat-form-field>
+        </div>
         <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="space-between">
           <div fxLayout="row">
             <p>Rating: </p>&nbsp;
@@ -73,7 +83,7 @@
             <mat-chip-list #themeList aria-label="Themes">
               <mat-chip *ngFor="let theme of form.themes" (removed)="removeTheme(theme)">
                 {{theme.name}}
-                <button matChipRemove>
+                <button matChipRemove type="button">
                   <mat-icon>cancel</mat-icon>
                 </button>
               </mat-chip>
@@ -85,34 +95,81 @@
             </mat-chip-list>
           </mat-form-field>
         </div>
-        <div fxLayout="row" fxLayoutAlign="center">
-          <img class="mtg-card" src="{{form.image_url}}" alt="{{form.commander}}" loading="lazy">
+        <div *ngIf="!has_partner">
+          <div fxLayout="row" fxLayoutAlign="center">
+            <img class="mtg-card" src="{{form.image_url}}" alt="{{form.commander}}" loading="lazy">
+          </div>
+          <div fxLayout="row" fxLayoutAlign="center">
+            <mat-slider
+              class="commander-slider"
+              name="commander-slider"
+              [disabled]="false"
+              [invert]="false"
+              [max]="current_deck.images.length - 1"
+              [min]="0"
+              [step]="1"
+              [thumbLabel]="false"
+              [(ngModel)]="image_index"
+              [vertical]="false"
+              aria-labelledby="commander-slide"
+              (ngModelChange)="changeImage()">
+            </mat-slider>
+          </div>
         </div>
-        <div fxLayout="row" fxLayoutAlign="center">
-          <mat-slider
-            class="commander-slider"
-            name="commander-slider"
-            [disabled]="false"
-            [invert]="false"
-            [max]="current_deck.images.length - 1"
-            [min]="0"
-            [step]="1"
-            [thumbLabel]="false"
-            [(ngModel)]="image_index"
-            [vertical]="false"
-            aria-labelledby="commander-slide"
-            (ngModelChange)="changeImage()">
-          </mat-slider>
+        <div *ngIf="has_partner" fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="space-between">
+          <div>
+            <div fxLayout="row" fxLayoutAlign="center">
+              <img class="mtg-card" src="{{form.image_url}}" alt="{{form.commander}}" loading="lazy">
+            </div>
+            <div fxLayout="row" fxLayoutAlign="center">
+              <mat-slider
+                class="commander-slider"
+                name="commander-slider"
+                [disabled]="false"
+                [invert]="false"
+                [max]="current_deck.images.length - 1"
+                [min]="0"
+                [step]="1"
+                [thumbLabel]="false"
+                [(ngModel)]="image_index"
+                [vertical]="false"
+                aria-labelledby="commander-slide"
+                (ngModelChange)="changeImage()">
+              </mat-slider>
+            </div>
+          </div>
+          <div>
+            <div fxLayout="row" fxLayoutAlign="center">
+              <img class="mtg-card" src="{{form.partner_image_url}}" alt="{{form.partner_commander}}" loading="lazy">
+            </div>
+            <div fxLayout="row" fxLayoutAlign="center">
+              <mat-slider
+                class="commander-slider"
+                name="partner-slider"
+                [disabled]="false"
+                [invert]="false"
+                [max]="current_deck.partner_images.length - 1"
+                [min]="0"
+                [step]="1"
+                [thumbLabel]="false"
+                [(ngModel)]="partner_image_index"
+                [vertical]="false"
+                aria-labelledby="partner-slide"
+                (ngModelChange)="changePartnerImage()">
+              </mat-slider>
+            </div>
+          </div>
+
         </div>
+
         <div fxLayout="row" fxLayoutAlign="center">
           <h2>Preview</h2>
         </div>
-        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="space-between">
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="space-between" *ngIf="!has_partner">
           <mat-card class="commander-viewer" matRipple [matRippleCentered]="false"
                       [matRippleDisabled]="true" [class.mat-elevation-z8]="true">
               <div class="commander-background-card-open-no-anim">
                 <img src="{{form.image_url}}" alt="{{form.commander}}" class="commander-crop">
-                <button class="commander-edit" mat-icon-button><mat-icon>edit</mat-icon></button>
               </div>
               <mat-card-content class="commander-content">
                 <div class="commander-content-holder">
@@ -137,7 +194,67 @@
                     [matRippleDisabled]="true" [class.mat-elevation-z8]="true">
             <div class="commander-background-card-closed-no-anim">
               <img src="{{form.image_url}}" alt="{{form.commander}}" class="commander-crop">
-              <button class="commander-edit" mat-icon-button><mat-icon>edit</mat-icon></button>
+            </div>
+            <div class="commander-background-themes" class="commander-background-themes-in-no-anim">
+              <mat-chip-list>
+                <mat-chip *ngFor="let theme of form.themes" color="accent" selected>
+                  {{theme.name}}
+                </mat-chip>
+              </mat-chip-list>
+            </div>
+            <mat-card-content class="commander-content">
+              <div class="commander-content-holder">
+                <h2>{{form.friendly_name}}</h2>
+                <h4 class="commander-name">{{form.commander}}</h4>
+                <h4 *ngIf="form.partner_commander" class="commander-name">{{form.partner_commander}}</h4>
+                <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">
+                  <img *ngIf="current_deck.colors.includes('W');" class="commander-color" src="assets/color_symbols/W.png">
+                  <img *ngIf="current_deck.colors.includes('U');" class="commander-color" src="assets/color_symbols/U.png">
+                  <img *ngIf="current_deck.colors.includes('B');" class="commander-color" src="assets/color_symbols/B.png">
+                  <img *ngIf="current_deck.colors.includes('R');" class="commander-color" src="assets/color_symbols/R.png">
+                  <img *ngIf="current_deck.colors.includes('G');" class="commander-color" src="assets/color_symbols/G.png">
+                </div>
+                <div fxLayout="row" fxLayoutAlign="center" class="commander-ratings">
+                  <mat-icon *ngFor="let i of [].constructor(form.play_rating)" class="commander-rating" color="primary">star</mat-icon>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="space-between" *ngIf="has_partner">
+          <mat-card class="commander-viewer" matRipple [matRippleCentered]="false"
+                    [matRippleDisabled]="true" [class.mat-elevation-z8]="true">
+            <div class="commander-background-card-open-no-anim">
+              <div class="commander-background-card-partner-left">
+                <img src="{{form.image_url}}" alt="{{form.commander}}" class="commander-crop">
+              </div>
+              <div class="commander-background-card-partner-right">
+                <img src="{{form.partner_image_url}}" alt="{{form.partner_commander}}" class="commander-crop">
+              </div>
+            </div>
+            <mat-card-content class="commander-content">
+              <div class="commander-content-holder">
+                <h2>{{form.friendly_name}}</h2>
+                <h4 class="commander-name">{{form.commander}}</h4>
+                <h4 *ngIf="form.partner_commander" class="commander-name">{{form.partner_commander}}</h4>
+                <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">
+                  <img *ngIf="current_deck.colors.includes('W');" class="commander-color" src="assets/color_symbols/W.png">
+                  <img *ngIf="current_deck.colors.includes('U');" class="commander-color" src="assets/color_symbols/U.png">
+                  <img *ngIf="current_deck.colors.includes('B');" class="commander-color" src="assets/color_symbols/B.png">
+                  <img *ngIf="current_deck.colors.includes('R');" class="commander-color" src="assets/color_symbols/R.png">
+                  <img *ngIf="current_deck.colors.includes('G');" class="commander-color" src="assets/color_symbols/G.png">
+                </div>
+                <div fxLayout="row" fxLayoutAlign="center" class="commander-ratings commander-ratings-tilt-no-anim">
+                  <mat-icon *ngFor="let i of [].constructor(form.play_rating)" class="commander-rating" color="primary">star</mat-icon>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+          &nbsp;
+          <mat-card class="commander-viewer" matRipple [matRippleCentered]="false"
+                    [matRippleDisabled]="true" [class.mat-elevation-z8]="true">
+            <div class="commander-background-card-closed-no-anim">
+              <img src="{{form.image_url}}" alt="{{form.commander}}" class="commander-crop">
             </div>
             <div class="commander-background-themes" class="commander-background-themes-in-no-anim">
               <mat-chip-list>
