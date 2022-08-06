@@ -33,7 +33,7 @@ export class DeckDataService {
     });
   }
 
-  public async updateDecks(): Promise<any> {
+  public async refreshDecks(): Promise<any> {
     return new Promise<any>((resolve) => {
       this.my_decks = null;
       this.getDecks().then((decks) => {
