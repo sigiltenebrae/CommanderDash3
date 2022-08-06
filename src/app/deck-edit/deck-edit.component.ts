@@ -18,6 +18,7 @@ export class DeckEditComponent implements OnInit {
   new_deck = false;
   deleting = false;
   loading = false;
+  has_partner = false;
 
   current_user: any = null;
   current_deck: any = null;
@@ -46,6 +47,7 @@ export class DeckEditComponent implements OnInit {
 
     if (deckId == -1) {
       this.new_deck = true;
+      this.has_partner = false;
       this.current_deck = {};
       this.current_deck.images = [];
       this.current_deck.colors = [];
@@ -63,6 +65,7 @@ export class DeckEditComponent implements OnInit {
       this.loading = true;
       this.deckData.getDeck(deckId).then((deck) => {
       this.current_deck = deck;
+      this.has_partner = (this.current_deck.partner_commander != null);
 
       this.form.commander = this.current_deck.commander;
       this.form.partner_commander = this.current_deck.partner_commander;
@@ -100,5 +103,8 @@ export class DeckEditComponent implements OnInit {
     }
   }
 
-  onSubmit() {}
+  onSubmit() {
+    console.log('submit');
+  }
 }
+

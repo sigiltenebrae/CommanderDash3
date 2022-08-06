@@ -3,29 +3,34 @@
     <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
       <div style="margin: 0 20px 0 20px">
         <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px" fxLayoutAlign="center">
-          <div *ngIf="!form.partner_commander" fxFlex="100">
+          <div *ngIf="!has_partner" fxFlex="100">
             <mat-form-field appearance="outline" fxFlex="100">
               <mat-label>Commander</mat-label>
               <input matInput [type]="'text'"
                      name="commander" [(ngModel)]="form.commander"
                      required minlength="1" #commander="ngModel">
+              <button mat-icon-button matSuffix [attr.aria-label]="'Add Partner'" type="button" (click)="has_partner=true;">
+                <mat-icon>add</mat-icon>
+              </button>
             </mat-form-field>
           </div>
-          <div *ngIf="form.partner_commander" fxFlex="100" fxLayoutGap="20px">
+          <div *ngIf="has_partner" fxFlex="100" fxLayoutGap="20px">
             <mat-form-field appearance="outline" fxFlex="50">
               <mat-label>Commander</mat-label>
               <input matInput [type]="'text'"
                      name="commander" [(ngModel)]="form.commander"
-                     #commander="ngModel">
+                     required minlength="1" #commander="ngModel">
             </mat-form-field>
             <mat-form-field appearance="outline" fxFlex="50">
               <mat-label>Partner</mat-label>
               <input matInput [type]="'text'"
                      name="partner_commander" [(ngModel)]="form.partner_commander"
-                     #partner_commander="ngModel">
+                     required minlength="1" #partner_commander="ngModel">
+              <button mat-icon-button matSuffix [attr.aria-label]="'Add Partner'" type="button" (click)="has_partner=false;">
+                <mat-icon>clear</mat-icon>
+              </button>
             </mat-form-field>
           </div>
-
         </div>
         <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px">
           <mat-form-field appearance="outline" fxFlex="100">
