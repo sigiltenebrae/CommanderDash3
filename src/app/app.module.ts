@@ -33,6 +33,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { ProfileComponent } from './profile/profile.component';
 import { DeckEditComponent } from './deck-edit/deck-edit.component';
+import { DeckStatsComponent } from './deck-stats/deck-stats.component';
 
 
 
@@ -44,6 +45,7 @@ import { DeckEditComponent } from './deck-edit/deck-edit.component';
     RegisterComponent,
     ProfileComponent,
     DeckEditComponent,
+    DeckStatsComponent,
   ],
   imports: [
     BrowserModule,
