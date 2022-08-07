@@ -7,6 +7,7 @@ import * as Scry from "scryfall-sdk";
 import {TokenStorageService} from "../../services/token-storage.service";
 import {DeckDataService} from "../../services/deck-data.service";
 import {HttpClient} from "@angular/common/http";
+import {color} from "chart.js/types/helpers";
 
 @Component({
   selector: 'app-deck-recs',
@@ -28,6 +29,7 @@ export class DeckRecsComponent implements OnInit {
   commander_total = 0;
 
   decks: any[] = [];
+  colorData: any = {};
 
   user_randomness = 50;
   color_randomness = 25;
@@ -82,37 +84,29 @@ export class DeckRecsComponent implements OnInit {
     this.decks.forEach((deck) => { commander_promises.push(this.calculateRecommendationsForCommander(deck)); });
     Promise.all(commander_promises).then(() => {
       console.log('commanders done');
-      let colorData = this.getColorRatings();
+      this.colorData = this.getColorRatings();
       let themeData = this.getThemeRatings();
 
-      Object.keys(this.recommendation_data).forEach((commander) => {
-        if (this.recommendation_data[commander].colors.includes('W')) { this.recommendation_data[commander].score *=
-          Math.pow(colorData.w, (1 - (this.color_randomness / 100))) }
-        if (this.recommendation_data[commander].colors.includes('U')) { this.recommendation_data[commander].score *=
-          Math.pow(colorData.u, (1 - (this.color_randomness / 100))) }
-        if (this.recommendation_data[commander].colors.includes('B')) { this.recommendation_data[commander].score *=
-          Math.pow(colorData.b, (1 - (this.color_randomness / 100))) }
-        if (this.recommendation_data[commander].colors.includes('R')) { this.recommendation_data[commander].score *=
-          Math.pow(colorData.r, (1 - (this.color_randomness / 100))) }
-        if (this.recommendation_data[commander].colors.includes('G')) { this.recommendation_data[commander].score *=
-          Math.pow(colorData.g, (1 - (this.color_randomness / 100))) }
-      });
-      this.filterDecks().then(() => {
-        console.log(this.recommendation_data);
-        let sortedDeckList = this.sortDecks();
-        console.log(sortedDeckList);
-        let recommendation_promises: any[] = [];
-        for (let j = 0; j < sortedDeckList.length; j++) {
-          if (j == this.recommendation_count) {
-            break;
+      let color_modifiers: any[] = []
+      Object.keys(this.recommendation_data).forEach((commander) => { color_modifiers.push(this.weighCommanderByColors(commander)); });
+      Promise.all(color_modifiers).then(() => {
+        this.filterDecks().then(() => {
+          console.log(this.recommendation_data);
+          let sortedDeckList = this.sortDecks();
+          console.log(sortedDeckList);
+          let recommendation_promises: any[] = [];
+          for (let j = 0; j < sortedDeckList.length; j++) {
+            if (j == this.recommendation_count) {
+              break;
+            }
+            recommendation_promises.push(this.getRecommendationData(sortedDeckList[j].commander));
           }
-          recommendation_promises.push(this.getRecommendationData(sortedDeckList[j].commander));
-        }
-        Promise.all(recommendation_promises).then(() => {
-          console.log('done');
-          this.subject.next();
-          this.calculating = false;
-          this.calculated = true;
+          Promise.all(recommendation_promises).then(() => {
+            console.log('done');
+            this.subject.next();
+            this.calculating = false;
+            this.calculated = true;
+          });
         });
       });
       // apply filter to themes
@@ -173,9 +167,8 @@ export class DeckRecsComponent implements OnInit {
                 this.recommendation_data[card.card.oracleCard.name].score += (playRating / 5);
               }
               else {
-                let cur = await Scry.Cards.byName(card.card.oracleCard.name);
                 this.recommendation_data[card.card.oracleCard.name] =
-                  { score: (playRating / 5), colors: cur.color_identity };
+                  { score: (playRating / 5) };
               }
             }
           }
@@ -200,7 +193,34 @@ export class DeckRecsComponent implements OnInit {
         if (deck.colors.includes('G')) { g_play += deck.play_rating; g++}
       }
     });
-    return { w: w > 0 ? w_play / w : 0, u: u > 0 ? u_play / u : 0, b: b > 0 ? b_play / b : 0, r: r > 0 ? r_play / r : 0, g: g > 0 ? g_play / g : 0 };
+    let color_shift = 0.4; //this is meant to shift colors that are "liked" above 1 to increase their weight
+    return {
+      w: w > 0 ? ((w_play / w) / 5) + color_shift : 0.2 + color_shift,
+      u: u > 0 ? ((u_play / u) / 5) + color_shift : 0.2 + color_shift,
+      b: b > 0 ? ((b_play / b) / 5) + color_shift: 0.2 + color_shift,
+      r: r > 0 ? ((r_play / r) / 5) + color_shift : 0.2 + color_shift,
+      g: g > 0 ? ((g_play / g) / 5) + color_shift : 0.2 + color_shift
+    };
+  }
+
+  async weighCommanderByColors(commander: string) {
+    return new Promise<void>(async (resolve_colors) => {
+      Scry.Cards.byName(commander).then( (cur) => {
+        if (cur.color_identity.includes('W')) { this.recommendation_data[commander].score *=
+          Math.pow(this.colorData.w, (1 - (this.color_randomness / 100))) }
+        if (cur.color_identity.includes('U')) { this.recommendation_data[commander].score *=
+          Math.pow(this.colorData.u, (1 - (this.color_randomness / 100))) }
+        if (cur.color_identity.includes('B')) { this.recommendation_data[commander].score *=
+          Math.pow(this.colorData.b, (1 - (this.color_randomness / 100))) }
+        if (cur.color_identity.includes('R')) { this.recommendation_data[commander].score *=
+          Math.pow(this.colorData.r, (1 - (this.color_randomness / 100))) }
+        if (cur.color_identity.includes('G')) { this.recommendation_data[commander].score *=
+          Math.pow(this.colorData.g, (1 - (this.color_randomness / 100))) }
+        resolve_colors();
+      }, (reject) => {
+        resolve_colors();
+      });
+    });
   }
 
   getThemeRatings(): any {
