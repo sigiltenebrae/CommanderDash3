@@ -11,7 +11,7 @@
       <a mat-list-item [routerLink]="'decks'"> Decks </a>
       <a mat-list-item [routerLink]="['/decks', -1]"> Create </a>
       <a mat-list-item [routerLink]="['stats']"> Stats </a>
-      <a mat-list-item href="#"> Recommendations </a>
+      <a mat-list-item [routerLink]="['recs']"> Recommendations </a>
       <a mat-list-item (click)="signOut()"> Sign Out </a>
     </mat-nav-list>
   </mat-sidenav>
@@ -39,7 +39,7 @@
         <button mat-button class="nav-button" [routerLink]="['stats']">
           Stats
         </button>
-        <button mat-button class="nav-button">
+        <button mat-button class="nav-button" [routerLink]="['recs']">
           Recs
         </button>
         <button mat-button class="nav-button" (click)="signOut()">

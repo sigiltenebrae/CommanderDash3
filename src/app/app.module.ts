@@ -72,7 +72,8 @@ import { DeckRecsComponent } from './deck-recs/deck-recs.component';
 
       {path: 'decks', component: DeckListComponent},
       {path: 'decks/:deckId', component: DeckEditComponent},
-      {path: 'stats', component: DeckStatsComponent}
+      {path: 'stats', component: DeckStatsComponent},
+      {path: 'recs', component: DeckRecsComponent}
 
     ], {useHash: true}),
     MatSidenavModule,
