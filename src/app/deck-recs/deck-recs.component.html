@@ -1,7 +1,7 @@
 <div *ngIf="loading" fxLayout="row" fxFlex="100" fxLayoutAlign="center center" style="margin: 20px;">
   <mat-spinner></mat-spinner>
 </div>
-<div *ngIf="!loading" fxLayout="row wrap" fxFlexFill fxLayoutAlign="center center" style="margin-bottom: 20px">
+<div *ngIf="!loading && !calculating && !calculated" fxLayout="row wrap" fxFlexFill fxLayoutAlign="center center" style="margin-bottom: 20px">
   <mat-card fxFlex="40" fxFlex.md="70" fxFlex.lt-md="90" [class.mat-elevation-z3]="true">
     <div fxLayout="row" fxLayoutAlign="center" class="recommendation-title">
       <h2>Calculate Recommendations</h2>
@@ -58,6 +58,24 @@
       </div>
     </div>
     <div fxLayout="row" fxLayoutAlign="center">
+      <div fxLayout="column">
+        <div class="recommendation-label">
+          <h4>Recommendation Count: </h4>
+          <h4>{{recommendation_count}}</h4>
+        </div>
+        <mat-slider
+          class="recommendation-slider"
+          [disabled]="false"
+          [invert]="false"
+          [max]="10"
+          [min]="1"
+          [step]="1"
+          [(ngModel)]="recommendation_count"
+          [vertical]="false">
+        </mat-slider>
+      </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center">
       <div style="width: 300px">
         <div fxLayout="column">
           <mat-slide-toggle [(ngModel)]="toggle_colors">Color Filter</mat-slide-toggle>
@@ -78,4 +96,23 @@
       </div>
     </div>
   </mat-card>
+</div>
+<div *ngIf="calculating" fxLayout="row wrap" fxFlexFill fxLayoutAlign="center center" style="margin-bottom: 20px">
+  <mat-card fxFlex="40" fxFlex.md="70" fxFlex.lt-md="90" [class.mat-elevation-z3]="true">
+    <div fxLayout="row" fxLayoutAlign="center" class="recommendation-title">
+      <h2>Calculating Recommendations</h2>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center">
+      <p>Commanders: <ngb-progressbar type="info" [striped]="true" [animated]="true"
+                                                         [value]="(commander_position/commander_total) * 100"></ngb-progressbar></p>
+    </div>
+    <p style="color:aqua">Elapsed Time: {{secondsToString(calc_clock)}}</p>
+  </mat-card>
+</div>
+
+<div *ngIf="calculated && recommendations">
+  <p>Elapsed Time: {{secondsToString(calc_clock)}}</p>
+  <div *ngFor="let deck of recommendations">
+    <img src="{{deck.image_url}}">
+  </div>
 </div>
