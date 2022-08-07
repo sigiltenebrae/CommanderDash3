@@ -81,37 +81,39 @@ export class DeckRecsComponent implements OnInit {
     let commander_promises: any[] = [];
     this.decks.forEach((deck) => { commander_promises.push(this.calculateRecommendationsForCommander(deck)); });
     Promise.all(commander_promises).then(() => {
+      console.log('commanders done');
       let colorData = this.getColorRatings();
       let themeData = this.getThemeRatings();
 
       Object.keys(this.recommendation_data).forEach((commander) => {
-        if (this.recommendation_data[commander].colors.contains('W')) { this.recommendation_data[commander].score *=
+        if (this.recommendation_data[commander].colors.includes('W')) { this.recommendation_data[commander].score *=
           Math.pow(colorData.w, (1 - (this.color_randomness / 100))) }
-        if (this.recommendation_data[commander].colors.contains('U')) { this.recommendation_data[commander].score *=
+        if (this.recommendation_data[commander].colors.includes('U')) { this.recommendation_data[commander].score *=
           Math.pow(colorData.u, (1 - (this.color_randomness / 100))) }
-        if (this.recommendation_data[commander].colors.contains('B')) { this.recommendation_data[commander].score *=
+        if (this.recommendation_data[commander].colors.includes('B')) { this.recommendation_data[commander].score *=
           Math.pow(colorData.b, (1 - (this.color_randomness / 100))) }
-        if (this.recommendation_data[commander].colors.contains('R')) { this.recommendation_data[commander].score *=
+        if (this.recommendation_data[commander].colors.includes('R')) { this.recommendation_data[commander].score *=
           Math.pow(colorData.r, (1 - (this.color_randomness / 100))) }
-        if (this.recommendation_data[commander].colors.contains('G')) { this.recommendation_data[commander].score *=
+        if (this.recommendation_data[commander].colors.includes('G')) { this.recommendation_data[commander].score *=
           Math.pow(colorData.g, (1 - (this.color_randomness / 100))) }
       });
-      this.filterDecks();
-      let sortedDeckList = this.sortDecks();
-
-
-      let recommendation_promises: any[] = [];
-      for (let j = 0; j < sortedDeckList.length; j++) {
-        if (j == this.recommendation_count) {
-          break;
+      this.filterDecks().then(() => {
+        console.log(this.recommendation_data);
+        let sortedDeckList = this.sortDecks();
+        console.log(sortedDeckList);
+        let recommendation_promises: any[] = [];
+        for (let j = 0; j < sortedDeckList.length; j++) {
+          if (j == this.recommendation_count) {
+            break;
+          }
+          recommendation_promises.push(this.getRecommendationData(sortedDeckList[j].commander));
         }
-        recommendation_promises.push(this.getRecommendationData(sortedDeckList[j].commander));
-      }
-      Promise.all(recommendation_promises).then(() => {
-        console.log('done');
-        this.subject.next();
-        this.calculating = false;
-        this.calculated = true;
+        Promise.all(recommendation_promises).then(() => {
+          console.log('done');
+          this.subject.next();
+          this.calculating = false;
+          this.calculated = true;
+        });
       });
       // apply filter to themes
     });
@@ -122,13 +124,13 @@ export class DeckRecsComponent implements OnInit {
       let creator_promises: any[] = [];
 
       if (deck.active) {
-        this.http.get('/archidekt/api/decks/cards/?deckFormat=3&commanders="' + deck.commander + '"&orderBy=-viewCount&pageSize=100').pipe(delay(500)).subscribe((archidekt_decks) => {
+        this.http.get('/archidekt/api/decks/cards/?deckFormat=3&commanders="' + deck.commander + '"&orderBy=-viewCount&pageSize=100').pipe(delay(1000)).subscribe((archidekt_decks) => {
           let linked_decks: any = archidekt_decks;
           if (deck.partner_commander) {
             linked_decks.results.forEach((linked_deck: any) => {
               if ((Math.random() * 100) > this.user_randomness ) { creator_promises.push(this.getDecksForCreator(linked_deck.owner.username, deck.play_rating / 2)); }
             });
-            this.http.get('/archidekt/api/decks/cards/?deckFormat=3&commanders="' + deck.commander + '"&orderBy=-viewCount&pageSize=100').pipe(delay(500)).subscribe((archidekt_partner_decks) => {
+            this.http.get('/archidekt/api/decks/cards/?deckFormat=3&commanders="' + deck.commander + '"&orderBy=-viewCount&pageSize=100').pipe(delay(1000)).subscribe((archidekt_partner_decks) => {
               let linked_partner_decks: any = archidekt_partner_decks;
               linked_partner_decks.results.forEach((linked_partner_deck: any) => {
                 if ((Math.random() * 100) > this.user_randomness ) { creator_promises.push(this.getDecksForCreator(linked_partner_deck.owner.username, deck.play_rating / 2)); }
@@ -151,7 +153,7 @@ export class DeckRecsComponent implements OnInit {
     return new Promise<void>((resolve_user) => {
       let recommended_promises: any[] = [];
 
-      this.http.get('/archidekt/api/decks/cards/?owner=' + username + '&orderBy=-viewCount').pipe(delay(500)).subscribe((recommend_decks) => {
+      this.http.get('/archidekt/api/decks/cards/?owner=' + username + '&orderBy=-viewCount').pipe(delay(1000)).subscribe((recommend_decks) => {
         let recommended_decks: any = recommend_decks;
 
         recommended_decks.results.forEach((recommended_deck: any) => { recommended_promises.push(this.getDeckFromServer(recommended_deck.id, playRating)); });
@@ -162,17 +164,19 @@ export class DeckRecsComponent implements OnInit {
 
   async getDeckFromServer(deckId: number, playRating: number) {
     return new Promise<void>((resolve_deck) => {
-      this.http.get('/archidekt/api/decks/' + deckId + '/').pipe(delay(500)).subscribe((archidektDeckInfo) => {
+      this.http.get('/archidekt/api/decks/' + deckId + '/').pipe(delay(1000)).subscribe((archidektDeckInfo) => {
         let deckInfo: any = archidektDeckInfo;
         deckInfo.cards.forEach(async (card: any) => {
           if (card.categories.includes("Commander")) {
-            if (this.recommendation_data[card.card.oracleCard.name] != null) {
-              this.recommendation_data[card.card.oracleCard.name].score += (playRating / 5);
-            }
-            else {
-              let cur = await Scry.Cards.byName(card.card.oracleCard.name);
-              this.recommendation_data[card.card.oracleCard.name] =
+            if (card.card.oracleCard.name !== "Golos, Tireless Pilgrim") {
+              if (this.recommendation_data[card.card.oracleCard.name] != null) {
+                this.recommendation_data[card.card.oracleCard.name].score += (playRating / 5);
+              }
+              else {
+                let cur = await Scry.Cards.byName(card.card.oracleCard.name);
+                this.recommendation_data[card.card.oracleCard.name] =
                   { score: (playRating / 5), colors: cur.color_identity };
+              }
             }
           }
         });
@@ -216,44 +220,56 @@ export class DeckRecsComponent implements OnInit {
     return themeDict;
   }
 
-  filterDecks() {
-    this.decks.forEach((deck) => { //Remove the commanders already in use.
-      if (this.recommendation_data[deck.commander]) {
-        this.recommendation_data[deck.commander] = null;
-        if (deck.partner_commander) {
-          if (this.recommendation_data[deck.partner_commander]) {
-            this.recommendation_data[deck.partner_commander] = null;
-          }
-        }
-      }
-    });
-    if (!this.toggle_top) { //Remove commanders from the top list
-      let edhrec_promise = new Promise<void>((resolve) => {
-        this.http.get('https://json.edhrec.com/v2/commanders/year.json').subscribe((top_commanders) => {
-          let top_list: any = top_commanders;
-          for (let i = 0; i < 50; i++) {
-            let top_cmdr = top_list.container.json_dict.cardlists[0].cardviews;
-            if (this.recommendation_data[top_cmdr.name] != null) {
-              this.recommendation_data[top_cmdr.name] = null;
+  async filterDecks() {
+    return new Promise<void>( (resolve_filter) => {
+      this.decks.forEach((deck) => { //Remove the commanders already in use.
+        if (this.recommendation_data[deck.commander]) {
+          this.recommendation_data[deck.commander] = null;
+          if (deck.partner_commander) {
+            if (this.recommendation_data[deck.partner_commander]) {
+              this.recommendation_data[deck.partner_commander] = null;
             }
           }
-          resolve();
+        }
+      });
+      if (this.toggle_colors) { //Remove commanders that do not have the desired color
+        Object.keys(this.recommendation_data).forEach((commander) => {
+          if (this.toggle_w && this.recommendation_data[commander]) { if (!this.recommendation_data[commander].colors.includes['W']) { this.recommendation_data[commander] = null; } }
+          if (this.toggle_u && this.recommendation_data[commander]) { if (!this.recommendation_data[commander].colors.includes['U']) { this.recommendation_data[commander] = null; } }
+          if (this.toggle_b && this.recommendation_data[commander]) { if (!this.recommendation_data[commander].colors.includes['B']) { this.recommendation_data[commander] = null; } }
+          if (this.toggle_r && this.recommendation_data[commander]) { if (!this.recommendation_data[commander].colors.includes['R']) { this.recommendation_data[commander] = null; } }
+          if (this.toggle_g && this.recommendation_data[commander]) { if (!this.recommendation_data[commander].colors.includes['G']) { this.recommendation_data[commander] = null; } }
+        });
+      }
+      if (!this.toggle_top) { //Remove commanders from the top list
+        this.http.get('https://json.edhrec.com/v2/commanders/year.json').subscribe((top_commanders) => {
+          let top_list: any = top_commanders;
+          this.http.get('https://json.edhrec.com/v2/commanders/week.json').subscribe((top_commanders_2) => {
+            let top_list_2: any = top_commanders_2;
+            for (let i = 0; i < 25; i++) {
+              let top_cmdr = top_list.container.json_dict.cardlists[0].cardviews[i];
+              let top_cmdr_2 = top_list_2.container.json_dict.cardlists[0].cardviews[i];
+              if (this.recommendation_data[top_cmdr.name] != null) {
+                this.recommendation_data[top_cmdr.name] = null;
+              }
+              if (this.recommendation_data[top_cmdr_2.name] != null) {
+                this.recommendation_data[top_cmdr_2.name] = null;
+              }
+            }
+            resolve_filter();
+          }, (err) => {
+            console.log(err);
+            resolve_filter();
+          });
         }, (err) => {
           console.log(err);
-          resolve();
+          resolve_filter();
         });
-      });
-      edhrec_promise.then();
-    }
-    if (this.toggle_colors) { //Remove commanders that do not have the desired color
-      Object.keys(this.recommendation_data).forEach((commander) => {
-        if (this.toggle_w && this.recommendation_data[commander]) { if (!this.recommendation_data[commander].colors.contains['W']) { this.recommendation_data[commander] = null; } }
-        if (this.toggle_u && this.recommendation_data[commander]) { if (!this.recommendation_data[commander].colors.contains['U']) { this.recommendation_data[commander] = null; } }
-        if (this.toggle_b && this.recommendation_data[commander]) { if (!this.recommendation_data[commander].colors.contains['B']) { this.recommendation_data[commander] = null; } }
-        if (this.toggle_r && this.recommendation_data[commander]) { if (!this.recommendation_data[commander].colors.contains['R']) { this.recommendation_data[commander] = null; } }
-        if (this.toggle_g && this.recommendation_data[commander]) { if (!this.recommendation_data[commander].colors.contains['G']) { this.recommendation_data[commander] = null; } }
-      });
-    }
+      }
+      else {
+        resolve_filter();
+      }
+    });
   }
 
   sortDecks() {
