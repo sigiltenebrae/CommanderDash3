@@ -51,8 +51,8 @@
           <mat-form-field appearance="outline" fxFlex="100">
             <mat-label>Deck Url</mat-label>
             <input matInput [type]="'text'"
-                   name="deck_url" [(ngModel)]="form.deck_url"
-                   #deck_url="ngModel">
+                   name="url" [(ngModel)]="form.url"
+                   #url="ngModel">
           </mat-form-field>
         </div>
         <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px">
@@ -302,6 +302,9 @@
             Submit
           </button>
         </div>
+      </div>
+      <div class="alert alert-warning" *ngIf="f.submitted && isSignUpFailed">
+        Signup failed!<br />{{ errorMessage }}
       </div>
     </form>
   </mat-card>

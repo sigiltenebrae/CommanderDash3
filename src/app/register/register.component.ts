@@ -24,7 +24,6 @@ export class RegisterComponent implements OnInit {
   hide_password_1 = true;
 
   onSubmit(): void {
-    console.log('submit');
     const { username, password } = this.form;
     this.authService.register(username, password).subscribe({
       next: data => {

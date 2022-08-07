@@ -18,6 +18,9 @@ import {TokenStorageService} from "../../services/token-storage.service";
 export class DeckEditComponent implements OnInit {
   readonly  seperatorKeysCodes = [ENTER, COMMA] as const;
 
+  errorMessage = '';
+  isSignUpFailed = false;
+
   themes: any[] = [];
   temp_theme: any = null;
 
@@ -45,7 +48,9 @@ export class DeckEditComponent implements OnInit {
   }
 
   constructor(private router: Router, private route: ActivatedRoute,
-              private deckData: DeckDataService, private token: TokenStorageService) {}
+              private deckData: DeckDataService, private token: TokenStorageService) {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+  }
 
   ngOnInit(): void {
 
@@ -78,7 +83,7 @@ export class DeckEditComponent implements OnInit {
       this.form.commander = this.current_deck.commander;
       this.form.partner_commander = this.current_deck.partner_commander;
       this.form.friendly_name = this.current_deck.friendly_name;
-      this.form.deck_url = this.current_deck.deck_url;
+      this.form.url = this.current_deck.url;
       this.form.play_rating = this.current_deck.play_rating;
       this.form.active = this.current_deck.active;
       this.form.themes = this.current_deck.themes;
@@ -94,7 +99,6 @@ export class DeckEditComponent implements OnInit {
     this.deleting = false;
     this.deckData.getThemeList().then((themes) => {
       this.themes = themes;
-      console.log(this.themes);
     })
   }
 
@@ -203,7 +207,71 @@ export class DeckEditComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log('submit');
+    let out_deck: any = {};
+    out_deck.friendly_name = this.form.friendly_name;
+    out_deck.commander = this.form.commander;
+    out_deck.url = this.form.url;
+    out_deck.image_url = this.form.image_url;
+    out_deck.play_rating = this.form.play_rating;
+    out_deck.build_rating = null; //comment this out
+    out_deck.win_rating = null; //comment this out
+    out_deck.active = this.form.active;
+    out_deck.themes = [];
+    out_deck.deleteThemes = [];
+    if (this.current_deck.themes) {
+      this.current_deck.themes.forEach(
+        (theme: any) => {
+          let found = false;
+          for (let i = 0; i < this.form.themes.length; i++) {
+            if (theme.id === this.form.themes[i].id) {
+              out_deck.themes.push(theme);
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            out_deck.deleteThemes.push(theme);
+          }
+        });
+    }
+    else {
+      out_deck.themes = this.form.themes;
+    }
+
+    if (this.has_partner && this.form.partner_commander != null && this.form.partner_commander !== "") {
+      out_deck.partner_commander = this.form.partner_commander;
+      out_deck.partner_image_url = this.form.partner_image_url;
+    }
+    else {
+      out_deck.partner_commander = null;
+      out_deck.partner_image_url = null;
+    }
+    if (this.new_deck) {
+      this.deckData.createDeck(out_deck).subscribe((response) => {
+        let new_id: any = response;
+        if (new_id && new_id.id) {
+          this.deckData.refreshDeck(new_id.id).then( () => {
+            this.router.navigate(['decks']).then();
+          });
+        }
+      }, (error) => {
+        if (error.status == 201) {
+          console.log(error);
+        }
+      });
+    }
+    else {
+      this.deckData.updateDeck(out_deck, this.current_deck.id).subscribe((response) => {
+        console.log(response);
+        this.deckData.refreshDeck(this.current_deck.id).then( () => {
+          this.router.navigate(['decks']).then();
+        })
+      }, (error) => {
+        if (error) {
+          console.log(error);
+        }
+      });
+    }
   }
 }
 

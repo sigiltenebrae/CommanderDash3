@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 import * as Scry from "scryfall-sdk";
 
@@ -57,7 +57,7 @@ export class DeckDataService {
     });
   }
 
-  public async updateDeck(deckId: number): Promise<any> {
+  public async refreshDeck(deckId: number): Promise<any> {
     return new Promise<any>((resolve) => {
       this.getDecks().then((decks) => {
         let deck_index = -1;
@@ -130,5 +130,14 @@ export class DeckDataService {
         });
       }
     });
+  }
+
+  public updateDeck(deck: any, id: number) {
+    return this.http.put<any>(environment.decks_url + id, JSON.stringify(deck), {headers : new HttpHeaders({'Content-Type': 'application/json'})})
+  }
+
+  public createDeck(deck: any) {
+    deck.creator = this.token.getUser().id;
+    return this.http.post(environment.decks_url, JSON.stringify(deck), {headers : new HttpHeaders({'Content-Type': 'application/json'})})
   }
 }
