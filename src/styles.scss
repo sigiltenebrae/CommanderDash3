@@ -341,3 +341,19 @@ a, h1, h2, h3, h4, .nav-button{
 .commander-slider {
   width: 275px;
 }
+
+.recommendation-title {
+  margin-bottom: 30px;
+  text-decoration: underline;
+}
+
+.recommendation-label {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 -20px 16px;
+  max-width: 284px;
+}
+
+.recommendation-slider {
+  width: 300px;
+}
