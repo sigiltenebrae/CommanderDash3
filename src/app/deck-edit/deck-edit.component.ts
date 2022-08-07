@@ -86,7 +86,7 @@ export class DeckEditComponent implements OnInit {
       this.form.url = this.current_deck.url;
       this.form.play_rating = this.current_deck.play_rating;
       this.form.active = this.current_deck.active;
-      this.form.themes = this.current_deck.themes;
+      this.form.themes = [...this.current_deck.themes];
       this.form.image_url = this.current_deck.image_url;
       this.form.partner_image_url = this.current_deck.partner_image_url;
       this.image_index = 0;
@@ -129,7 +129,7 @@ export class DeckEditComponent implements OnInit {
   addTheme(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
     if (value) {
-      this.form.themes.push({name: value, id: -1});
+      this.form.themes.push({name: value, id: this.temp_theme.id});
     }
     event.chipInput!.clear();
   }
@@ -262,7 +262,6 @@ export class DeckEditComponent implements OnInit {
     }
     else {
       this.deckData.updateDeck(out_deck, this.current_deck.id).subscribe((response) => {
-        console.log(response);
         this.deckData.refreshDeck(this.current_deck.id).then( () => {
           this.router.navigate(['decks']).then();
         })
