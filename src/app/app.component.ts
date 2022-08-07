@@ -16,7 +16,12 @@ export class AppComponent implements OnInit {
   constructor(public overlayContainer: OverlayContainer, private tokenStorage: TokenStorageService, private router: Router) {}
 
   ngOnInit(): void {
-    this.onSetTheme('dark-theme');
+    if (this.tokenStorage.getUser().theme === "light") {
+      this.onSetTheme('light-theme');
+    }
+    else {
+      this.onSetTheme('dark-theme');
+    }
   }
 
   signOut():void {
@@ -28,10 +33,16 @@ export class AppComponent implements OnInit {
     if (this.isDark) {
       this.onSetTheme('light-theme');
       this.isDark = false;
+      let tempUser: any = this.tokenStorage.getUser();
+      tempUser.theme = "light";
+      this.tokenStorage.saveUser(tempUser);
     }
     else {
       this.onSetTheme('dark-theme');
       this.isDark = true;
+      let tempUser: any = this.tokenStorage.getUser();
+      tempUser.theme = "dark";
+      this.tokenStorage.saveUser(tempUser);
     }
   }
 
