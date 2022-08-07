@@ -48,58 +48,65 @@ export class DeckEditComponent implements OnInit {
   }
 
   constructor(private router: Router, private route: ActivatedRoute,
-              private deckData: DeckDataService, private token: TokenStorageService) {
+              private deckData: DeckDataService, private tokenStorage: TokenStorageService) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
   ngOnInit(): void {
 
-    const routeParams = this.route.snapshot.paramMap;
-    const deckId = Number(routeParams.get('deckId'));
-
-    if (deckId == -1) {
-      this.new_deck = true;
-      this.has_partner = false;
-      this.current_deck = {};
-      this.current_deck.images = [];
-      this.current_deck.colors = [];
-      this.form.friendly_name = "";
-      this.form.deck_url = "";
-      this.form.image_url = "";
-      this.form.partner_image_url = "";
-      this.form.play_rating = 1;
-      this.form.themes = [];
-      this.form.active = true;
-    }
-    else if (deckId < 0) {
-      this.router.navigate(['/']);
+    if (this.tokenStorage.getUser() == null || this.tokenStorage.getUser() == {} ||
+      this.tokenStorage.getUser().id == null || this.tokenStorage.getUser().id < 0) {
+      this.router.navigate(['login']);
     }
     else {
-      this.loading = true;
-      this.deckData.getDeck(deckId).then((deck) => {
-      this.current_deck = deck;
-      this.has_partner = (this.current_deck.partner_commander != null);
+      const routeParams = this.route.snapshot.paramMap;
+      const deckId = Number(routeParams.get('deckId'));
 
-      this.form.commander = this.current_deck.commander;
-      this.form.partner_commander = this.current_deck.partner_commander;
-      this.form.friendly_name = this.current_deck.friendly_name;
-      this.form.url = this.current_deck.url;
-      this.form.play_rating = this.current_deck.play_rating;
-      this.form.active = this.current_deck.active;
-      this.form.themes = [...this.current_deck.themes];
-      this.form.image_url = this.current_deck.image_url;
-      this.form.partner_image_url = this.current_deck.partner_image_url;
-      this.image_index = 0;
-      if (this.form.partner_image_url) {
-        this.partner_image_index = 0;
+      if (deckId == -1) {
+        this.new_deck = true;
+        this.has_partner = false;
+        this.current_deck = {};
+        this.current_deck.images = [];
+        this.current_deck.colors = [];
+        this.form.friendly_name = "";
+        this.form.deck_url = "";
+        this.form.image_url = "";
+        this.form.partner_image_url = "";
+        this.form.play_rating = 1;
+        this.form.themes = [];
+        this.form.active = true;
       }
-      this.loading = false;
-      });
+      else if (deckId < 0) {
+        this.router.navigate(['/']);
+      }
+      else {
+        this.loading = true;
+        this.deckData.getDeck(deckId).then((deck) => {
+          this.current_deck = deck;
+          this.has_partner = (this.current_deck.partner_commander != null);
+
+          this.form.commander = this.current_deck.commander;
+          this.form.partner_commander = this.current_deck.partner_commander;
+          this.form.friendly_name = this.current_deck.friendly_name;
+          this.form.url = this.current_deck.url;
+          this.form.play_rating = this.current_deck.play_rating;
+          this.form.active = this.current_deck.active;
+          this.form.themes = [...this.current_deck.themes];
+          this.form.image_url = this.current_deck.image_url;
+          this.form.partner_image_url = this.current_deck.partner_image_url;
+          this.image_index = 0;
+          if (this.form.partner_image_url) {
+            this.partner_image_index = 0;
+          }
+          this.loading = false;
+        });
+      }
+      this.deleting = false;
+      this.deckData.getThemeList().then((themes) => {
+        this.themes = themes;
+      })
     }
-    this.deleting = false;
-    this.deckData.getThemeList().then((themes) => {
-      this.themes = themes;
-    })
+
   }
 
   // @ts-ignore
