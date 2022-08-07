@@ -37,6 +37,7 @@ import { RegisterComponent } from './register/register.component';
 import { ProfileComponent } from './profile/profile.component';
 import { DeckEditComponent } from './deck-edit/deck-edit.component';
 import { DeckStatsComponent } from './deck-stats/deck-stats.component';
+import { DeckRecsComponent } from './deck-recs/deck-recs.component';
 
 
 
@@ -51,6 +52,7 @@ import { DeckStatsComponent } from './deck-stats/deck-stats.component';
     ProfileComponent,
     DeckEditComponent,
     DeckStatsComponent,
+    DeckRecsComponent,
   ],
   imports: [
     BrowserModule,

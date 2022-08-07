@@ -37,7 +37,6 @@ export class DeckStatsComponent implements OnInit {
     }
     else {
       this.theme = this.tokenStorage.getUser().theme;
-      console.log(this.theme);
       this.loading = true;
       this.deckData.getDecks().then(
         (temp) => {
@@ -45,8 +44,7 @@ export class DeckStatsComponent implements OnInit {
           this.loadRatingData();
           this.loadColorCountData();
           this.loading = false;
-        }
-      );
+        });
     }
   }
 
