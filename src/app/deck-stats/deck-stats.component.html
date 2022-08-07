@@ -1,1 +1,31 @@
-<p>deck-stats works!</p>
+<div *ngIf="loading" fxLayout="row" fxFlex="100" fxLayoutAlign="center center" style="margin: 20px;">
+  <mat-spinner></mat-spinner>
+</div>
+<div *ngIf="!loading" fxLayout="row" style="margin: 20px">
+  <mat-card *ngIf="ratingChartData">
+    <mat-card-content>
+      <div style="display: block; margin: 10px">
+        <canvas baseChart style="height: 300px;"
+                [data]="ratingChartData"
+                [options]="ratingChartOptions"
+                [plugins]="ratingChartPlugins"
+                [legend]="ratingChartLegend"
+                [type]="'bar'">
+        </canvas>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card *ngIf="colorCountChartDatasets">
+    <mat-card-content>
+      <div style="display: block">
+        <canvas baseChart
+                [labels]="colorCountChartLabels"
+                [datasets]="colorCountChartDatasets"
+                [options]="colorCountChartOptions"
+                [legend]="false"
+                [type]="'doughnut'">
+        </canvas>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

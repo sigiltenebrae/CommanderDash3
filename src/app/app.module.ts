@@ -28,6 +28,8 @@ import { MatRippleModule } from "@angular/material/core";
 import {MatInputModule} from "@angular/material/input";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
+import { NgChartsModule } from 'ng2-charts';
+
 import { AppComponent } from './app.component';
 import { DeckListComponent } from './deck-list/deck-list.component';
 import { LoginComponent } from './login/login.component';
@@ -35,6 +37,7 @@ import { RegisterComponent } from './register/register.component';
 import { ProfileComponent } from './profile/profile.component';
 import { DeckEditComponent } from './deck-edit/deck-edit.component';
 import { DeckStatsComponent } from './deck-stats/deck-stats.component';
+
 
 
 
@@ -67,6 +70,7 @@ import { DeckStatsComponent } from './deck-stats/deck-stats.component';
 
       {path: 'decks', component: DeckListComponent},
       {path: 'decks/:deckId', component: DeckEditComponent},
+      {path: 'stats', component: DeckStatsComponent}
 
     ], {useHash: true}),
     MatSidenavModule,
@@ -85,7 +89,8 @@ import { DeckStatsComponent } from './deck-stats/deck-stats.component';
     MatChipsModule,
     MatRippleModule,
     MatInputModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    NgChartsModule
   ],
   exports: [RouterModule],
   providers: [],

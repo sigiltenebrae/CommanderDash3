@@ -29,6 +29,7 @@ export class AppComponent implements OnInit {
     }
     else {
       this.onSetTheme('dark-theme');
+      this.isDark = true;
     }
   }
 

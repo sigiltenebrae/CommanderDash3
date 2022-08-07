@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { DeckDataService } from "../../services/deck-data.service";
-import {TokenStorageService} from "../../services/token-storage.service";
 import {Router} from "@angular/router";
 
+import {TokenStorageService} from "../../services/token-storage.service";
+import { DeckDataService } from "../../services/deck-data.service";
 @Component({
   selector: 'app-deck-list',
   templateUrl: './deck-list.component.html',
