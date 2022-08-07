@@ -40,6 +40,14 @@ a, h1, h2, h3, h4, .nav-button{
   .magic-nav-logo:hover {
     filter: drop-shadow(0 0 0.5rem blue);
   }
+
+  .dropdown-menu {
+    background-color: rgb(66, 66, 66) !important;
+  }
+
+  .dropdown-item {
+    color: white;
+  }
 }
 
 .magic-nav-logo {
