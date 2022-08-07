@@ -78,6 +78,7 @@ export class DeckRecsComponent implements OnInit {
     let commander_promises: any[] = [];
     this.decks.forEach((deck) => { commander_promises.push(this.calculateRecommendationsForCommander(deck)); });
     Promise.all(commander_promises).then(() => {
+      let colorData = this.getColorRatings();
 
     });
   }
@@ -124,10 +125,12 @@ export class DeckRecsComponent implements OnInit {
         deckInfo.cards.forEach((card: any) => {
           if (card.categories.includes("Commander")) {
             if (this.recommendation_data[card.card.oracleCard.name] != null) {
-              this.recommendation_data[card.card.oracleCard.name] += (playRating / 5);
+              this.recommendation_data[card.card.oracleCard.name].score += (playRating / 5);
             }
             else {
-              this.recommendation_data[card.card.oracleCard.name] = (playRating / 5);
+              //get color data from scryfall
+              this.recommendation_data[card.card.oracleCard.name] =
+                { score: (playRating / 5), };
             }
           }
         });
@@ -139,7 +142,18 @@ export class DeckRecsComponent implements OnInit {
     });
   }
 
-  getColorRatings() {
-
+  getColorRatings(): any {
+    let w = 0; let u = 0; let b = 0; let r = 0; let g = 0;
+    let w_play = 0; let u_play = 0; let b_play = 0; let r_play = 0; let g_play = 0;
+    this.decks.forEach((deck) => {
+      if (deck.active) {
+        if (deck.colors.includes('W')) { w_play += deck.play_rating; w++}
+        if (deck.colors.includes('U')) { u_play += deck.play_rating; u++}
+        if (deck.colors.includes('B')) { b_play += deck.play_rating; b++}
+        if (deck.colors.includes('R')) { r_play += deck.play_rating; r++}
+        if (deck.colors.includes('G')) { g_play += deck.play_rating; g++}
+      }
+    });
+    return { w: w > 0 ? w_play / w : 0, u: u > 0 ? u_play / u : 0, b: b > 0 ? b_play / b : 0, r: r > 0 ? r_play / r : 0, g: g > 0 ? g_play / g : 0 };
   }
 }
