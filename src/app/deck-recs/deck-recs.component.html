@@ -97,14 +97,18 @@
     </div>
   </mat-card>
 </div>
-<div *ngIf="calculating" fxLayout="row wrap" fxFlexFill fxLayoutAlign="center center" style="margin-bottom: 20px">
-  <mat-card fxFlex="40" fxFlex.md="70" fxFlex.lt-md="90" [class.mat-elevation-z3]="true">
+<div *ngIf="calculating" fxFlexFill fxLayoutAlign="center center" style="margin-bottom: 20px">
+  <mat-card fxFlex="40" fxFlex.md="70" fxFlex.lt-md="90" fxLayout="column" [class.mat-elevation-z3]="true">
     <div fxLayout="row" fxLayoutAlign="center" class="recommendation-title">
       <h2>Calculating Recommendations</h2>
     </div>
-    <div fxLayout="row" fxLayoutAlign="center">
-      <p>Commanders: <ngb-progressbar type="info" [striped]="true" [animated]="true"
+    <div fxLayout="row" fxLayoutAlign="center" fxFlexFill *ngIf="commander_position != commander_total">
+      <p style="width: 90%; text-align: center">Commanders: &nbsp;<ngb-progressbar type="primary" [striped]="true" [animated]="true" style="height: 28px"
                                                          [value]="(commander_position/commander_total) * 100"></ngb-progressbar></p>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center" fxFlexFill *ngIf="commander_position == commander_total">
+      <p style="width: 90%; text-align: center">Applying Weights: &nbsp;<ngb-progressbar type="secondary" [striped]="true" [animated]="true" style="height: 28px"
+                                      [value]="(weight_position/weight_total) * 100"></ngb-progressbar></p>
     </div>
     <p style="color:aqua">Elapsed Time: {{secondsToString(calc_clock)}}</p>
   </mat-card>
@@ -114,5 +118,8 @@
   <p>Elapsed Time: {{secondsToString(calc_clock)}}</p>
   <div *ngFor="let deck of recommendations">
     <img src="{{deck.image_url}}">
+    <div *ngIf="deck.partner_commander">
+      <img src="{{deck.partner_image_url}}">
+    </div>
   </div>
 </div>

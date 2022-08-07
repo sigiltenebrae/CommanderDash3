@@ -27,6 +27,8 @@ export class DeckRecsComponent implements OnInit {
   subject: any;
   commander_position = 0;
   commander_total = 0;
+  weight_total = 0;
+  weight_position = 0;
 
   decks: any[] = [];
   colorData: any = {};
@@ -87,13 +89,15 @@ export class DeckRecsComponent implements OnInit {
       this.colorData = this.getColorRatings();
       let themeData = this.getThemeRatings();
 
+
       let color_modifiers: any[] = []
       Object.keys(this.recommendation_data).forEach((commander) => { color_modifiers.push(this.weighCommanderByColors(commander)); });
+      this.commander_position = this.commander_total;
+      this.weight_total = color_modifiers.length;
       Promise.all(color_modifiers).then(() => {
         this.filterDecks().then(() => {
-          console.log(this.recommendation_data);
+          //add in theme multiplication
           let sortedDeckList = this.sortDecks();
-          console.log(sortedDeckList);
           let recommendation_promises: any[] = [];
           for (let j = 0; j < sortedDeckList.length; j++) {
             if (j == this.recommendation_count) {
@@ -205,21 +209,33 @@ export class DeckRecsComponent implements OnInit {
 
   async weighCommanderByColors(commander: string) {
     return new Promise<void>(async (resolve_colors) => {
-      Scry.Cards.byName(commander).then( (cur) => {
-        if (cur.color_identity.includes('W')) { this.recommendation_data[commander].score *=
-          Math.pow(this.colorData.w, (1 - (this.color_randomness / 100))) }
-        if (cur.color_identity.includes('U')) { this.recommendation_data[commander].score *=
-          Math.pow(this.colorData.u, (1 - (this.color_randomness / 100))) }
-        if (cur.color_identity.includes('B')) { this.recommendation_data[commander].score *=
-          Math.pow(this.colorData.b, (1 - (this.color_randomness / 100))) }
-        if (cur.color_identity.includes('R')) { this.recommendation_data[commander].score *=
-          Math.pow(this.colorData.r, (1 - (this.color_randomness / 100))) }
-        if (cur.color_identity.includes('G')) { this.recommendation_data[commander].score *=
-          Math.pow(this.colorData.g, (1 - (this.color_randomness / 100))) }
-        resolve_colors();
-      }, (reject) => {
-        resolve_colors();
-      });
+      setTimeout(() => { this.weight_position++; resolve_colors()}, 3000);
+      if (this.recommendation_data[commander]) {
+        Scry.Cards.byName(commander.indexOf('//') > -1 ? commander.substring(0, commander.indexOf('//') + 1): commander).then( (cur) => {
+          if (this.recommendation_data[commander]) {
+            if (cur.color_identity.includes('W')) { this.recommendation_data[commander].score *=
+              Math.pow(this.colorData.w, (1 - (this.color_randomness / 100))) }
+            if (cur.color_identity.includes('U')) { this.recommendation_data[commander].score *=
+              Math.pow(this.colorData.u, (1 - (this.color_randomness / 100))) }
+            if (cur.color_identity.includes('B')) { this.recommendation_data[commander].score *=
+              Math.pow(this.colorData.b, (1 - (this.color_randomness / 100))) }
+            if (cur.color_identity.includes('R')) { this.recommendation_data[commander].score *=
+              Math.pow(this.colorData.r, (1 - (this.color_randomness / 100))) }
+            if (cur.color_identity.includes('G')) { this.recommendation_data[commander].score *=
+              Math.pow(this.colorData.g, (1 - (this.color_randomness / 100))) }
+          }
+          this.weight_position++;
+          resolve_colors();
+        }, (reject) => {
+          this.weight_position++;
+          resolve_colors();
+        });
+      }
+      else {
+          console.log(commander + ' not found');
+      }
+        this.weight_position++;
+      resolve_colors();
     });
   }
 
@@ -307,6 +323,7 @@ export class DeckRecsComponent implements OnInit {
     return new Promise<void>(async (resolve_recommendation) => {
       let outData: any = {};
       outData.commander = commander;
+      commander = commander.indexOf('//') > -1 ? commander.substring(0, commander.indexOf('//') + 1): commander;
       let cur = await Scry.Cards.byName(commander);
       let cur_prints = await cur.getPrints();
       if (cur_prints) {
@@ -323,26 +340,29 @@ export class DeckRecsComponent implements OnInit {
           edh_data.panels.partnercounts.forEach((partner: any) => {
             partners.push(partner.alt);
           });
-          outData.partner = (this.assignThemeWeights(partners)[0]);
+          outData.partner = (this.assignThemeWeights(partners)[0].name);
           if (outData.partner) {
-            let cur_partner = await Scry.Cards.byName(outData.partner);
-            let cur_partner_images = await cur_partner.getPrints();
-            if (cur_partner_images) {
-              outData.partner_image_url = cur_partner_images[0].image_uris?.png;
-            }
-            else {
-              outData.partner_image_url = '';
-            }
+            Scry.Cards.byName(outData.partner).then((cur_partner) => {
+              //ADD HERE: Filter out the partner if the colors are wrong
+              cur_partner.getPrints().then((cur_partner_images) => {
+                if (cur_partner_images) {
+                  outData.partner_image_url = cur_partner_images[0].image_uris?.png;
+                }
+                else {
+                  outData.partner_image_url = '';
+                }
+                edhrec_name += outData.partner.toLowerCase().replace(/[`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, '').replace(/\ /g, '-');
+                this.http.get('https://json.edhrec.com/v2/commanders/' + edhrec_name + '.json').subscribe((edhrec_json_partner) => {
+                  edh_data = edhrec_json_partner;
+                }, (err) => {
+                  console.log(err);
+                  outData.theme_rec = '';
+                  this.recommendations.push(outData);
+                  resolve_recommendation();
+                });
+              });
+            });
           }
-          edhrec_name += outData.partner.toLowerCase().replace(/[`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, '').replace(/\ /g, '-');
-          this.http.get('https://json.edhrec.com/v2/commanders/' + edhrec_name + '.json').subscribe((edhrec_json_partner) => {
-              edh_data = edhrec_json_partner;
-          }, (err) => {
-            console.log(err);
-            outData.theme_rec = '';
-            this.recommendations.push(outData);
-            resolve_recommendation();
-          });
         }
 
         let themes_list: any[] = [];
