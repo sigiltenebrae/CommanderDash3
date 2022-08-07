@@ -11,11 +11,19 @@ import {Router} from "@angular/router";
 export class AppComponent implements OnInit {
   title = 'CommanderDash3';
 
-  isDark = true;
+  isDark = false;
+  loggedIn = false;
 
   constructor(public overlayContainer: OverlayContainer, private tokenStorage: TokenStorageService, private router: Router) {}
 
   ngOnInit(): void {
+    if (this.tokenStorage.getUser() == null || this.tokenStorage.getUser() == {} ||
+      this.tokenStorage.getUser().id == null || this.tokenStorage.getUser().id < 0) {
+      this.loggedIn = false;
+    }
+    else {
+      this.loggedIn = true;
+    }
     if (this.tokenStorage.getUser().theme === "light") {
       this.onSetTheme('light-theme');
     }
@@ -26,6 +34,7 @@ export class AppComponent implements OnInit {
 
   signOut():void {
     this.tokenStorage.signOut();
+    this.loggedIn = false;
     this.router.navigate(['login']);
   }
 
