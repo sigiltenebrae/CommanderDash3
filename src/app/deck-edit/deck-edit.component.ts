@@ -240,6 +240,18 @@ export class DeckEditComponent implements OnInit {
             out_deck.deleteThemes.push(theme);
           }
         });
+      this.form.themes.forEach((theme: any) => {
+        let found = false;
+        for (let i = 0; i < this.current_deck.themes.length; i++) {
+          if (theme.id == this.current_deck.themes[i].id) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          out_deck.themes.push(theme);
+        }
+      });
     }
     else {
       out_deck.themes = this.form.themes;
