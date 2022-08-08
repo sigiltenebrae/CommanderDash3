@@ -102,14 +102,14 @@
       <h2>Calculating Recommendations</h2>
     </div>
     <div fxLayout="row" fxLayoutAlign="center" fxFlexFill *ngIf="commander_position != commander_total">
-      <p style="width: 90%; text-align: center">Commanders: &nbsp;<ngb-progressbar type="primary" [striped]="true" [animated]="true" style="height: 28px"
-                                                         [value]="(commander_position/commander_total) * 100"></ngb-progressbar></p>
+      <h3 style="width: 90%; text-align: center"><h4>Commanders:</h4> &nbsp;<ngb-progressbar type="primary" [striped]="true" [animated]="true" style="height: 28px"
+                                                         [value]="(commander_position/commander_total) * 100"></ngb-progressbar></h3>
     </div>
     <div fxLayout="row" fxLayoutAlign="center" fxFlexFill *ngIf="commander_position == commander_total">
-      <p style="width: 90%; text-align: center">Applying Weights: &nbsp;<ngb-progressbar type="secondary" [striped]="true" [animated]="true" style="height: 28px"
-                                      [value]="(weight_position/weight_total) * 100"></ngb-progressbar></p>
+      <h3 style="width: 90%; text-align: center"><h4>Applying Weights: </h4>&nbsp;<ngb-progressbar type="secondary" [striped]="true" [animated]="true" style="height: 28px"
+                                      [value]="(weight_position/weight_total) * 100"></ngb-progressbar></h3>
     </div>
-    <p style="color:aqua">Elapsed Time: {{secondsToString(calc_clock)}}</p>
+    <p>Elapsed Time: {{secondsToString(calc_clock)}}</p>
   </mat-card>
 </div>
 
@@ -150,8 +150,11 @@
           </div>
         </div>
         <div fxLayout="column" fxLayoutAlign="center">
-          <div fxLayout="row" fxLayoutAlign="center" *ngFor="let theme of deck.theme_rec">
-            <div fxLayout="column">{{theme.theme}}</div>
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <div fxLayout="column">
+              <h3 *ngIf="deck.theme_rec">Theme: {{deck.theme_rec[0].theme}}</h3>
+              <h3 *ngIf="deck.subtheme_rec">Subtheme: {{deck.subtheme_rec[0].theme}}</h3>
+            </div>
           </div>
         </div>
       </div>

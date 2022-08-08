@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 
 import {delay, Subject, takeUntil, timer} from "rxjs";
@@ -7,7 +7,6 @@ import * as Scry from "scryfall-sdk";
 import {TokenStorageService} from "../../services/token-storage.service";
 import {DeckDataService} from "../../services/deck-data.service";
 import {HttpClient} from "@angular/common/http";
-import {color} from "chart.js/types/helpers";
 
 @Component({
   selector: 'app-deck-recs',
@@ -174,9 +173,9 @@ export class DeckRecsComponent implements OnInit {
                 this.recommendation_data[card.card.oracleCard.name] =
                   { score: (playRating / 5) };
               }
-              if (card.card.oracleCard.name.includes("//")) { //TESTING DOUBLE SIDED CARDS
+              /*if (card.card.oracleCard.name.includes("//")) { //TESTING DOUBLE SIDED CARDS
                 this.recommendation_data[card.card.oracleCard.name].score *= 30;
-              }
+              }*/
             }
           }
         });
@@ -334,7 +333,7 @@ export class DeckRecsComponent implements OnInit {
       let cur = await Scry.Cards.byName(commander);
       let cur_prints = await cur.getPrints();
       if (cur_prints) {
-        if (cur_prints[0].card_faces) {
+        if (cur_prints[0].card_faces && cur_prints[0].card_faces.length > 1) {
           outData.image_url = cur_prints[0].card_faces[0].image_uris?.png;
           outData.image_url_back = cur_prints[0].card_faces[1].image_uris?.png;
         }
@@ -350,14 +349,11 @@ export class DeckRecsComponent implements OnInit {
         let edh_data: any = edhrec_json;
         if (edh_data.panels.partnercounts) {
           let partners: any[] = [];
-          console.log(edh_data);
           edh_data.panels.partnercounts.forEach((partner: any) => {
             partners.push(partner.alt);
           });
-          console.log(partners);
           outData.partner = (this.assignThemeWeights(partners)[0].theme);
           if (outData.partner) {
-            console.log(outData.partner);
             Scry.Cards.byName(outData.partner).then((cur_partner) => {
               //ADD HERE: Filter out the partner if the colors are wrong
               cur_partner.getPrints().then((cur_partner_images) => {
@@ -368,7 +364,6 @@ export class DeckRecsComponent implements OnInit {
                   outData.partner_image_url = '';
                 }
                 edhrec_name += '-' + outData.partner.toLowerCase().replace(/[`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, '').replace(/\ /g, '-');
-                console.log('https://json.edhrec.com/v2/commanders/' + edhrec_name + '.json')
                 this.http.get('https://json.edhrec.com/v2/commanders/' + edhrec_name + '.json').subscribe((edhrec_json_partner) => {
                   edh_data = edhrec_json_partner;
                   if (edh_data.redirect) {
@@ -390,8 +385,6 @@ export class DeckRecsComponent implements OnInit {
                         outData.theme_rec = '';
                       }
                       this.recommendations.push(outData);
-                      console.log('rec done');
-                      console.log(outData);
                       resolve_recommendation();
                     }, (err) => {
                       outData.theme_rec = '';
@@ -416,10 +409,27 @@ export class DeckRecsComponent implements OnInit {
                       outData.theme_rec = '';
                     }
                     this.recommendations.push(outData);
-                    console.log('rec done');
-                    console.log(outData);
                     resolve_recommendation();
                   }
+                  let colors = "";
+                  edh_data.container.json_dict.card.color_identity.forEach((col: string) => {
+                    colors += col.toLowerCase();
+                  });
+                  this.http.get('https://json.edhrec.com/v2/commanders/' + colors + '.json').subscribe((color_themes) => {
+                    let edh_color_data: any = color_themes;
+                    let tribes_for_color: any = edh_color_data.relatedinfo.tribes;
+                    let themes_for_color: any = edh_color_data.relatedinfo.themes;
+                    let data_for_color: any = tribes_for_color.concat(themes_for_color);
+                    data_for_color.sort((a: any, b: any) => (b.count > a.count) ? 1 : -1);
+                    let color_theme_list: any[] = [];
+                    data_for_color.forEach((color_data: any) => {
+                      color_theme_list.push(color_data.name);
+                    });
+                    outData.subtheme_rec = this.assignThemeWeights(color_theme_list);
+                  }, (e) => {
+                    console.log(e);
+                    outData.subtheme_rec = '';
+                  });
                 }, (err) => {
                   console.log(err);
                   outData.theme_rec = '';
@@ -446,10 +456,29 @@ export class DeckRecsComponent implements OnInit {
           else {
             outData.theme_rec = '';
           }
-          this.recommendations.push(outData);
-          console.log('rec done');
-          console.log(outData);
-          resolve_recommendation();
+          let colors = "";
+          edh_data.container.json_dict.card.color_identity.forEach((col: string) => {
+            colors += col.toLowerCase();
+          });
+          this.http.get('https://json.edhrec.com/v2/commanders/' + colors + '.json').subscribe((color_themes) => {
+            let edh_color_data: any = color_themes;
+            let tribes_for_color: any = edh_color_data.relatedinfo.tribes;
+            let themes_for_color: any = edh_color_data.relatedinfo.themes;
+            let data_for_color: any = tribes_for_color.concat(themes_for_color);
+            data_for_color.sort((a: any, b: any) => (b.count > a.count) ? 1 : -1);
+            let color_theme_list: any[] = [];
+            data_for_color.forEach((color_data: any) => {
+              color_theme_list.push(color_data.name);
+            });
+            outData.subtheme_rec = this.assignThemeWeights(color_theme_list);
+            this.recommendations.push(outData);
+            resolve_recommendation();
+          }, (e) => {
+            console.log(e);
+            outData.subtheme_rec = '';
+            this.recommendations.push(outData);
+            resolve_recommendation();
+          });
         }
       }, (err) => {
         console.log(err);
