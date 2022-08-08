@@ -17,7 +17,6 @@ export class DeckListComponent implements OnInit {
   ngOnInit(): void {
     if (this.tokenStorage.getUser() == null || this.tokenStorage.getUser() == {} ||
       this.tokenStorage.getUser().id == null || this.tokenStorage.getUser().id < 0) {
-      this.router.navigate(['login']);
     }
     else {
       this.loading = true;
