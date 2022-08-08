@@ -338,6 +338,32 @@ a, h1, h2, h3, h4, .nav-button{
   background-color: black;
 }
 
+.partner-holder {
+  height: 432px; //384 + 48
+  width: 307px; //275 + 32
+  position: relative;
+  float: left;
+  overflow: hidden;
+}
+
+.partner-holder .partner-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.partner-holder .partner-left:hover {
+  z-index: 4;
+}
+
+.partner-holder .partner-right {
+  position: absolute;
+  top: 48px;
+  left: 32px;
+  z-index: 3;
+}
+
 .commander-slider {
   width: 275px;
 }

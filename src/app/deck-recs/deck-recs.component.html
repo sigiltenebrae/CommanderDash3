@@ -60,8 +60,7 @@
     <div fxLayout="row" fxLayoutAlign="center">
       <div fxLayout="column">
         <div class="recommendation-label">
-          <h4>Recommendation Count: </h4>
-          <h4>{{recommendation_count}}</h4>
+          <h4>Recommendation Count: {{recommendation_count}}</h4>
         </div>
         <mat-slider
           class="recommendation-slider"
@@ -114,12 +113,39 @@
   </mat-card>
 </div>
 
-<div *ngIf="calculated && recommendations">
-  <p>Elapsed Time: {{secondsToString(calc_clock)}}</p>
-  <div *ngFor="let deck of recommendations">
-    <img src="{{deck.image_url}}">
-    <div *ngIf="deck.partner_commander">
-      <img src="{{deck.partner_image_url}}">
+<div *ngIf="calculated && recommendations" fxFlexFill fxLayoutAlign="center center" fxLayout="column">
+  <mat-card [class.mat-elevation-z3]="true">
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <h3>Recommendations:</h3>
     </div>
-  </div>
+    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutAlign="center" fxLayoutgap="20px">
+      <div *ngFor="let deck of recommendations" fxLayout="column" style="margin: 10px">
+        <div *ngIf="!deck.partner">
+          <div fxLayout="row">
+            <img src="{{deck.image_url}}" class="mtg-card" alt="{{deck.commander}}">
+          </div>
+        </div>
+        <div *ngIf="deck.partner">
+          <div fxLayout="row">
+            <div class="partner-holder">
+              <div class="partner-left">
+                <img src="{{deck.image_url}}" class="mtg-card" alt="{{deck.commander}}">
+              </div>
+              <div class="partner-right">
+                <img src="{{deck.partner_image_url}}" class="mtg-card" alt="{{deck.partner}}">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="center">
+          <div fxLayout="row" fxLayoutAlign="center" *ngFor="let theme of deck.theme_rec">
+            <div fxLayout="column">{{theme.theme}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div fxLayout="col" fxLayoutAlign="center center">
+      <p>Elapsed Time: {{secondsToString(calc_clock)}}</p>
+    </div>
+  </mat-card>
 </div>

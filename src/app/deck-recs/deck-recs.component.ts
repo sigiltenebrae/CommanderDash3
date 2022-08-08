@@ -126,21 +126,21 @@ export class DeckRecsComponent implements OnInit {
           let linked_decks: any = archidekt_decks;
           if (deck.partner_commander) {
             linked_decks.results.forEach((linked_deck: any) => {
-              if ((Math.random() * 100) > this.user_randomness ) { creator_promises.push(this.getDecksForCreator(linked_deck.owner.username, deck.play_rating / 2)); }
+              if ((Math.random() * 100) > this.user_randomness - 1) { creator_promises.push(this.getDecksForCreator(linked_deck.owner.username, deck.play_rating / 2)); }
             });
             this.http.get('/archidekt/api/decks/cards/?deckFormat=3&commanders="' + deck.commander + '"&orderBy=-viewCount&pageSize=100').pipe(delay(1000)).subscribe((archidekt_partner_decks) => {
               let linked_partner_decks: any = archidekt_partner_decks;
               linked_partner_decks.results.forEach((linked_partner_deck: any) => {
-                if ((Math.random() * 100) > this.user_randomness ) { creator_promises.push(this.getDecksForCreator(linked_partner_deck.owner.username, deck.play_rating / 2)); }
+                if ((Math.random() * 100) > this.user_randomness - 1) { creator_promises.push(this.getDecksForCreator(linked_partner_deck.owner.username, deck.play_rating / 2)); }
               });
               Promise.all(creator_promises).then(() => { this.commander_position++; resolve_commander(); }).catch((err) => { console.log(err); resolve_commander(); });
             }); //Partner commanders have their rating halved to account for mandatory partners.
           }
           else {
             linked_decks.results.forEach((linked_deck: any) => {
-              if ((Math.random() * 100) > this.user_randomness ) { creator_promises.push(this.getDecksForCreator(linked_deck.owner.username, deck.play_rating)); }
+              if ((Math.random() * 100) > this.user_randomness - 1) { creator_promises.push(this.getDecksForCreator(linked_deck.owner.username, deck.play_rating)); }
             });
-            Promise.all(creator_promises).then(() => { this.commander_position++; console.log(deck.commander + ' done.'); resolve_commander(); }).catch((err) => { console.log(err); resolve_commander(); });
+            Promise.all(creator_promises).then(() => { this.commander_position++; resolve_commander(); }).catch((err) => { console.log(err); resolve_commander(); });
           }
         });
       }
@@ -174,6 +174,9 @@ export class DeckRecsComponent implements OnInit {
                 this.recommendation_data[card.card.oracleCard.name] =
                   { score: (playRating / 5) };
               }
+              /*if (card.card.oracleCard.name.includes("//")) { //TESTING DOUBLE SIDED CARDS
+                this.recommendation_data[card.card.oracleCard.name].score *= 30;
+              }*/
             }
           }
         });
@@ -211,7 +214,7 @@ export class DeckRecsComponent implements OnInit {
     return new Promise<void>(async (resolve_colors) => {
       setTimeout(() => { this.weight_position++; resolve_colors()}, 3000);
       if (this.recommendation_data[commander]) {
-        Scry.Cards.byName(commander.indexOf('//') > -1 ? commander.substring(0, commander.indexOf('//') + 1): commander).then( (cur) => {
+        Scry.Cards.byName(commander.indexOf('//') > -1 ? commander.substring(0, commander.indexOf('//') - 1): commander).then( (cur) => {
           if (this.recommendation_data[commander]) {
             if (cur.color_identity.includes('W')) { this.recommendation_data[commander].score *=
               Math.pow(this.colorData.w, (1 - (this.color_randomness / 100))) }
@@ -223,6 +226,9 @@ export class DeckRecsComponent implements OnInit {
               Math.pow(this.colorData.r, (1 - (this.color_randomness / 100))) }
             if (cur.color_identity.includes('G')) { this.recommendation_data[commander].score *=
               Math.pow(this.colorData.g, (1 - (this.color_randomness / 100))) }
+          }
+          if (cur.keywords.includes("Partner")) {
+            this.recommendation_data[commander].score *= 30; //TESTING PARTNER COMMANDERS
           }
           this.weight_position++;
           resolve_colors();
@@ -321,13 +327,19 @@ export class DeckRecsComponent implements OnInit {
 
   async getRecommendationData(commander: string) {
     return new Promise<void>(async (resolve_recommendation) => {
+      setTimeout(() => { resolve_recommendation(); }, 3000);
       let outData: any = {};
       outData.commander = commander;
-      commander = commander.indexOf('//') > -1 ? commander.substring(0, commander.indexOf('//') + 1): commander;
+      commander = commander.indexOf('//') > -1 ? commander.substring(0, commander.indexOf('//') - 1): commander;
       let cur = await Scry.Cards.byName(commander);
       let cur_prints = await cur.getPrints();
       if (cur_prints) {
-        outData.image_url = cur_prints[0].image_uris?.png;
+        if (cur_prints[0].card_faces) {
+          outData.image_url = cur_prints[0].card_faces[0].image_uris?.png
+        }
+        else {
+          outData.image_url = cur_prints[0].image_uris?.png;
+        }
       }
       else {
         outData.image_url = '';
@@ -337,11 +349,14 @@ export class DeckRecsComponent implements OnInit {
         let edh_data: any = edhrec_json;
         if (edh_data.panels.partnercounts) {
           let partners: any[] = [];
+          console.log(edh_data);
           edh_data.panels.partnercounts.forEach((partner: any) => {
             partners.push(partner.alt);
           });
-          outData.partner = (this.assignThemeWeights(partners)[0].name);
+          console.log(partners);
+          outData.partner = (this.assignThemeWeights(partners)[0].theme);
           if (outData.partner) {
+            console.log(outData.partner);
             Scry.Cards.byName(outData.partner).then((cur_partner) => {
               //ADD HERE: Filter out the partner if the colors are wrong
               cur_partner.getPrints().then((cur_partner_images) => {
@@ -351,9 +366,59 @@ export class DeckRecsComponent implements OnInit {
                 else {
                   outData.partner_image_url = '';
                 }
-                edhrec_name += outData.partner.toLowerCase().replace(/[`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, '').replace(/\ /g, '-');
+                edhrec_name += '-' + outData.partner.toLowerCase().replace(/[`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, '').replace(/\ /g, '-');
+                console.log('https://json.edhrec.com/v2/commanders/' + edhrec_name + '.json')
                 this.http.get('https://json.edhrec.com/v2/commanders/' + edhrec_name + '.json').subscribe((edhrec_json_partner) => {
                   edh_data = edhrec_json_partner;
+                  if (edh_data.redirect) {
+                    this.http.get('https://json.edhrec.com/v2' + edh_data.redirect + '.json').subscribe((edhrec_redirect) => {
+                      edh_data = edhrec_redirect;
+                      let themes_list: any[] = [];
+                      if (edh_data.panels.links) {
+                        for (let link of edh_data.panels.links) {
+                          if (link.header === "Themes") {
+                            link.items.forEach((theme_option: any) => {
+                              themes_list.push(theme_option.value);
+                            });
+                            break;
+                          }
+                        }
+                        outData.theme_rec = this.assignThemeWeights(themes_list);
+                      }
+                      else {
+                        outData.theme_rec = '';
+                      }
+                      this.recommendations.push(outData);
+                      console.log('rec done');
+                      console.log(outData);
+                      resolve_recommendation();
+                    }, (err) => {
+                      outData.theme_rec = '';
+                      this.recommendations.push(outData);
+                      resolve_recommendation();
+                    });
+                  }
+                  else {
+                    let themes_list: any[] = [];
+                    if (edh_data.panels.links) {
+                      for (let link of edh_data.panels.links) {
+                        if (link.header === "Themes") {
+                          link.items.forEach((theme_option: any) => {
+                            themes_list.push(theme_option.value);
+                          });
+                          break;
+                        }
+                      }
+                      outData.theme_rec = this.assignThemeWeights(themes_list);
+                    }
+                    else {
+                      outData.theme_rec = '';
+                    }
+                    this.recommendations.push(outData);
+                    console.log('rec done');
+                    console.log(outData);
+                    resolve_recommendation();
+                  }
                 }, (err) => {
                   console.log(err);
                   outData.theme_rec = '';
@@ -364,19 +429,27 @@ export class DeckRecsComponent implements OnInit {
             });
           }
         }
-
-        let themes_list: any[] = [];
-        if (edh_data.panels.links) {
-          edh_data.panels.links[2].items.forEach((theme_option: any) => {
-            themes_list.push(theme_option.value);
-          });
-          outData.theme_rec = this.assignThemeWeights(themes_list);
+        else { //no partner
+          let themes_list: any[] = [];
+          if (edh_data.panels.links) {
+            for (let link of edh_data.panels.links) {
+              if (link.header === "Themes") {
+                link.items.forEach((theme_option: any) => {
+                  themes_list.push(theme_option.value);
+                });
+                break;
+              }
+            }
+            outData.theme_rec = this.assignThemeWeights(themes_list);
+          }
+          else {
+            outData.theme_rec = '';
+          }
+          this.recommendations.push(outData);
+          console.log('rec done');
+          console.log(outData);
+          resolve_recommendation();
         }
-        else {
-         outData.theme_rec = '';
-        }
-        this.recommendations.push(outData);
-        resolve_recommendation();
       }, (err) => {
         console.log(err);
         outData.theme_rec = '';
