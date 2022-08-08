@@ -120,7 +120,7 @@
     </div>
     <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutAlign="center" fxLayoutgap="20px">
       <div *ngFor="let deck of recommendations" fxLayout="column" style="margin: 10px">
-        <div *ngIf="!deck.partner">
+        <div *ngIf="!deck.partner && !deck.image_url_back">
           <div fxLayout="row">
             <img src="{{deck.image_url}}" class="mtg-card" alt="{{deck.commander}}">
           </div>
@@ -133,6 +133,18 @@
               </div>
               <div class="partner-right">
                 <img src="{{deck.partner_image_url}}" class="mtg-card" alt="{{deck.partner}}">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="deck.image_url_back">
+          <div fxLayout="row">
+            <div class="partner-holder">
+              <div class="partner-left">
+                <img src="{{deck.image_url_back}}" class="mtg-card" alt="{{deck.commander}}">
+              </div>
+              <div class="partner-right">
+                <img src="{{deck.image_url}}" class="mtg-card" alt="{{deck.commander}}">
               </div>
             </div>
           </div>

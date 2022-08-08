@@ -174,9 +174,9 @@ export class DeckRecsComponent implements OnInit {
                 this.recommendation_data[card.card.oracleCard.name] =
                   { score: (playRating / 5) };
               }
-              /*if (card.card.oracleCard.name.includes("//")) { //TESTING DOUBLE SIDED CARDS
+              if (card.card.oracleCard.name.includes("//")) { //TESTING DOUBLE SIDED CARDS
                 this.recommendation_data[card.card.oracleCard.name].score *= 30;
-              }*/
+              }
             }
           }
         });
@@ -227,9 +227,9 @@ export class DeckRecsComponent implements OnInit {
             if (cur.color_identity.includes('G')) { this.recommendation_data[commander].score *=
               Math.pow(this.colorData.g, (1 - (this.color_randomness / 100))) }
           }
-          if (cur.keywords.includes("Partner")) {
+          /*if (cur.keywords.includes("Partner")) {
             this.recommendation_data[commander].score *= 30; //TESTING PARTNER COMMANDERS
-          }
+          }*/
           this.weight_position++;
           resolve_colors();
         }, (reject) => {
@@ -335,7 +335,8 @@ export class DeckRecsComponent implements OnInit {
       let cur_prints = await cur.getPrints();
       if (cur_prints) {
         if (cur_prints[0].card_faces) {
-          outData.image_url = cur_prints[0].card_faces[0].image_uris?.png
+          outData.image_url = cur_prints[0].card_faces[0].image_uris?.png;
+          outData.image_url_back = cur_prints[0].card_faces[1].image_uris?.png;
         }
         else {
           outData.image_url = cur_prints[0].image_uris?.png;
