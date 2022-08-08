@@ -225,7 +225,7 @@ export class DeckEditComponent implements OnInit {
     out_deck.active = this.form.active;
     out_deck.themes = [];
     out_deck.deleteThemes = [];
-    if (this.current_deck.themes) {
+    if (this.current_deck.themes && this.current_deck.themes.length > 0) {
       this.current_deck.themes.forEach(
         (theme: any) => {
           let found = false;
@@ -244,7 +244,6 @@ export class DeckEditComponent implements OnInit {
     else {
       out_deck.themes = this.form.themes;
     }
-
     if (this.has_partner && this.form.partner_commander != null && this.form.partner_commander !== "") {
       out_deck.partner_commander = this.form.partner_commander;
       out_deck.partner_image_url = this.form.partner_image_url;
@@ -263,7 +262,6 @@ export class DeckEditComponent implements OnInit {
         }
       }, (error) => {
         if (error.status == 201) {
-          console.log(error);
         }
       });
     }
