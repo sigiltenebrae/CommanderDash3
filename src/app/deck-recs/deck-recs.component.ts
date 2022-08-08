@@ -419,7 +419,13 @@ export class DeckRecsComponent implements OnInit {
                     let edh_color_data: any = color_themes;
                     let tribes_for_color: any = edh_color_data.relatedinfo.tribes;
                     let themes_for_color: any = edh_color_data.relatedinfo.themes;
-                    let data_for_color: any = tribes_for_color.concat(themes_for_color);
+                    let data_for_color: any = [];
+                    if (this.toggle_tribal) {
+                      data_for_color = tribes_for_color.concat(themes_for_color);
+                    }
+                    else {
+                      data_for_color = themes_for_color;
+                    }
                     data_for_color.sort((a: any, b: any) => (b.count > a.count) ? 1 : -1);
                     let color_theme_list: any[] = [];
                     data_for_color.forEach((color_data: any) => {
@@ -464,7 +470,13 @@ export class DeckRecsComponent implements OnInit {
             let edh_color_data: any = color_themes;
             let tribes_for_color: any = edh_color_data.relatedinfo.tribes;
             let themes_for_color: any = edh_color_data.relatedinfo.themes;
-            let data_for_color: any = tribes_for_color.concat(themes_for_color);
+            let data_for_color = [];
+            if (this.toggle_tribal) {
+              data_for_color = tribes_for_color.concat(themes_for_color);
+            }
+            else {
+              data_for_color = themes_for_color;
+            }
             data_for_color.sort((a: any, b: any) => (b.count > a.count) ? 1 : -1);
             let color_theme_list: any[] = [];
             data_for_color.forEach((color_data: any) => {
