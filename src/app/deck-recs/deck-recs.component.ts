@@ -47,7 +47,8 @@ export class DeckRecsComponent implements OnInit {
   toggle_c = false;
   toggle_tribal = true;
   toggle_top = false;
-  toggle_partner = false;
+  toggle_partner = true;
+  toggle_partner_priority = false;
 
   recommendation_data: any = {};
 
@@ -228,9 +229,12 @@ export class DeckRecsComponent implements OnInit {
             if (cur.color_identity.includes('G')) { this.recommendation_data[commander].score *=
               Math.pow(this.colorData.g, (1 - (this.color_randomness / 100))) }
           }
-          /*if (cur.keywords.includes("Partner")) {
-            this.recommendation_data[commander].score *= 30; //TESTING PARTNER COMMANDERS
-          }*/
+          if (this.toggle_partner_priority || !this.toggle_partner) {
+            if (cur.keywords.includes("Partner")) {
+              this.recommendation_data[commander].score *= !this.toggle_partner ? 0 : 1;
+              this.recommendation_data[commander].score *= this.toggle_partner_priority ? 30 : 1;
+            }
+          }
           this.weight_position++;
           resolve_colors();
         }, (reject) => {

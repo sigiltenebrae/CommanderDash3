@@ -96,25 +96,28 @@
           </mat-slider>
         </div>
       </div>
-      <div fxLayout="row" fxLayoutAlign="center">
-        <div style="width: 300px">
-          <div fxLayout="column">
-            <mat-slide-toggle [(ngModel)]="toggle_colors">Color Filter</mat-slide-toggle>
-            <br>
-            <div *ngIf="toggle_colors" style="margin-left: 40px">
-              <mat-slide-toggle [(ngModel)]="toggle_w">White</mat-slide-toggle><br>
-              <mat-slide-toggle [(ngModel)]="toggle_u">Blue</mat-slide-toggle><br>
-              <mat-slide-toggle [(ngModel)]="toggle_b">Black</mat-slide-toggle><br>
-              <mat-slide-toggle [(ngModel)]="toggle_r">Red</mat-slide-toggle><br>
-              <mat-slide-toggle [(ngModel)]="toggle_g">Green</mat-slide-toggle><br>
-            </div>
-            <mat-slide-toggle [(ngModel)]="toggle_tribal">Allow Tribal</mat-slide-toggle><br>
-            <mat-slide-toggle [(ngModel)]="toggle_top">Allow Top Commanders</mat-slide-toggle><br>&nbsp;&nbsp;
-            <div fxLayout="row" fxLayoutAlign="end">
-              <button mat-raised-button color="accent" (click)="calculateRecommendations()">Calculate</button>
-            </div>
+      <div fxLayout="row wrap" fxLayoutAlign="center" style="margin-left: 20px">
+        <div fxLayout="column" fxFlexFill>
+          <mat-slide-toggle [(ngModel)]="toggle_colors">Color Filter</mat-slide-toggle>
+          <br>
+          <div *ngIf="toggle_colors" style="margin-left: 40px">
+            <mat-slide-toggle [(ngModel)]="toggle_w">White</mat-slide-toggle><br>
+            <mat-slide-toggle [(ngModel)]="toggle_u">Blue</mat-slide-toggle><br>
+            <mat-slide-toggle [(ngModel)]="toggle_b">Black</mat-slide-toggle><br>
+            <mat-slide-toggle [(ngModel)]="toggle_r">Red</mat-slide-toggle><br>
+            <mat-slide-toggle [(ngModel)]="toggle_g">Green</mat-slide-toggle><br>
           </div>
+          <mat-slide-toggle [(ngModel)]="toggle_tribal">Allow Tribal</mat-slide-toggle><br>
+          <mat-slide-toggle [(ngModel)]="toggle_top">Allow Top Commanders</mat-slide-toggle><br>
         </div>
+        <div fxLayout="column" fxFlexFill>
+          <mat-slide-toggle [(ngModel)]="toggle_partner">Allow Partner</mat-slide-toggle><br>
+          <mat-slide-toggle [(ngModel)]="toggle_partner_priority">Prioritize Partners</mat-slide-toggle>
+        </div>
+      </div>
+      <br>
+      <div fxLayout="row" fxLayoutAlign="end">
+        <button mat-raised-button color="accent" (click)="calculateRecommendations()">Calculate</button>
       </div>
     </mat-card>
   </div>
