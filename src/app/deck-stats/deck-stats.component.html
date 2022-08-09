@@ -1,32 +1,46 @@
 <div *ngIf="loading" fxLayout="row" fxFlex="100" fxLayoutAlign="center center" style="margin: 20px;">
   <mat-spinner></mat-spinner>
 </div>
-<div *ngIf="!loading" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px" fxLayoutAlign="center" style="margin: 20px">
-  <mat-card *ngIf="ratingChartData" fxflex>
-    <mat-card-content fxLayout="row" fxLayoutAlign="center">
-      <div style="display: block; margin: 10px">
-        <canvas baseChart style="height: 200px;"
-                [data]="ratingChartData"
-                [options]="ratingChartOptions"
-                [plugins]="ratingChartPlugins"
-                [legend]="ratingChartLegend"
+<div *ngIf="!loading" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px" fxLayoutAlign="center" style="margin: 20px" fxFlex>
+  <div fxLayout="column" fxLayoutAlign="center">
+    <mat-card *ngIf="ratingChartData" fxflex style="height: 100%">
+      <mat-card-content fxLayout="row" fxLayoutAlign="center center" fxFlex>
+          <canvas baseChart style="height: 200px;"
+                  [data]="ratingChartData"
+                  [options]="ratingChartOptions"
+                  [plugins]="ratingChartPlugins"
+                  [legend]="ratingChartLegend"
+                  [type]="'bar'">
+          </canvas>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div fxLayout="column">
+    <mat-card *ngIf="colorCountChartDatasets" fxFlex>
+      <mat-card-content fxLayout="row" fxLayoutAlign="center">
+        <div style="display: block">
+          <canvas baseChart
+                  [labels]="colorCountChartLabels"
+                  [datasets]="colorCountChartDatasets"
+                  [options]="colorCountChartOptions"
+                  [legend]="false"
+                  [type]="'doughnut'">
+          </canvas>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div fxLayout="column">
+    <mat-card *ngIf="themeChartData" fxFlex style="width: 750px">
+      <mat-card-content fxLayout="row" fxLayoutAlign="center center" fxFlex style="width: 100%">
+        <canvas baseChart style="height: 200px; width: 100%"
+                [data]="themeChartData"
+                [options]="themeChartOptions"
+                [plugins]="themeChartPlugins"
+                [legend]="themeChartLegend"
                 [type]="'bar'">
         </canvas>
-      </div>
-    </mat-card-content>
-  </mat-card>
-  &nbsp;
-  <mat-card *ngIf="colorCountChartDatasets" fxFlex>
-    <mat-card-content fxLayout="row" fxLayoutAlign="center">
-      <div style="display: block">
-        <canvas baseChart
-                [labels]="colorCountChartLabels"
-                [datasets]="colorCountChartDatasets"
-                [options]="colorCountChartOptions"
-                [legend]="false"
-                [type]="'doughnut'">
-        </canvas>
-      </div>
-    </mat-card-content>
-  </mat-card>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>

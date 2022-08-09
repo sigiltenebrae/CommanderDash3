@@ -24,6 +24,11 @@ export class DeckStatsComponent implements OnInit {
   public ratingChartPlugins = [];
   public ratingChartOptions: ChartConfiguration<'bar'>['options'];
 
+  public themeChartData: ChartConfiguration<'bar'>['data'] | undefined;
+  public themeChartLegend = false;
+  public themeChartPlugins = [];
+  public themeChartOptions: ChartConfiguration<'bar'>['options'];
+
   public colorCountChartLabels: string[] = [ 'W', 'U', 'B', 'R', 'G' ];
   public colorCountChartDatasets: ChartConfiguration<'doughnut'>['data']['datasets'] | undefined;
   public colorCountChartOptions: ChartConfiguration<'doughnut'>['options'];
@@ -43,6 +48,7 @@ export class DeckStatsComponent implements OnInit {
           this.decks = temp;
           this.loadRatingData();
           this.loadColorCountData();
+          this.loadThemeData();
           this.loading = false;
         });
     }
@@ -190,5 +196,96 @@ export class DeckStatsComponent implements OnInit {
       borderWidth: 1,
       label: 'Series A'
     }];
+  }
+  loadThemeData() {
+    let themeDict: any = {};
+    this.decks.forEach((deck) => {
+      if (deck.active) {
+        deck.themes.forEach((theme: any) => {
+          console.log(theme);
+          if (themeDict[theme.name] != null) {
+            themeDict[theme.name].rating += (deck.play_rating / 5);
+            themeDict[theme.name].count ++;
+          }
+          else {
+            themeDict[theme.name] = { rating: (deck.play_rating / 5), count: 1 };
+          }
+        });
+      }
+      console.log(JSON.stringify(themeDict));
+    });
+    let theme_data: any[] = [];
+    let theme_labels: any[] = [];
+    Object.keys(themeDict).forEach((theme_name) => {
+      theme_labels.push(theme_name);
+      theme_data.push(themeDict[theme_name].rating / themeDict[theme_name].count);
+    });
+    console.log(theme_labels);
+    console.log(theme_data);
+    this.themeChartData = {
+      labels: theme_labels,
+      datasets: [
+        {
+          data: theme_data,
+          backgroundColor: [ //300
+            '#eeeeeebb',
+            '#64b5f6bb',
+            '#9e9e9ebb',
+            '#e57373bb',
+            '#81c784bb'
+          ],
+          borderColor: [ //400
+            '#e0e0e0bb',
+            '#42a5f5bb',
+            '#757575bb',
+            '#ef5350bb',
+            '#66bb6abb'
+          ],
+          hoverBackgroundColor: [ //500
+            '#bdbdbdbb',
+            '#2196f3bb',
+            '#616161bb',
+            '#f44336bb',
+            '#4caf50bb'
+          ],
+          hoverBorderColor: [ //600
+            '#9e9e9ebb',
+            '#1e88e5bb',
+            '#424242bb',
+            '#e53935bb',
+            '#43a047bb'
+          ],
+          borderWidth: 1,
+          label: 'Average Rating' }
+      ]
+    };
+    this.themeChartOptions = {
+      responsive: false,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Average Rating by Theme',
+          color: this.theme === "light" ? 'rgb(100, 100, 100)':  'rgb(198, 198, 198)'
+        },
+        legend: {
+          labels: {
+            color: this.theme === "light" ? 'rgb(100, 100, 100)': 'rgb(198, 198, 198)'
+          }
+        },
+
+      },
+      scales: {
+        y: {
+          ticks: {
+            color: this.theme === "light" ? 'rgb(100, 100, 100)': 'rgb(198, 198, 198)'
+          }
+        },
+        x: {
+          ticks: {
+            color: this.theme === "light" ? 'rgb(100, 100, 100)': 'rgb(198, 198, 198)'
+          }
+        }
+      }
+    };
   }
 }
