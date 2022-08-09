@@ -31,10 +31,12 @@ export class DeckRecsComponent implements OnInit {
 
   decks: any[] = [];
   colorData: any = {};
+  themeData: any = {};
 
   user_randomness = 50;
   color_randomness = 25;
   theme_randomness = 50;
+  partner_randomness = 50;
 
   toggle_colors = false;
   toggle_w = false;
@@ -86,7 +88,7 @@ export class DeckRecsComponent implements OnInit {
     Promise.all(commander_promises).then(() => {
       console.log('commanders done');
       this.colorData = this.getColorRatings();
-      let themeData = this.getThemeRatings();
+      this.themeData = this.getThemeRatings();
 
 
       let color_modifiers: any[] = []
@@ -352,7 +354,7 @@ export class DeckRecsComponent implements OnInit {
           edh_data.panels.partnercounts.forEach((partner: any) => {
             partners.push(partner.alt);
           });
-          outData.partner = (this.assignThemeWeights(partners)[0].theme);
+          outData.partner = (this.assignWeights(partners, "partner")[0].name);
           if (outData.partner) {
             Scry.Cards.byName(outData.partner).then((cur_partner) => {
               //ADD HERE: Filter out the partner if the colors are wrong
@@ -379,7 +381,7 @@ export class DeckRecsComponent implements OnInit {
                             break;
                           }
                         }
-                        outData.theme_rec = this.assignThemeWeights(themes_list);
+                        outData.theme_rec = this.assignWeights(themes_list, "theme");
                       }
                       else {
                         outData.theme_rec = '';
@@ -403,7 +405,7 @@ export class DeckRecsComponent implements OnInit {
                           break;
                         }
                       }
-                      outData.theme_rec = this.assignThemeWeights(themes_list);
+                      outData.theme_rec = this.assignWeights(themes_list, "theme");
                     }
                     else {
                       outData.theme_rec = '';
@@ -431,7 +433,7 @@ export class DeckRecsComponent implements OnInit {
                     data_for_color.forEach((color_data: any) => {
                       color_theme_list.push(color_data.name);
                     });
-                    outData.subtheme_rec = this.assignThemeWeights(color_theme_list);
+                    outData.subtheme_rec = this.assignWeights(color_theme_list, "theme");
                   }, (e) => {
                     console.log(e);
                     outData.subtheme_rec = '';
@@ -457,7 +459,7 @@ export class DeckRecsComponent implements OnInit {
                 break;
               }
             }
-            outData.theme_rec = this.assignThemeWeights(themes_list);
+            outData.theme_rec = this.assignWeights(themes_list, "theme");
           }
           else {
             outData.theme_rec = '';
@@ -482,7 +484,7 @@ export class DeckRecsComponent implements OnInit {
             data_for_color.forEach((color_data: any) => {
               color_theme_list.push(color_data.name);
             });
-            outData.subtheme_rec = this.assignThemeWeights(color_theme_list);
+            outData.subtheme_rec = this.assignWeights(color_theme_list, "theme");
             this.recommendations.push(outData);
             resolve_recommendation();
           }, (e) => {
@@ -501,27 +503,43 @@ export class DeckRecsComponent implements OnInit {
     });
   }
 
-  assignThemeWeights(themes: string[]) {
-    if (themes) {
-      let weighted_themes: any = {};
+  assignWeights(to_weigh: string[], type: string) {
+    let random_factor = 0;
+    if (type === "theme") {
+      random_factor = this.theme_randomness;
+    }
+    else if (type === "partner") {
+      random_factor = this.partner_randomness
+    }
+
+    if (to_weigh) {
+      let weighted_data: any = {};
       let x_coeff = 0;
-      let factor = (1 - ((this.theme_randomness) / 100));
-      for (let i = 0; i < themes.length; i++) {
+      let factor = (1 - (random_factor / 100));
+      for (let i = 0; i < to_weigh.length; i++) {
         x_coeff += Math.pow(factor, i);
       }
       let base = 100 / x_coeff;
       let cur_coeff = 0;
-      for(let i = 0; i < themes.length; i++) {
+      for(let i = 0; i < to_weigh.length; i++) {
         cur_coeff += Math.pow(factor, i);
-        weighted_themes[themes[i]] = Math.floor(100 - ((cur_coeff - 1) * base)) / 100;
+        weighted_data[to_weigh[i]] = Math.floor(100 - ((cur_coeff - 1) * base)) / 100;
       }
       //return weighted_themes;
-      let weighted_themes_list: any[] = [];
-      Object.keys(weighted_themes).forEach((theme_name) => {
-        weighted_themes_list.push({ theme: theme_name, weight: weighted_themes[theme_name] });
+      let weighted_list: any[] = [];
+      Object.keys(weighted_data).forEach((name) => {
+        let weight = type === "theme" && this.themeData[name] ? weighted_data[name] * Math.pow(this.themeData[name], (random_factor / 100)) : weighted_data[name]; //apply theme ratings to recommended themes
+        weight *= Math.pow( 1 - (Math.floor((Math.random() * random_factor)) / 100), (random_factor / 100) ); //apply a degree of randomness to the theme outputs based on theme/partner randomness. Meant to allow for themes/ partners that aren't the most popular to win if there are no ratings for them.
+        weighted_list.push(
+          {
+            name: name,
+            weight: weight
+          }
+        );
       });
-      weighted_themes_list.sort((a: any, b: any) => (b.weight > a.weight) ? 1 : -1);
-      return weighted_themes_list;
+
+      weighted_list.sort((a: any, b: any) => (b.weight > a.weight) ? 1 : -1);
+      return weighted_list;
     }
     else {
       return [''];

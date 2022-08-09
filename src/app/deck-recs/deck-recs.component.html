@@ -65,6 +65,23 @@
       <div fxLayout="row" fxLayoutAlign="center">
         <div fxLayout="column">
           <div class="recommendation-label">
+            <h4>Partner Randomness:</h4>
+          </div>
+          <mat-slider
+            class="recommendation-slider"
+            [disabled]="false"
+            [invert]="false"
+            [max]="100"
+            [min]="0"
+            [step]="1"
+            [(ngModel)]="partner_randomness"
+            [vertical]="false">
+          </mat-slider>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="center">
+        <div fxLayout="column">
+          <div class="recommendation-label">
             <h4>Recommendation Count: {{recommendation_count}}</h4>
           </div>
           <mat-slider
@@ -164,8 +181,8 @@
         <div fxLayout="column" fxLayoutAlign="center">
           <div fxLayout="row" fxLayoutAlign="center center">
             <div fxLayout="column">
-              <h3 *ngIf="deck.theme_rec">Theme: {{deck.theme_rec[0].theme}}</h3>
-              <h3 *ngIf="deck.subtheme_rec">Subtheme: {{deck.subtheme_rec[0].theme}}</h3>
+              <h3 *ngIf="deck.theme_rec">Theme: {{deck.theme_rec[0].name}}</h3>
+              <h3 *ngIf="deck.subtheme_rec">Subtheme: {{deck.subtheme_rec[0].name}}</h3>
             </div>
           </div>
         </div>
