@@ -202,7 +202,6 @@ export class DeckStatsComponent implements OnInit {
     this.decks.forEach((deck) => {
       if (deck.active) {
         deck.themes.forEach((theme: any) => {
-          console.log(theme);
           if (themeDict[theme.name] != null) {
             themeDict[theme.name].rating += (deck.play_rating / 5);
             themeDict[theme.name].count ++;
@@ -212,7 +211,6 @@ export class DeckStatsComponent implements OnInit {
           }
         });
       }
-      console.log(JSON.stringify(themeDict));
     });
     let theme_data: any[] = [];
     let theme_labels: any[] = [];
@@ -220,8 +218,6 @@ export class DeckStatsComponent implements OnInit {
       theme_labels.push(theme_name);
       theme_data.push(themeDict[theme_name].rating / themeDict[theme_name].count);
     });
-    console.log(theme_labels);
-    console.log(theme_data);
     this.themeChartData = {
       labels: theme_labels,
       datasets: [
