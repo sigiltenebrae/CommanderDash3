@@ -60,7 +60,7 @@ export class DeckStatsComponent implements OnInit {
   /**
    * Load data for "Average Rating by Color" chart
    */
-  loadRatingData() {
+  public loadRatingData() {
     let w = 0; let u = 0; let b = 0; let r = 0; let g = 0;
     let w_play = 0; let u_play = 0; let b_play = 0; let r_play = 0; let g_play = 0;
     this.decks.forEach((deck) => {
@@ -151,7 +151,7 @@ export class DeckStatsComponent implements OnInit {
   /**
    * Load data for "Deck Color Percentages" chart
    */
-  loadColorCountData() {
+  public loadColorCountData() {
     let w = 0; let u = 0; let b = 0; let r = 0; let g = 0; let total = 0;
     this.decks.forEach((deck) => {
       if (deck.active) {
@@ -210,7 +210,7 @@ export class DeckStatsComponent implements OnInit {
   /**
    * Load data for "Average Rating by Theme" chart
    */
-  loadThemeData() {
+  public loadThemeData() {
     let themeDict: any = {};
     this.decks.forEach((deck) => {
       if (deck.active) {

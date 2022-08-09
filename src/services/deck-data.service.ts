@@ -12,10 +12,12 @@ import {environment} from "../environments/environment";
 export class DeckDataService {
   constructor(private http: HttpClient, private token: TokenStorageService) { }
 
-  private all_decks: any = null;
-  private my_decks: any = null;
-  private themes: any = null;
+  private my_decks: any = null; //list of all decks for user
+  private themes: any = null; //list of all themes
 
+  /**
+   * Returns the contents of 'my_decks' or grabs from the db if 'my_decks' is empty
+   */
   public async getDecks(): Promise<any> {
     return new Promise<any>((resolve_decks, reject) => {
       if (this.my_decks) {
@@ -36,6 +38,9 @@ export class DeckDataService {
     });
   }
 
+  /**
+   * Forces an update of 'my_decks' from the database
+   */
   public async refreshDecks(): Promise<any> {
     return new Promise<any>((resolve) => {
       this.my_decks = null;
@@ -46,6 +51,10 @@ export class DeckDataService {
     });
   }
 
+  /**
+   * Returns a deck with the matching id from 'my_decks', or null if not found
+   * @param deckId id of deck to get data for
+   */
   public async getDeck(deckId: number): Promise<any> {
     return new Promise<any>((resolve) => {
       this.getDecks().then((decks) => {
@@ -57,6 +66,10 @@ export class DeckDataService {
     });
   }
 
+  /**
+   * Forces an update of a deck with the given id from the db
+   * @param deckId id of deck to get data for
+   */
   public async refreshDeck(deckId: number): Promise<any> {
     return new Promise<any>((resolve) => {
       this.getDecks().then((decks) => {
@@ -83,6 +96,10 @@ export class DeckDataService {
     });
   }
 
+  /**
+   * Loads in images and themes for a deck and adds them to the object
+   * @param deck deck to get data for
+   */
   public async getDeckScryfallData(deck: any): Promise<any> {
     return new Promise<void>((resolve_scryfall) => {
       this.http.get(environment.deck_themes_url + deck.id).subscribe(async (themes) => {
@@ -115,6 +132,9 @@ export class DeckDataService {
     });
   }
 
+  /**
+   * Returns the contents of 'themes' or grabs from the db if 'themes' is empty
+   */
   public async getThemeList(): Promise<any> {
     return new Promise<any>((resolve) => {
       if (this.themes) {
@@ -132,15 +152,28 @@ export class DeckDataService {
     });
   }
 
+  /**
+   * Update information for deck in the database. Does not update the deck in 'my_decks'
+   * @param deck deck to update in db
+   * @param id id for deck to update
+   */
   public updateDeck(deck: any, id: number) {
     return this.http.put<any>(environment.decks_url + id, JSON.stringify(deck), {headers : new HttpHeaders({'Content-Type': 'application/json'})})
   }
 
+  /**
+   * Creates a deck in the database and returns its new id. Does not add the deck to 'my_decks'
+   * @param deck deck to create
+   */
   public createDeck(deck: any) {
     deck.creator = this.token.getUser().id;
     return this.http.post(environment.decks_url, JSON.stringify(deck), {headers : new HttpHeaders({'Content-Type': 'application/json'})})
   }
 
+  /**
+   * Deletes a deck from the database and removes it from 'my_decks'
+   * @param deck deck to delete
+   */
   public deleteDeck(deck: any) {
     for (let i = 0; i < this.my_decks.length; i++) {
       if (this.my_decks[i].id == deck.id) {

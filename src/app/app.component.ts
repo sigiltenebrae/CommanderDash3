@@ -11,19 +11,14 @@ import {Router} from "@angular/router";
 export class AppComponent implements OnInit {
   title = 'CommanderDash3';
 
-  isDark = false;
-  loggedIn = false;
+  public isDark = false; //Theme to use
+  public loggedIn = false; //Is a user logged in
 
   constructor(public overlayContainer: OverlayContainer, private tokenStorage: TokenStorageService, private router: Router) {}
 
   ngOnInit(): void {
-    if (this.tokenStorage.getUser() == null || this.tokenStorage.getUser() == {} ||
-      this.tokenStorage.getUser().id == null || this.tokenStorage.getUser().id < 0) {
-      this.loggedIn = false;
-    }
-    else {
-      this.loggedIn = true;
-    }
+    this.loggedIn = !(this.tokenStorage.getUser() == null || this.tokenStorage.getUser() == {} ||
+      this.tokenStorage.getUser().id == null || this.tokenStorage.getUser().id < 0);
     if (this.tokenStorage.getUser().theme === "light") {
       this.onSetTheme('light-theme');
     }
@@ -33,13 +28,19 @@ export class AppComponent implements OnInit {
     }
   }
 
-  signOut():void {
+  /**
+   * Signs the current user out
+   */
+  public signOut():void {
     this.tokenStorage.signOut();
     this.loggedIn = false;
     this.router.navigate(['login']);
   }
 
-  toggleDarkTheme() {
+  /**
+   * Switches the theme between light and dark
+   */
+  public toggleDarkTheme() {
     if (this.isDark) {
       this.onSetTheme('light-theme');
       this.isDark = false;
@@ -58,7 +59,11 @@ export class AppComponent implements OnInit {
 
   @HostBinding('class') componentCssClass: any;
 
-  onSetTheme(theme: any) {
+  /**
+   * Applies the given theme to the page, used to switch between light and dark
+   * @param theme theme to apply
+   */
+  private onSetTheme(theme: any) {
     this.overlayContainer.getContainerElement().classList.add(theme);
     this.componentCssClass = theme;
   }
