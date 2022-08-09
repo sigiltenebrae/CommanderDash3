@@ -2,20 +2,26 @@
   <div *ngIf="decks" class="row justify-content-center">
     <div *ngFor="let deck of decks" class="col-auto" style="margin: 10px 0 10px 0">
       <mat-card class="commander-viewer" matRipple [matRippleCentered]="false" [matRippleDisabled]="!deck.hovered">
-        <div [ngClass]="{'commander-background-card-closed': deck.hovered, 'commander-background-card-open': !deck.hovered}">
-          <div *ngIf="deck.partner_commander == null">
+
+        <div *ngIf="deck.partner_commander == null" [ngClass]="{'commander-background-card-closed': deck.hovered, 'commander-background-card-open': !deck.hovered}">
+          <div>
             <img src="{{deck.image_url}}" alt="{{deck.commander}}" class="commander-crop">
           </div>
-          <div *ngIf="deck.partner_commander != null">
+          <button class="commander-edit" mat-icon-button [routerLink]="['/decks', deck.id]"><mat-icon>edit</mat-icon></button>
+        </div>
+
+        <div *ngIf="deck.partner_commander != null" [ngClass]="{'commander-background-card-closed': deck.hovered, 'commander-background-card-open': !deck.hovered}">
+          <div>
             <div class="commander-background-card-partner-left">
-              <img src="{{deck.image_url}}" alt="{{deck.commander}}" class="commander-crop">
+              <img src="{{deck.image_url}}" alt="{{deck.commander}}" class="commander-crop-partner">
             </div>
             <div class="commander-background-card-partner-right">
-              <img src="{{deck.partner_image_url}}" alt="{{deck.partner_commander}}" class="commander-crop">
+              <img src="{{deck.partner_image_url}}" alt="{{deck.partner_commander}}" class="commander-crop-partner">
             </div>
           </div>
           <button class="commander-edit" mat-icon-button [routerLink]="['/decks', deck.id]"><mat-icon>edit</mat-icon></button>
         </div>
+
         <div class="commander-background-themes" [ngClass]="{'commander-background-themes-in': deck.hovered}"
              (mouseenter)="deck.hovered=true;" (mouseleave)="deck.hovered=false;">
           <mat-chip-list>
