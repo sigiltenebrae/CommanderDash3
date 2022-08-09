@@ -4,7 +4,7 @@
 <div *ngIf="current_deck || new_deck" fxLayout="row wrap" fxFlex="100" fxLayoutAlign="center" style="margin-bottom: 20px">
   <mat-card fxFlex="40" fxFlex.md="70" fxFlex.lt-md="90" [class.mat-elevation-z3]="true">
     <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
-      <div>
+      <div fxLayout="column">
         <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px" fxLayoutAlign="center">
           <div *ngIf="!has_partner" fxFlex="100">
             <mat-form-field appearance="outline" fxFlex="100">
@@ -14,7 +14,7 @@
                      required minlength="1" #commander="ngModel"
                      [ngbTypeahead]="card_search" value="{{form.commander}}"
                       (ngModelChange)="updateCommander()" [editable]="false">
-              <button mat-icon-button matSuffix [attr.aria-label]="'Add Partner'" type="button" (click)="has_partner=true;">
+              <button mat-icon-button matSuffix [attr.aria-label]="'Add Partner'" type="button" (click)="toggle_partner()">
                 <mat-icon>add</mat-icon>
               </button>
             </mat-form-field>
@@ -36,7 +36,7 @@
                      required minlength="1" #partner_commander="ngModel"
                      [ngbTypeahead]="card_search" value="{{form.partner_commander}}"
                      (ngModelChange)="updatePartner()" [editable]="false">
-              <button mat-icon-button matSuffix [attr.aria-label]="'Add Partner'" type="button" (click)="has_partner=false;">
+              <button mat-icon-button matSuffix [attr.aria-label]="'Add Partner'" type="button" (click)="toggle_partner()">
                 <mat-icon>clear</mat-icon>
               </button>
             </mat-form-field>
@@ -157,7 +157,7 @@
           </div>
           <div>
             <div fxLayout="row" fxLayoutAlign="center">
-              <img [class.mat-elevation-z4]="true" class="mtg-card" src="{{form.partner_image_url}}" alt="{{form.partner_commander}}" loading="lazy">
+              <img [class.mat-elevation-z4]="true" class="mtg-card" src="{{form.partner_image_url}}" alt="{{form.partner_commander && form.partner_commander !== '' ? form.partner_commander : 'select partner'}}" loading="lazy">
             </div>
             <div fxLayout="row" fxLayoutAlign="center">
               <mat-slider
@@ -300,11 +300,19 @@
           </mat-card>
         </div>
         &nbsp;
-        <div fxLayout="row" fxLayoutAlign="end">
+
+        <div *ngIf="!new_deck" fxLayout="row" fxLayoutAlign="end" fxLayoutGap="5px">
+          <button mat-raised-button color="primary" type="submit">Submit</button>
+          <button *ngIf="!deleting" mat-raised-button color="warn" type="button" (click)="deleting = !deleting">Delete</button>
+          <button *ngIf="deleting" mat-raised-button color="warn" type="button" (click)="onDelete()">Confirm</button>
+          <button *ngIf="deleting" mat-raised-button color="accent" type="button" (click)="deleting = !deleting">Cancel</button>
+        </div>
+        <div *ngIf="new_deck" fxLayout="row" fxLayoutAlign="end">
           <button mat-raised-button color="primary" type="submit">
-            Submit
+            Create
           </button>
         </div>
+
       </div>
       <div class="alert alert-warning" *ngIf="f.submitted && isSignUpFailed">
         Signup failed!<br />{{ errorMessage }}

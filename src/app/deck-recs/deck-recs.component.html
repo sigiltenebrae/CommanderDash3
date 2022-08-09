@@ -1,116 +1,128 @@
 <div *ngIf="loading" fxLayout="row" fxFlex="100" fxLayoutAlign="center center" style="margin: 20px;">
   <mat-spinner></mat-spinner>
 </div>
-<div *ngIf="!loading && !calculating && !calculated" fxLayout="row wrap" fxFlexFill fxLayoutAlign="center center" style="margin-bottom: 20px">
-  <mat-card fxFlex="40" fxFlex.md="70" fxFlex.lt-md="90" [class.mat-elevation-z3]="true">
-    <div fxLayout="row" fxLayoutAlign="center" class="recommendation-title">
-      <h2>Calculate Recommendations</h2>
-    </div>
-    <div fxLayout="row" fxLayoutAlign="center">
-      <div fxLayout="column">
-        <div class="recommendation-label">
-          <h4>User Randomness:</h4>
-        </div>
-        <mat-slider
-          class="recommendation-slider"
-          [disabled]="false"
-          [invert]="false"
-          [max]="100"
-          [min]="0"
-          [step]="1"
-          [(ngModel)]="user_randomness"
-          [vertical]="false">
-        </mat-slider>
+
+<div *ngIf="!loading && !calculating && !calculated" style="position: relative; height: 90vh; width: 100vw">
+  <div style="position: absolute; top: 50%;
+  left: 50%;
+  -ms-transform: translateY(-50%) translateX(-50%);
+  transform: translateY(-50%) translateX(-50%);">
+    <mat-card fxFlexFill [class.mat-elevation-z3]="true">
+      <div fxLayout="row" fxLayoutAlign="center" class="recommendation-title">
+        <h2>Calculate Recommendations</h2>
       </div>
-    </div>
-    <div fxLayout="row" fxLayoutAlign="center">
-      <div fxLayout="column">
-        <div class="recommendation-label">
-          <h4>Color Randomness:</h4>
-        </div>
-        <mat-slider
-          class="recommendation-slider"
-          [disabled]="false"
-          [invert]="false"
-          [max]="100"
-          [min]="0"
-          [step]="1"
-          [(ngModel)]="color_randomness"
-          [vertical]="false">
-        </mat-slider>
-      </div>
-    </div>
-    <div fxLayout="row" fxLayoutAlign="center">
-      <div fxLayout="column">
-        <div class="recommendation-label">
-          <h4>Theme Randomness:</h4>
-        </div>
-        <mat-slider
-          class="recommendation-slider"
-          [disabled]="false"
-          [invert]="false"
-          [max]="100"
-          [min]="0"
-          [step]="1"
-          [(ngModel)]="theme_randomness"
-          [vertical]="false">
-        </mat-slider>
-      </div>
-    </div>
-    <div fxLayout="row" fxLayoutAlign="center">
-      <div fxLayout="column">
-        <div class="recommendation-label">
-          <h4>Recommendation Count: {{recommendation_count}}</h4>
-        </div>
-        <mat-slider
-          class="recommendation-slider"
-          [disabled]="false"
-          [invert]="false"
-          [max]="10"
-          [min]="1"
-          [step]="1"
-          [(ngModel)]="recommendation_count"
-          [vertical]="false">
-        </mat-slider>
-      </div>
-    </div>
-    <div fxLayout="row" fxLayoutAlign="center">
-      <div style="width: 300px">
+      <div fxLayout="row" fxLayoutAlign="center">
         <div fxLayout="column">
-          <mat-slide-toggle [(ngModel)]="toggle_colors">Color Filter</mat-slide-toggle>
-          <br>
-          <div *ngIf="toggle_colors" style="margin-left: 40px">
-            <mat-slide-toggle [(ngModel)]="toggle_w">White</mat-slide-toggle><br>
-            <mat-slide-toggle [(ngModel)]="toggle_u">Blue</mat-slide-toggle><br>
-            <mat-slide-toggle [(ngModel)]="toggle_b">Black</mat-slide-toggle><br>
-            <mat-slide-toggle [(ngModel)]="toggle_r">Red</mat-slide-toggle><br>
-            <mat-slide-toggle [(ngModel)]="toggle_g">Green</mat-slide-toggle><br>
+          <div class="recommendation-label">
+            <h4>User Randomness:</h4>
           </div>
-          <mat-slide-toggle [(ngModel)]="toggle_tribal">Allow Tribal</mat-slide-toggle><br>
-          <mat-slide-toggle [(ngModel)]="toggle_top">Allow Top Commanders</mat-slide-toggle><br>&nbsp;&nbsp;
-          <div fxLayout="row" fxLayoutAlign="end">
-            <button mat-raised-button color="accent" (click)="calculateRecommendations()">Calculate</button>
+          <mat-slider
+            class="recommendation-slider"
+            [disabled]="false"
+            [invert]="false"
+            [max]="100"
+            [min]="0"
+            [step]="1"
+            [(ngModel)]="user_randomness"
+            [vertical]="false">
+          </mat-slider>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="center">
+        <div fxLayout="column">
+          <div class="recommendation-label">
+            <h4>Color Randomness:</h4>
+          </div>
+          <mat-slider
+            class="recommendation-slider"
+            [disabled]="false"
+            [invert]="false"
+            [max]="100"
+            [min]="0"
+            [step]="1"
+            [(ngModel)]="color_randomness"
+            [vertical]="false">
+          </mat-slider>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="center">
+        <div fxLayout="column">
+          <div class="recommendation-label">
+            <h4>Theme Randomness:</h4>
+          </div>
+          <mat-slider
+            class="recommendation-slider"
+            [disabled]="false"
+            [invert]="false"
+            [max]="100"
+            [min]="0"
+            [step]="1"
+            [(ngModel)]="theme_randomness"
+            [vertical]="false">
+          </mat-slider>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="center">
+        <div fxLayout="column">
+          <div class="recommendation-label">
+            <h4>Recommendation Count: {{recommendation_count}}</h4>
+          </div>
+          <mat-slider
+            class="recommendation-slider"
+            [disabled]="false"
+            [invert]="false"
+            [max]="10"
+            [min]="1"
+            [step]="1"
+            [(ngModel)]="recommendation_count"
+            [vertical]="false">
+          </mat-slider>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="center">
+        <div style="width: 300px">
+          <div fxLayout="column">
+            <mat-slide-toggle [(ngModel)]="toggle_colors">Color Filter</mat-slide-toggle>
+            <br>
+            <div *ngIf="toggle_colors" style="margin-left: 40px">
+              <mat-slide-toggle [(ngModel)]="toggle_w">White</mat-slide-toggle><br>
+              <mat-slide-toggle [(ngModel)]="toggle_u">Blue</mat-slide-toggle><br>
+              <mat-slide-toggle [(ngModel)]="toggle_b">Black</mat-slide-toggle><br>
+              <mat-slide-toggle [(ngModel)]="toggle_r">Red</mat-slide-toggle><br>
+              <mat-slide-toggle [(ngModel)]="toggle_g">Green</mat-slide-toggle><br>
+            </div>
+            <mat-slide-toggle [(ngModel)]="toggle_tribal">Allow Tribal</mat-slide-toggle><br>
+            <mat-slide-toggle [(ngModel)]="toggle_top">Allow Top Commanders</mat-slide-toggle><br>&nbsp;&nbsp;
+            <div fxLayout="row" fxLayoutAlign="end">
+              <button mat-raised-button color="accent" (click)="calculateRecommendations()">Calculate</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </mat-card>
+    </mat-card>
+  </div>
 </div>
-<div *ngIf="calculating" fxFlexFill fxLayoutAlign="center center" style="margin-bottom: 20px">
-  <mat-card fxFlex="40" fxFlex.md="70" fxFlex.lt-md="90" fxLayout="column" [class.mat-elevation-z3]="true">
-    <div fxLayout="row" fxLayoutAlign="center" class="recommendation-title">
-      <h2>Calculating Recommendations</h2>
-    </div>
-    <div fxLayout="row" fxLayoutAlign="center" fxFlexFill *ngIf="commander_position != commander_total">
-      <h3 style="width: 90%; text-align: center"><h4>Commanders:</h4> &nbsp;<ngb-progressbar type="primary" [striped]="true" [animated]="true" style="height: 28px"
-                                                         [value]="(commander_position/commander_total) * 100"></ngb-progressbar></h3>
-    </div>
-    <div fxLayout="row" fxLayoutAlign="center" fxFlexFill *ngIf="commander_position == commander_total">
-      <h3 style="width: 90%; text-align: center"><h4>Applying Weights: </h4>&nbsp;<ngb-progressbar type="secondary" [striped]="true" [animated]="true" style="height: 28px"
-                                      [value]="(weight_position/weight_total) * 100"></ngb-progressbar></h3>
-    </div>
-    <p>Elapsed Time: {{secondsToString(calc_clock)}}</p>
-  </mat-card>
+
+<div *ngIf="calculating" style="position: relative; height: 90vh; width: 100vw">
+  <div style="position: absolute; top: 50%;
+  left: 50%;
+  -ms-transform: translateY(-50%) translateX(-50%);
+  transform: translateY(-50%) translateX(-50%);">
+    <mat-card fxFlexFill fxLayout="column" [class.mat-elevation-z3]="true">
+      <div fxLayout="row" fxLayoutAlign="center" class="recommendation-title">
+        <h2>Calculating Recommendations</h2>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="center" fxFlexFill *ngIf="commander_position != commander_total">
+        <h3 style="width: 90%; text-align: center"><h4>Commanders:</h4> &nbsp;<ngb-progressbar type="primary" [striped]="true" [animated]="true" style="height: 28px"
+                                                                                               [value]="(commander_position/commander_total) * 100"></ngb-progressbar></h3>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="center" fxFlexFill *ngIf="commander_position == commander_total">
+        <h3 style="width: 90%; text-align: center"><h4>Applying Weights: </h4>&nbsp;<ngb-progressbar type="secondary" [striped]="true" [animated]="true" style="height: 28px"
+                                                                                                     [value]="(weight_position/weight_total) * 100"></ngb-progressbar></h3>
+      </div>
+      <p>Elapsed Time: {{secondsToString(calc_clock)}}</p>
+    </mat-card>
+  </div>
 </div>
 
 <div *ngIf="calculated && recommendations" fxFlexFill fxLayoutAlign="center center" fxLayout="column">

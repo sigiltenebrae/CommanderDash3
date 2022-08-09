@@ -140,4 +140,8 @@ export class DeckDataService {
     deck.creator = this.token.getUser().id;
     return this.http.post(environment.decks_url, JSON.stringify(deck), {headers : new HttpHeaders({'Content-Type': 'application/json'})})
   }
+
+  public deleteDeck(deck: any) {
+    return this.http.delete(environment.decks_url + '/' + deck.id);
+  }
 }

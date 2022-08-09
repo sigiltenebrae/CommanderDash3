@@ -82,7 +82,7 @@ export class DeckEditComponent implements OnInit {
       else {
         this.loading = true;
         this.deckData.getDeck(deckId).then((deck) => {
-          this.current_deck = deck;
+          this.current_deck = JSON.parse(JSON.stringify(deck));
           this.has_partner = (this.current_deck.partner_commander != null);
 
           this.form.commander = this.current_deck.commander;
@@ -173,6 +173,16 @@ export class DeckEditComponent implements OnInit {
       });
       this.image_index = 0;
       this.form.image_url = this.current_deck.images[0];
+    }
+  }
+
+  toggle_partner() {
+    if (this.has_partner) {
+      this.has_partner = false;
+    }
+    else {
+      this.has_partner = true;
+      this.current_deck.partner_images = [""];
     }
   }
 
@@ -287,6 +297,22 @@ export class DeckEditComponent implements OnInit {
           console.log(error);
         }
       });
+    }
+  }
+
+  onDelete() {
+    if (this.current_deck) {
+      if (this.deleting) {
+        console.log('deleting deck ' + this.current_deck.id + '...');
+        this.deckData.deleteDeck(this.current_deck).subscribe(
+          (response) => {
+            this.router.navigate(['decks']).then();
+          },
+          (error) => {
+            console.log(error);
+            this.router.navigate(['decks']).then();
+          });
+      }
     }
   }
 }
