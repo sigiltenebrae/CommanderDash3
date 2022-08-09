@@ -142,6 +142,11 @@ export class DeckDataService {
   }
 
   public deleteDeck(deck: any) {
-    return this.http.delete(environment.decks_url + '/' + deck.id);
+    for (let i = 0; i < this.my_decks.length; i++) {
+      if (this.my_decks[i].id == deck.id) {
+        this.my_decks.splice(i, 1);
+      }
+    }
+    return this.http.delete(environment.decks_url + deck.id);
   }
 }
