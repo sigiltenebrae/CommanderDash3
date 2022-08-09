@@ -15,20 +15,23 @@ import {DeckDataService} from "../../services/deck-data.service";
 
 export class DeckStatsComponent implements OnInit {
 
-  loading = false;
-  decks: any[] = [];
-  theme = "light";
+  loading = false; //display the spinner while the page is loading
+  private decks: any[] = []; //list of all decks for user
+  theme = "light"; //theme type for chart fonts
 
+  //Data for "Average Rating by Color" chart
   public ratingChartData: ChartConfiguration<'bar'>['data'] | undefined;
   public ratingChartLegend = false;
   public ratingChartPlugins = [];
   public ratingChartOptions: ChartConfiguration<'bar'>['options'];
 
+  //Data for "Average Rating by Theme" chart
   public themeChartData: ChartConfiguration<'bar'>['data'] | undefined;
   public themeChartLegend = false;
   public themeChartPlugins = [];
   public themeChartOptions: ChartConfiguration<'bar'>['options'];
 
+  //Data for "Deck Color Percentages" chart
   public colorCountChartLabels: string[] = [ 'W', 'U', 'B', 'R', 'G' ];
   public colorCountChartDatasets: ChartConfiguration<'doughnut'>['data']['datasets'] | undefined;
   public colorCountChartOptions: ChartConfiguration<'doughnut'>['options'];
@@ -54,6 +57,9 @@ export class DeckStatsComponent implements OnInit {
     }
   }
 
+  /**
+   * Load data for "Average Rating by Color" chart
+   */
   loadRatingData() {
     let w = 0; let u = 0; let b = 0; let r = 0; let g = 0;
     let w_play = 0; let u_play = 0; let b_play = 0; let r_play = 0; let g_play = 0;
@@ -141,6 +147,10 @@ export class DeckStatsComponent implements OnInit {
     };
 
   }
+
+  /**
+   * Load data for "Deck Color Percentages" chart
+   */
   loadColorCountData() {
     let w = 0; let u = 0; let b = 0; let r = 0; let g = 0; let total = 0;
     this.decks.forEach((deck) => {
@@ -197,6 +207,9 @@ export class DeckStatsComponent implements OnInit {
       label: 'Series A'
     }];
   }
+  /**
+   * Load data for "Average Rating by Theme" chart
+   */
   loadThemeData() {
     let themeDict: any = {};
     this.decks.forEach((deck) => {

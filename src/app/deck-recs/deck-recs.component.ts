@@ -15,47 +15,48 @@ import {HttpClient} from "@angular/common/http";
 })
 export class DeckRecsComponent implements OnInit {
 
-  loading = false;
-  calculating = false;
-  calculated = false;
-  recommendation_count = 3;
-  recommendations: any[] = [];
+  public loading = false; //display the spinner while the page is loading
+  public calculating = false; //display the loading bar while calculating
+  public calculated = false; //display the recommendations after calculations
+  public recommendation_count = 3; //how many recommendations to get
+  public recommendations: any[] = []; //list of recommendations
 
-  calc_clock: any;
-  calc_clock_subscribe: any;
-  subject: any;
-  commander_position = 0;
-  commander_total = 0;
-  weight_total = 0;
-  weight_position = 0;
+  public calc_clock: any;
+  private calc_clock_subscribe: any;
+  private subject: any; //observable clock
+  public commander_position = 0; //how many commanders have completed calculations (for loading bar)
+  public commander_total = 0; //how many commanders there are (for loading bar)
+  public weight_total = 0; //how many commanders to apply weight calculations to (for loading bar)
+  public weight_position = 0; //how many commanders have completed weights (for loading bar)
 
-  decks: any[] = [];
-  colorData: any = {};
-  themeData: any = {};
+  private decks: any[] = []; //list of all decks for user
+  private colorData: any = {}; //color averages for weight calculations
+  private themeData: any = {}; //theme averages for weight calculations
 
-  user_randomness = 50;
-  color_randomness = 25;
-  theme_randomness = 50;
-  partner_randomness = 50;
+  public user_randomness = 50; //random chance of selecting a user for calculations (higher means less likely)
+  public color_randomness = 25; //how much color ratings impact the weight of a deck
+  public theme_randomness = 50; //how much theme ratings impact the weight of a deck / also shifts theme weights to allow less popular themes to be selected
+  public partner_randomness = 50; //shifts partner weights to allow less popular partners to be selected
 
-  toggle_colors = false;
-  toggle_w = false;
-  toggle_u = false;
-  toggle_b = false;
-  toggle_r = false;
-  toggle_g = false;
-  toggle_c = false;
-  toggle_tribal = true;
-  toggle_top = false;
-  toggle_partner = true;
-  toggle_partner_priority = false;
+  public toggle_colors = false; //force output commander to contain the desired color
+  public toggle_w = false;
+  public toggle_u = false;
+  public toggle_b = false;
+  public toggle_r = false;
+  public toggle_g = false;
+  public toggle_c = false;
+  public toggle_tribal = true; //allow tribal themes to be selected
+  public toggle_top = false; //allow commanders from the top edhrec commanders to be selected for recommendations
+  public toggle_partner = true; //allow partners to be selected
+  public toggle_partner_priority = false; ///prioritize partners in selection
 
-  recommendation_data: any = {};
+  private recommendation_data: any = {}; //weighted dictionary of commanders
 
   constructor(private deckData: DeckDataService, private tokenStorage: TokenStorageService,
               private router: Router, private http: HttpClient) { }
 
   ngOnInit(): void {
+    //force user to log in to view
     if (this.tokenStorage.getUser() == null || this.tokenStorage.getUser() == {} ||
       this.tokenStorage.getUser().id == null || this.tokenStorage.getUser().id < 0) {
       this.router.navigate(['login']);
@@ -70,7 +71,10 @@ export class DeckRecsComponent implements OnInit {
     }
   }
 
-  calculateRecommendations(): void {
+  /**
+   * Start the calculations for recommendations
+   */
+  public calculateRecommendations(): void {
     this.calculating = true;
     this.calculated = false;
     this.subject = new Subject();
@@ -115,11 +119,15 @@ export class DeckRecsComponent implements OnInit {
           });
         });
       });
-      // apply filter to themes
     });
   }
 
-  async calculateRecommendationsForCommander(deck: any) {
+  /**
+   * Calculate recommendations for the commander of given deck. Looks at users who have created decks that share a commander
+   * with the given commander and runs calculations on them.
+   * @param deck deck to compare with.
+   */
+  private async calculateRecommendationsForCommander(deck: any) {
     return new Promise<void>((resolve_commander) => {
       let creator_promises: any[] = [];
 
@@ -149,7 +157,13 @@ export class DeckRecsComponent implements OnInit {
     });
   }
 
-  async getDecksForCreator(username: string, playRating: number) {
+  /**
+   * Calculate recommendation data using a given deck creator. Looks at the decks built by that creator and adds
+   * their score to the dictionary using the play rating.
+   * @param username name of the user to search decks for
+   * @param playRating rating of the deck that the user was pulled from
+   */
+  private async getDecksForCreator(username: string, playRating: number) {
     return new Promise<void>((resolve_user) => {
       let recommended_promises: any[] = [];
 
@@ -162,7 +176,12 @@ export class DeckRecsComponent implements OnInit {
     });
   }
 
-  async getDeckFromServer(deckId: number, playRating: number) {
+  /**
+   * Read in deck from api and put the commander in the recommendation dictionary
+   * @param deckId deck to pull from server
+   * @param playRating rating to apply to the deck in the dictionary
+   */
+  private async getDeckFromServer(deckId: number, playRating: number) {
     return new Promise<void>((resolve_deck) => {
       this.http.get('/archidekt/api/decks/' + deckId + '/').pipe(delay(1000)).subscribe((archidektDeckInfo) => {
         let deckInfo: any = archidektDeckInfo;
@@ -190,7 +209,10 @@ export class DeckRecsComponent implements OnInit {
     });
   }
 
-  getColorRatings(): any {
+  /**
+   * Use rating data for user's decks to calculate weight factor by color
+   */
+  private getColorRatings(): any {
     let w = 0; let u = 0; let b = 0; let r = 0; let g = 0;
     let w_play = 0; let u_play = 0; let b_play = 0; let r_play = 0; let g_play = 0;
     this.decks.forEach((deck) => {
@@ -212,7 +234,11 @@ export class DeckRecsComponent implements OnInit {
     };
   }
 
-  async weighCommanderByColors(commander: string) {
+  /**
+   * Apply color weight factor to commander in the dictionary using its colors
+   * @param commander commander to shift by weight
+   */
+  private async weighCommanderByColors(commander: string) {
     return new Promise<void>(async (resolve_colors) => {
       setTimeout(() => { this.weight_position++; resolve_colors()}, 3000);
       if (this.recommendation_data[commander]) {
@@ -250,7 +276,10 @@ export class DeckRecsComponent implements OnInit {
     });
   }
 
-  getThemeRatings(): any {
+  /**
+   * Use rating data for user's decks to calculate weight factor by theme
+   */
+  private getThemeRatings(): any {
     let themeDict: any = {};
     this.decks.forEach((deck) => {
       if (deck.active) {
@@ -267,7 +296,10 @@ export class DeckRecsComponent implements OnInit {
     return themeDict;
   }
 
-  async filterDecks() {
+  /**
+   * Remove decks from the rating dictionary that do not meet the given filters
+   */
+  private async filterDecks() {
     return new Promise<void>( (resolve_filter) => {
       this.decks.forEach((deck) => { //Remove the commanders already in use.
         if (this.recommendation_data[deck.commander]) {
@@ -319,7 +351,10 @@ export class DeckRecsComponent implements OnInit {
     });
   }
 
-  sortDecks() {
+  /**
+   * Takes the recommendation dictionary and returns a sorted list of the values in it
+   */
+  private sortDecks() {
     let sorted_recomendations: any[] = [];
     Object.keys(this.recommendation_data).forEach((commander) => {
       if (this.recommendation_data[commander] != null) {
@@ -330,7 +365,11 @@ export class DeckRecsComponent implements OnInit {
     return sorted_recomendations;
   }
 
-  async getRecommendationData(commander: string) {
+  /**
+   * Get image, theme, and partner data for the input commander, to be used for displaying
+   * @param commander commander to get data for
+   */
+  private async getRecommendationData(commander: string) {
     return new Promise<void>(async (resolve_recommendation) => {
       setTimeout(() => { resolve_recommendation(); }, 3000);
       let outData: any = {};
@@ -507,7 +546,14 @@ export class DeckRecsComponent implements OnInit {
     });
   }
 
-  assignWeights(to_weigh: string[], type: string) {
+  /**
+   * Takes an input string array and outputs a weighted object list based on the order of the string; objects at the
+   * beginning of the list have higher weights and objects at the end have lower weights, with inner values curved
+   * between them. Higher randomness for the given type brings all values closer to 1.
+   * @param to_weigh input array of values to assign weight to
+   * @param type whether to use theme or partner randomness slider
+   */
+  private assignWeights(to_weigh: string[], type: string) {
     let random_factor = 0;
     if (type === "theme") {
       random_factor = this.theme_randomness;
@@ -551,10 +597,14 @@ export class DeckRecsComponent implements OnInit {
 
   }
 
-  secondsToString(all_seconds: number) {
-    let seconds: string | number = Math.floor(all_seconds % 60)
-    let minutes: string | number = Math.floor( (all_seconds / 60) % 60)
-    let hours: string | number = Math.floor((all_seconds / (60 * 60)) % 60)
+  /**
+   * Helper function to display timer in readable format
+   * @param time_in_seconds
+   */
+  public secondsToString(time_in_seconds: number) {
+    let seconds: string | number = Math.floor(time_in_seconds % 60)
+    let minutes: string | number = Math.floor( (time_in_seconds / 60) % 60)
+    let hours: string | number = Math.floor((time_in_seconds / (60 * 60)) % 60)
     seconds = (seconds < 10) ? '0' + seconds : seconds;
     minutes = (minutes < 10) ? '0' + minutes : minutes;
     hours = (hours < 10) ? '0' + hours : hours;

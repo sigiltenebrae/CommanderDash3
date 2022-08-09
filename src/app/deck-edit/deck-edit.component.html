@@ -314,8 +314,8 @@
         </div>
 
       </div>
-      <div class="alert alert-warning" *ngIf="f.submitted && isSignUpFailed">
-        Signup failed!<br />{{ errorMessage }}
+      <div class="alert alert-warning" *ngIf="f.submitted && isSubmitFailed">
+        Deck submission failed!<br />{{ errorMessage }}
       </div>
     </form>
   </mat-card>

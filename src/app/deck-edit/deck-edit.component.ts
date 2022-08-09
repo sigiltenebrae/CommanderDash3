@@ -18,24 +18,24 @@ import {TokenStorageService} from "../../services/token-storage.service";
 export class DeckEditComponent implements OnInit {
   readonly  seperatorKeysCodes = [ENTER, COMMA] as const;
 
-  errorMessage = '';
-  isSignUpFailed = false;
+  public errorMessage = ''; //error to display on form submission failure
+  public isSubmitFailed = false; //toggle if the form failed to submit
 
-  themes: any[] = [];
-  temp_theme: any = null;
+  public themes: any[] = []; //list of all themes
+  public temp_theme: any = null; //temp theme used for adding to list
 
-  new_deck = false;
-  deleting = false;
-  loading = false;
-  has_partner = false;
-  searching = false;
+  public new_deck = false; //is it a create or edit
+  public deleting = false; //boolean toggle for the "confirm / cancel" check
+  public loading = false; //display the spinner while page is loading
+  public has_partner = false; //does the commander have a partner
+  public searching = false; //is the typeahead still searching
 
-  current_user: any = null;
-  current_deck: any = null;
-  image_index = -1;
-  partner_image_index = -1;
+  private current_user: any = null; //who is currently logged in
+  public current_deck: any = null; //the deck that is currently open
+  public image_index = -1; //index of image currently being used in the list of all images
+  public partner_image_index = -1; //same as above for partner
 
-  form: any = {
+  public form: any = {
     commander: null,
     partner_commander: null,
     friendly_name: null,
@@ -50,17 +50,19 @@ export class DeckEditComponent implements OnInit {
   constructor(private router: Router, private route: ActivatedRoute,
               private deckData: DeckDataService, private tokenStorage: TokenStorageService) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    //prevents the page from saving data when going from edit to create
   }
 
   ngOnInit(): void {
 
+    //force user to log in to view
     if (this.tokenStorage.getUser() == null || this.tokenStorage.getUser() == {} ||
       this.tokenStorage.getUser().id == null || this.tokenStorage.getUser().id < 0) {
       this.router.navigate(['login']);
     }
     else {
       const routeParams = this.route.snapshot.paramMap;
-      const deckId = Number(routeParams.get('deckId'));
+      const deckId = Number(routeParams.get('deckId')); //get deck id from route
 
       if (deckId == -1) {
         this.new_deck = true;
@@ -77,7 +79,7 @@ export class DeckEditComponent implements OnInit {
         this.form.active = true;
       }
       else if (deckId < 0) {
-        this.router.navigate(['/']);
+        this.router.navigate(['/']); //if deck id is invalid, go back to home
       }
       else {
         this.loading = true;
@@ -109,8 +111,12 @@ export class DeckEditComponent implements OnInit {
 
   }
 
+  /**
+   * OperatorFunction for Scryfall autocomplete on typeahead.
+   * @param text$ string to autocomplete
+   */
   // @ts-ignore
-  card_search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+  public card_search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -124,16 +130,24 @@ export class DeckEditComponent implements OnInit {
         this.searching = false;
       }));
 
-  theme_search: OperatorFunction<string, readonly {id: number, name: string}[]> = (text$: Observable<string>) =>
+  /**
+   * OperatorFunction for theme autocomplete on a typeahead
+   * @param text$ string to autocomplete
+   */
+  public theme_search: OperatorFunction<string, readonly {id: number, name: string}[]> = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
       map(term => term === '' ? this.themes
         : this.themes.filter(v => v.name.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
     );
 
-  theme_formatter = (x: {name: string}) => x.name;
+  public theme_formatter = (x: {name: string}) => x.name;
 
-  addTheme(event: MatChipInputEvent): void {
+  /**
+   * Adds theme to the form's theme list
+   * @param event detects a chip create event to add it to the list
+   */
+  public addTheme(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
     if (value) {
       this.form.themes.push({name: value, id: this.temp_theme.id});
@@ -141,26 +155,39 @@ export class DeckEditComponent implements OnInit {
     event.chipInput!.clear();
   }
 
-  removeTheme(theme: any): void {
+  /**
+   * Removes the theme from the form theme list
+   * @param theme theme to remove
+   */
+  public removeTheme(theme: any): void {
     const index = this.form.themes.indexOf(theme);
     if (index > -1) {
       this.form.themes.splice(index, 1);
     }
   }
 
-  changeImage(): void {
+  /**
+   * Helper function for the slider to change the commander image
+   */
+  public changeImage(): void {
     if (this.image_index > -1) {
       this.form.image_url = this.current_deck.images[this.image_index];
     }
   }
 
-  changePartnerImage(): void {
+  /**
+   * Helper function for the slider to change the partner image
+   */
+  public changePartnerImage(): void {
     if (this.partner_image_index > -1) {
       this.form.partner_image_url = this.current_deck.partner_images[this.partner_image_index];
     }
   }
 
-  async updateCommander() {
+  /**
+   * Helper function to update the image array when the commander in the form is changed.
+   */
+  public async updateCommander() {
     if (this.form.commander && this.form.commander !== "") {
       this.form.image_url = "";
       this.current_deck.images = [];
@@ -176,7 +203,10 @@ export class DeckEditComponent implements OnInit {
     }
   }
 
-  toggle_partner() {
+  /**
+   * Turn partner on/off
+   */
+  public toggle_partner() {
     if (this.has_partner) {
       this.has_partner = false;
     }
@@ -186,7 +216,10 @@ export class DeckEditComponent implements OnInit {
     }
   }
 
-  async updatePartner() {
+  /**
+   * Helper function to update the image array when the partner in the form is changed
+   */
+  public async updatePartner() {
     if (this.form.partner_commander && this.form.partner_commander !== "") {
       this.form.partner_image_url = "";
       this.current_deck.partner_images = [];
@@ -202,7 +235,10 @@ export class DeckEditComponent implements OnInit {
     }
   }
 
-  swapCommanderPartner() {
+  /**
+   * Swaps the commander and partner
+   */
+  public swapCommanderPartner() {
     if (this.form.commander && this.form.commander !== "" &&
       this.form.partner_commander && this.form.partner_commander !== "") {
       let temp: any = {};
@@ -223,7 +259,11 @@ export class DeckEditComponent implements OnInit {
     }
   }
 
-  onSubmit() {
+
+  /**
+   * On clicking the submit button, either calls create or update
+   */
+  public onSubmit() {
     let out_deck: any = {};
     out_deck.friendly_name = this.form.friendly_name;
     out_deck.commander = this.form.commander;
@@ -300,7 +340,11 @@ export class DeckEditComponent implements OnInit {
     }
   }
 
-  onDelete() {
+
+  /**
+   * On delete button click, calls delete
+   */
+  public onDelete() {
     if (this.current_deck) {
       if (this.deleting) {
         console.log('deleting deck ' + this.current_deck.id + '...');
