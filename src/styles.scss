@@ -143,7 +143,8 @@ a, h1, h2, h3, h4, h5, h6 .nav-button{
   100% { clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%); }
 }
 
-.commander-viewer .commander-background-card-partner-left {
+.commander-viewer .commander-background-card-partner-left,
+.commander-viewer .commander-background-card-partner-left-no-anim {
   position: absolute;
   top: 0;
   left: 0;
@@ -155,7 +156,8 @@ a, h1, h2, h3, h4, h5, h6 .nav-button{
   clip-path: polygon(0 0, 49.5% 0, 49.5% 100%, 0 100%);
 }
 
-.commander-viewer .commander-background-card-partner-right {
+.commander-viewer .commander-background-card-partner-right,
+.commander-viewer .commander-background-card-partner-right-no-anim {
   position: absolute;
   top: 0;
   left: 0;
