@@ -11,8 +11,8 @@
               <mat-label>Commander</mat-label>
               <input matInput [type]="'text'"
                      name="commander" [(ngModel)]="form.commander"
-                     required minlength="1" #commander="ngModel"
-                     [ngbTypeahead]="card_search" value="{{form.commander}}"
+                     required minlength="1"
+                     [ngbTypeahead]="card_search"
                       (ngModelChange)="updateCommander()" [editable]="false">
               <button mat-icon-button matSuffix [attr.aria-label]="'Add Partner'" type="button" (click)="toggle_partner()">
                 <mat-icon>add</mat-icon>
@@ -25,16 +25,17 @@
               <input matInput [type]="'text'"
                      name="commander" [(ngModel)]="form.commander"
                      required minlength="1" #commander="ngModel"
-                     [ngbTypeahead]="card_search" value="{{form.commander}}"
+                     [ngbTypeahead]="card_search"
                      (ngModelChange)="updateCommander()" [editable]="false">
             </mat-form-field>
+
             <button mat-icon-button type="button" (click)="swapCommanderPartner()"><mat-icon>compare_arrows</mat-icon></button>
             <mat-form-field appearance="outline" fxFlex="45">
               <mat-label>Partner</mat-label>
               <input matInput [type]="'text'"
                      name="partner_commander" [(ngModel)]="form.partner_commander"
                      required minlength="1" #partner_commander="ngModel"
-                     [ngbTypeahead]="card_search" value="{{form.partner_commander}}"
+                     [ngbTypeahead]="card_search"
                      (ngModelChange)="updatePartner()" [editable]="false">
               <button mat-icon-button matSuffix [attr.aria-label]="'Add Partner'" type="button" (click)="toggle_partner()">
                 <mat-icon>clear</mat-icon>

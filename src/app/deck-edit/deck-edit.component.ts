@@ -36,7 +36,7 @@ export class DeckEditComponent implements OnInit {
   public partner_image_index = -1; //same as above for partner
 
   public form: any = {
-    commander: null,
+    commander: "",
     partner_commander: null,
     friendly_name: null,
     deck_url: null,
@@ -254,7 +254,7 @@ export class DeckEditComponent implements OnInit {
 
       this.form.partner_commander = temp.commander;
       this.form.partner_image_url = temp.image_url;
-      this.current_deck.partner_imager = temp.images;
+      this.current_deck.partner_images = temp.images;
       this.partner_image_index = temp.index;
     }
   }
