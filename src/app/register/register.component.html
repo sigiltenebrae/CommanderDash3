@@ -7,7 +7,6 @@
       <div class="register-form" fxLayout="row wrap" fxLayoutAlign="center center" >
 
         <h2 *ngIf="!isSuccessful">Register</h2>
-
         <form *ngIf="!isSuccessful" name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
           <div class="form-group register-field">
             <mat-form-field appearance="outline" class="register-field">
@@ -43,6 +42,22 @@
               <div *ngIf="password.errors['minlength']">
                 Password must be at least 6 characters
               </div>
+            </div>
+          </div>
+
+          <div class="form-group register-field">
+            <mat-form-field appearance="outline" class="register-field">
+              <mat-label>Repeat Password</mat-label>
+              <input matInput [type]="hide_repeat_password ? 'password' : 'text'"
+                     name="repeat_password" [(ngModel)]="form.repeat_password"
+                     required minlength="6" #repeat_password="ngModel" pattern="{{ password.value }}">
+              <button type="button" mat-icon-button matSuffix (click)="hide_repeat_password = !hide_repeat_password" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide_repeat_password">
+                <mat-icon>{{hide_repeat_password ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </mat-form-field>
+            <div class="alert-danger" *ngIf="repeat_password.errors && f.submitted">
+              <div *ngIf="repeat_password.errors['required']">Repeat password is required</div>
+              <div *ngIf="repeat_password.errors['pattern']">Passwords do not match</div>
             </div>
           </div>
 

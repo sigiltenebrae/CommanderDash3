@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { AuthService } from "../../services/auth.service";
+import {AbstractControl, ValidationErrors, ValidatorFn} from "@angular/forms";
 
 @Component({
   selector: 'app-register',
@@ -17,12 +18,14 @@ export class RegisterComponent implements OnInit {
   form: any = {
     username: null,
     password: null,
+    repeat_password: null,
   };
   isSuccessful = false;
   isSignUpFailed = false;
   errorMessage = '';
 
   hide_password_1 = true;
+  hide_repeat_password = true;
 
   onSubmit(): void {
     const { username, password } = this.form;

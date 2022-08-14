@@ -60,6 +60,22 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
+            },
+            "tenebris": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.tenebris.ts"
+                }
+              ]
+            },
+            "localhost": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.localhost.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -72,6 +88,12 @@
             },
             "development": {
               "browserTarget": "CommanderDash3:build:development"
+            },
+            "tenebris": {
+              "browserTarget": "CommanderDash3:build:tenebris"
+            },
+            "localhost": {
+              "browserTarget": "CommanderDash3:build:localhost"
             }
           },
           "defaultConfiguration": "development"
