@@ -39,6 +39,7 @@ import { DeckEditComponent } from './deck-edit/deck-edit.component';
 import { DeckStatsComponent } from './deck-stats/deck-stats.component';
 import { DeckRecsComponent } from './deck-recs/deck-recs.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { DeckAllComponent } from './deck-all/deck-all.component';
 
 
 
@@ -55,6 +56,7 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
     DeckStatsComponent,
     DeckRecsComponent,
     ChangePasswordComponent,
+    DeckAllComponent,
   ],
   imports: [
     BrowserModule,
@@ -73,6 +75,7 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
       {path: 'change_password', component: ChangePasswordComponent},
       {path: 'profile', component: ProfileComponent},
 
+      {path: 'decks/all', component: DeckAllComponent},
       {path: 'decks', component: DeckListComponent},
       {path: 'decks/:deckId', component: DeckEditComponent},
       {path: 'stats', component: DeckStatsComponent},

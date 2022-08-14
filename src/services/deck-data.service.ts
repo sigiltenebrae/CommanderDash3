@@ -14,9 +14,45 @@ export class DeckDataService {
 
   private my_decks: any = null; //list of all decks for user
   private themes: any = null; //list of all themes
+  private user_dict: any = null; //dictionary of user ids and usernames
+
+  public getUserDict(): Promise<any> {
+    return new Promise<any>( (resolve_users, reject) => {
+      if (this.user_dict) {
+        resolve_users(this.user_dict);
+      }
+      else {
+        this.http.get(environment.users_url).subscribe( async (userlist) => {
+          let all_users: any = userlist;
+          this.user_dict = {};
+          for (let user of all_users) {
+            this.user_dict[user.id] = user.username;
+          }
+          resolve_users(this.user_dict);
+        });
+      }
+    });
+  }
 
   /**
-   * Returns the contents of 'my_decks' or grabs from the db if 'my_decks' is empty
+   * Returns all decks from the db, sorted by user.
+   */
+  public async getAllDecks(): Promise<any> {
+    return new Promise<any>( (resolve_decks, reject) => {
+      this.http.get(environment.decks_url).subscribe(async (decklist) => {
+        let all_decks: any = decklist;
+        for (let deck of all_decks) {
+          await this.getDeckScryfallData(deck);
+        }
+        resolve_decks(all_decks);
+      }, (error) => {
+        resolve_decks([]);
+      });
+    });
+  }
+
+  /**
+   * Returns the contents of 'my_decks' or grabs from the db if 'my_decks' is empty.
    */
   public async getDecks(): Promise<any> {
     return new Promise<any>((resolve_decks, reject) => {

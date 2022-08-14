@@ -1,0 +1,70 @@
+<div *ngIf="loading" fxLayout="row" fxFlex="100" fxLayoutAlign="center center" style="margin: 20px;">
+  <mat-spinner></mat-spinner>
+</div>
+<div style="margin: 20px">
+  <mat-accordion *ngIf="!loading" class="deck-headers-align" multi>
+    <mat-expansion-panel *ngFor="let user of all_decks_sorted" [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{user.user}}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="container-fluid">
+        <div class="row justify-content-center">
+          <div *ngFor="let deck of user.decks" class="col-auto" style="margin: 10px 0 10px 0">
+            <mat-card class="commander-viewer" matRipple [matRippleCentered]="false" [matRippleDisabled]="!deck.hovered">
+
+              <div *ngIf="deck.partner_commander == null" [ngClass]="{'commander-background-card-closed': deck.hovered, 'commander-background-card-open-no-anim': !deck.hovered}">
+                <div>
+                  <img src="{{deck.image_url}}" alt="{{deck.commander}}" class="commander-crop">
+                </div>
+                <button class="commander-edit" mat-icon-button [routerLink]="['/decks', deck.id]"><mat-icon>edit</mat-icon></button>
+              </div>
+
+              <div *ngIf="deck.partner_commander != null" [ngClass]="{'commander-background-card-closed': deck.hovered, 'commander-background-card-open-no-anim': !deck.hovered}">
+                <div>
+                  <div class="commander-background-card-partner-left-no-anim">
+                    <img src="{{deck.image_url}}" alt="{{deck.commander}}" class="commander-crop">
+                  </div>
+                  <div class="commander-background-card-partner-right-no-anim">
+                    <img src="{{deck.partner_image_url}}" alt="{{deck.partner_commander}}" class="commander-crop">
+                  </div>
+                </div>
+                <button class="commander-edit" mat-icon-button [routerLink]="['/decks', deck.id]"><mat-icon>edit</mat-icon></button>
+              </div>
+
+              <div class="commander-background-themes" [ngClass]="{'commander-background-themes-in': deck.hovered}"
+                   (mouseenter)="deck.hovered=true;" (mouseleave)="deck.hovered=false;">
+                <mat-chip-list>
+                  <mat-chip *ngFor="let theme of deck.themes" color="accent" selected>
+                    {{theme.name}}
+                  </mat-chip>
+                </mat-chip-list>
+              </div>
+              <mat-card-content class="commander-content" (mouseenter)="deck.hovered=true;" (mouseleave)="deck.hovered=false;">
+                <div class="commander-content-holder">
+                  <h2>{{deck.friendly_name}}</h2>
+                  <h4 class="commander-name">{{deck.commander}}</h4>
+                  <h4 *ngIf="deck.partner_commander" class="commander-name">{{deck.partner_commander}}</h4>
+                  <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">
+                    <img *ngIf="deck.colors.includes('W');" class="commander-color" src="assets/color_symbols/W.png">
+                    <img *ngIf="deck.colors.includes('U');" class="commander-color" src="assets/color_symbols/U.png">
+                    <img *ngIf="deck.colors.includes('B');" class="commander-color" src="assets/color_symbols/B.png">
+                    <img *ngIf="deck.colors.includes('R');" class="commander-color" src="assets/color_symbols/R.png">
+                    <img *ngIf="deck.colors.includes('G');" class="commander-color" src="assets/color_symbols/G.png">
+                  </div>
+                  <div fxLayout="row" fxLayoutAlign="center" [ngClass]="{'commander-ratings-tilt': !deck.hovered, 'commander-ratings-flat': deck.hovered}" class="commander-ratings">
+                    <mat-icon *ngFor="let i of [].constructor(deck.play_rating)" class="commander-rating" color="primary">star</mat-icon>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+
+
+
