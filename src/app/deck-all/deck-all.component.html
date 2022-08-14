@@ -12,7 +12,7 @@
       <div class="container-fluid">
         <div class="row justify-content-center">
           <div *ngFor="let deck of user.decks" class="col-auto" style="margin: 10px 0 10px 0">
-            <mat-card class="commander-viewer" matRipple [matRippleCentered]="false" [matRippleDisabled]="!deck.hovered">
+            <mat-card class="commander-viewer" matRipple [matRippleCentered]="false" [matRippleDisabled]="!deck.hovered" [class.mat-elevation-z8]="true">
 
               <div *ngIf="deck.partner_commander == null" [ngClass]="{'commander-background-card-closed': deck.hovered, 'commander-background-card-open-no-anim': !deck.hovered}">
                 <div>
@@ -43,7 +43,8 @@
               </div>
               <mat-card-content class="commander-content" (mouseenter)="deck.hovered=true;" (mouseleave)="deck.hovered=false;">
                 <div class="commander-content-holder">
-                  <h2>{{deck.friendly_name}}</h2>
+                  <h2 *ngIf="deck.url != null && deck.url !== ''"><a href="{{deck.url}}" target="_blank">{{deck.friendly_name}}</a></h2>
+                  <h2 *ngIf="deck.url == null || deck.url === ''">{{deck.friendly_name}}</h2>
                   <h4 class="commander-name">{{deck.commander}}</h4>
                   <h4 *ngIf="deck.partner_commander" class="commander-name">{{deck.partner_commander}}</h4>
                   <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">

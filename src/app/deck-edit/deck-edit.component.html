@@ -191,7 +191,8 @@
               </div>
               <mat-card-content class="commander-content">
                 <div class="commander-content-holder">
-                  <h2>{{form.friendly_name}}</h2>
+                  <h2 *ngIf="form.url != null && form.url !== ''"><a href="{{form.url}}" target="_blank">{{form.friendly_name}}</a></h2>
+                  <h2 *ngIf="form.url == null || form.url === ''">{{form.friendly_name}}</h2>
                   <h4 class="commander-name">{{form.commander}}</h4>
                   <h4 *ngIf="form.partner_commander" class="commander-name">{{form.partner_commander}}</h4>
                   <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">
@@ -222,7 +223,8 @@
             </div>
             <mat-card-content class="commander-content">
               <div class="commander-content-holder">
-                <h2>{{form.friendly_name}}</h2>
+                <h2 *ngIf="form.url != null && form.url !== ''"><a href="{{form.url}}" target="_blank">{{form.friendly_name}}</a></h2>
+                <h2 *ngIf="form.url == null || form.url === ''">{{form.friendly_name}}</h2>
                 <h4 class="commander-name">{{form.commander}}</h4>
                 <h4 *ngIf="form.partner_commander" class="commander-name">{{form.partner_commander}}</h4>
                 <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">
@@ -252,7 +254,8 @@
             </div>
             <mat-card-content class="commander-content">
               <div class="commander-content-holder">
-                <h2>{{form.friendly_name}}</h2>
+                <h2 *ngIf="form.url != null && form.url !== ''"><a href="{{form.url}}" target="_blank">{{form.friendly_name}}</a></h2>
+                <h2 *ngIf="form.url == null || form.url === ''">{{form.friendly_name}}</h2>
                 <h4 class="commander-name">{{form.commander}}</h4>
                 <h4 *ngIf="form.partner_commander" class="commander-name">{{form.partner_commander}}</h4>
                 <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">
@@ -283,7 +286,8 @@
             </div>
             <mat-card-content class="commander-content">
               <div class="commander-content-holder">
-                <h2>{{form.friendly_name}}</h2>
+                <h2 *ngIf="form.url != null && form.url !== ''"><a href="{{form.url}}" target="_blank">{{form.friendly_name}}</a></h2>
+                <h2 *ngIf="form.url == null || form.url === ''">{{form.friendly_name}}</h2>
                 <h4 class="commander-name">{{form.commander}}</h4>
                 <h4 *ngIf="form.partner_commander" class="commander-name">{{form.partner_commander}}</h4>
                 <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">

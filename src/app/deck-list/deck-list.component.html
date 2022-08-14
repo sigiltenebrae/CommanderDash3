@@ -32,7 +32,8 @@
         </div>
         <mat-card-content class="commander-content" (mouseenter)="deck.hovered=true;" (mouseleave)="deck.hovered=false;">
           <div class="commander-content-holder">
-            <h2>{{deck.friendly_name}}</h2>
+            <h2 *ngIf="deck.url != null && deck.url !== ''"><a href="{{deck.url}}" target="_blank">{{deck.friendly_name}}</a></h2>
+            <h2 *ngIf="deck.url == null || deck.url === ''">{{deck.friendly_name}}</h2>
             <h4 class="commander-name">{{deck.commander}}</h4>
             <h4 *ngIf="deck.partner_commander" class="commander-name">{{deck.partner_commander}}</h4>
             <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">
