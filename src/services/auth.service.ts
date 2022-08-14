@@ -36,4 +36,8 @@ export class AuthService {
       new_password: new_password
     }, httpOptions);
   }
+
+  setTheme(theme: string) {
+    return this.http.put<any>(environment.users_url + '/theme/' + this.tokenStorage.getUser().id, {theme: theme}, {headers : new HttpHeaders({'Content-Type': 'application/json'})});
+  }
 }

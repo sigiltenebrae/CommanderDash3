@@ -2,6 +2,7 @@ import {Component, HostBinding, OnInit} from '@angular/core';
 import {OverlayContainer} from "@angular/cdk/overlay";
 import { TokenStorageService } from "../services/token-storage.service";
 import {Router} from "@angular/router";
+import {AuthService} from "../services/auth.service";
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,7 @@ export class AppComponent implements OnInit {
   public isDark = false; //Theme to use
   public loggedIn = false; //Is a user logged in
 
-  constructor(public overlayContainer: OverlayContainer, private tokenStorage: TokenStorageService, private router: Router) {}
+  constructor(public overlayContainer: OverlayContainer, private tokenStorage: TokenStorageService, private router: Router, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.loggedIn = !(this.tokenStorage.getUser() == null || this.tokenStorage.getUser() == {} ||
@@ -42,6 +43,7 @@ export class AppComponent implements OnInit {
    */
   public toggleDarkTheme() {
     if (this.isDark) {
+      this.authService.setTheme("light").subscribe();
       this.onSetTheme('light-theme');
       this.isDark = false;
       let tempUser: any = this.tokenStorage.getUser();
@@ -49,6 +51,7 @@ export class AppComponent implements OnInit {
       this.tokenStorage.saveUser(tempUser);
     }
     else {
+      this.authService.setTheme("dark").subscribe();
       this.onSetTheme('dark-theme');
       this.isDark = true;
       let tempUser: any = this.tokenStorage.getUser();

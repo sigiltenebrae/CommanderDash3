@@ -60,7 +60,7 @@ export class DeckDataService {
         resolve_decks(this.my_decks);
       }
       else {
-        this.http.get(environment.users_url + '/' + this.token.getUser().id).subscribe(async (decklist) => {
+        this.http.get(environment.decks_url + 'byuser/' + this.token.getUser().id).subscribe(async (decklist) => {
           let decks: any = decklist;
           for (let deck of decks) {
             await this.getDeckScryfallData(deck);
