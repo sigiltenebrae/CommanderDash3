@@ -290,6 +290,15 @@ a, h1, h2, h3, h4, h5, h6 .nav-button{
   @include mat.elevation(2);
 }
 
+.commander-viewer .commander-legality {
+  position: absolute;
+  height: 16px;
+  width: 100%;
+  bottom: 10px;
+  left: 0;
+  padding-right: 10px;
+}
+
 .commander-viewer .commander-ratings {
   position: absolute;
   pointer-events: none;
@@ -440,4 +449,14 @@ h2 a {
 .ban-card-holder:hover .delete-button,
 .ban-card-holder:hover .switch-side{
   display: block;
+}
+
+.issue-popover {
+  min-width: 256px;
+  font-size: 125%;
+  font-family: Beleren;
+}
+
+.issue-popover p {
+  color: $danger;
 }

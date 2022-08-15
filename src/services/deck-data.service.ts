@@ -5,6 +5,7 @@ import * as Scry from "scryfall-sdk";
 
 import {TokenStorageService} from "./token-storage.service";
 import {environment} from "../environments/environment";
+import {delay} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ export class DeckDataService {
   private themes: any = null; //list of all themes
   private user_dict: any = null; //dictionary of user ids and usernames
   private ban_dict: any = null; //dictionary of ban types by key of id
+  private ban_list: any = null;
 
   /**
    * Returns a dictionary of usernames by key of user id
@@ -64,6 +66,9 @@ export class DeckDataService {
    */
   public getBanList(): Promise<any> {
     return new Promise<any>((resolve_bans, reject) => {
+      if (this.ban_list) {
+        resolve_bans(this.ban_list)
+      }
       this.http.get(environment.bans_url).subscribe(async (banlist) => {
         let bans: any = banlist;
         let ban_dict: any = {};
@@ -98,6 +103,7 @@ export class DeckDataService {
             });
           }
         }
+        this.ban_list = ban_dict;
         resolve_bans(ban_dict);
       }, (error) => {
         resolve_bans({});
@@ -106,8 +112,8 @@ export class DeckDataService {
   }
 
   /**
-   * Adds the given card object to the ban list. Card object needs to include card_name and type.
-   * @param card_to_ban
+   * Adds the given card object to the ban list.
+   * @param card_to_ban Card object, needs to include card_name and type.
    */
   public banCard(card_to_ban: any): Promise<void> {
     return new Promise<void>((resolve_ban, reject) => {
@@ -119,6 +125,10 @@ export class DeckDataService {
     })
   }
 
+  /**
+   * Remove the given card from the ban list
+   * @param card_name string name of card to remove
+   */
   public removeCardBan(card_name: string): Promise<void> {
     return new Promise<void>((resolve) => {
       this.http.post(environment.bans_url + '/remove', JSON.stringify({card_name: card_name}), {headers: new HttpHeaders({'Content-Type': 'application/json'})}).subscribe(() => {
@@ -312,5 +322,40 @@ export class DeckDataService {
       }
     }
     return this.http.delete(environment.decks_url + deck.id);
+  }
+
+  public async getDeckLegality(deck: any): Promise<void> {
+    return new Promise<void>((resolve_legality) => {
+      if (deck.url == null || deck.url === "") {
+        deck.legality = "Unknown";
+        deck.issues = [];
+        resolve_legality();
+      }
+      else {
+        this.getBanList().then((banlist) => {
+          let ban_list = banlist;
+          let deckId = deck.url.substring(0, deck.url.indexOf('#')).substring(deck.url.indexOf('/decks/') + 7);
+          this.http.get('/archidekt/api/decks/' + deckId + '/').pipe(delay(1000)).subscribe((archidektDeckInfo) => {
+            let archidekt_deck: any = archidektDeckInfo;
+            let banned_cards: any = [];
+            archidekt_deck.cards.forEach((card: any) => {
+              for (let i = 0; i < ban_list[1].length; i++) {
+                if (card.card.oracleCard.name === ban_list[1][i].name) {
+                  banned_cards.push(card.card.oracleCard.name);
+                  break;
+                }
+              }
+            });
+            deck.legality = banned_cards.length > 0 ? "Illegal": "Legal";
+            deck.issues = banned_cards;
+            resolve_legality();
+          }, (error) => {
+            deck.legality = "Unknown";
+            deck.issues = [];
+            resolve_legality();
+          });
+        });
+      }
+    });
   }
 }

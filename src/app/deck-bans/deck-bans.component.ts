@@ -57,13 +57,13 @@ export class DeckBansComponent implements OnInit {
             cards: ban_data[3]
           });
         }
-        if (ban_list_data[1]) {
+        if (ban_list_data[1]) { //Banned
           ban_list_sorted.push({
             type: this.ban_type_dict[1],
             cards: ban_data[1]
           });
         }
-        if (ban_list_data[2]) {
+        if (ban_list_data[2]) { //Allowed
           ban_list_sorted.push({
             type: this.ban_type_dict[2],
             cards: ban_data[2]

@@ -14,6 +14,17 @@ export class DeckListComponent implements OnInit {
 
   constructor(private deckData: DeckDataService, private tokenStorage: TokenStorageService, private router: Router) { }
 
+  public listToString(list: any[]): string {
+    let outString = ""
+    for (let i = 0; i < list.length; i++) {
+      outString += list[i];
+      if (i < list.length - 1) {
+        outString += '\n';
+      }
+    }
+    return outString;
+  }
+
   ngOnInit(): void {
     //force user to log in to view
     if (this.tokenStorage.getUser() == null || this.tokenStorage.getUser() == {} ||
@@ -22,16 +33,21 @@ export class DeckListComponent implements OnInit {
     }
     else {
       this.loading = true;
-      this.deckData.getDecks().then(
-        (temp) => {
-          this.decks = temp;
-          this.loading = false;
-        }
-      );
-      for (let deck of this.decks) {
-        deck.hovered = false;
-      }
+      this.deckData.getBanList().then(() => {
+        this.deckData.getDecks().then(
+          (temp) => {
+            this.decks = temp;
+            let deck_promises: any = [];
+            for (let deck of this.decks) {
+              deck.hovered = false;
+              deck_promises.push(this.deckData.getDeckLegality(deck));
+            }
+            Promise.all(deck_promises).then(() => {
+              this.loading = false;
+            })
+          }
+        );
+      });
     }
-
   }
 }

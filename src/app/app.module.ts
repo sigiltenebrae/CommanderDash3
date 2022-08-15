@@ -42,6 +42,7 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { DeckAllComponent } from './deck-all/deck-all.component';
 import { DeckBansComponent } from './deck-bans/deck-bans.component';
 import {MatSelectModule} from "@angular/material/select";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 
 
@@ -106,7 +107,8 @@ import {MatSelectModule} from "@angular/material/select";
     MatProgressSpinnerModule,
     NgChartsModule,
     MatOptionModule,
-    MatSelectModule
+    MatSelectModule,
+    MatTooltipModule
   ],
   exports: [RouterModule],
   providers: [],
