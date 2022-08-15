@@ -14,17 +14,6 @@ export class DeckListComponent implements OnInit {
 
   constructor(private deckData: DeckDataService, private tokenStorage: TokenStorageService, private router: Router) { }
 
-  public listToString(list: any[]): string {
-    let outString = ""
-    for (let i = 0; i < list.length; i++) {
-      outString += list[i];
-      if (i < list.length - 1) {
-        outString += '\n';
-      }
-    }
-    return outString;
-  }
-
   ngOnInit(): void {
     //force user to log in to view
     if (this.tokenStorage.getUser() == null || this.tokenStorage.getUser() == {} ||

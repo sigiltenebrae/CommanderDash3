@@ -29,35 +29,41 @@ export class DeckAllComponent implements OnInit {
       this.loading = true;
       this.deckData.getUserDict().then((user_data) => {
         this.user_dict = user_data;
-        this.deckData.getAllDecks().then((deck_data) => {
-          this.all_decks = deck_data;
-          let deck_dict: any = {};
-          for (let deck of this.all_decks) {
-            if (deck.active) {
-              deck.hovered = false;
-              if (deck_dict[deck.creator] != null) {
-                deck_dict[deck.creator].push(deck);
-              }
-              else {
-                deck_dict[deck.creator] = [];
-                deck_dict[deck.creator].push(deck);
+        this.deckData.getBanList().then(()=> {
+          this.deckData.getAllDecks().then((deck_data) => {
+            this.all_decks = deck_data;
+            let deck_dict: any = {};
+            let deck_promises: any = [];
+            for (let deck of this.all_decks) {
+              if (deck.active) {
+                deck.hovered = false;
+                deck_promises.push(this.deckData.getDeckLegality(deck));
+                if (deck_dict[deck.creator] != null) {
+                  deck_dict[deck.creator].push(deck);
+                }
+                else {
+                  deck_dict[deck.creator] = [];
+                  deck_dict[deck.creator].push(deck);
+                }
               }
             }
-          }
-          this.all_decks_sorted.push({
-            user: this.user_dict[this.tokenStorage.getUser().id],
-            decks: deck_dict[this.tokenStorage.getUser().id]
-          });
-          for (let user of Object.keys(deck_dict)) {
-            if (user != this.tokenStorage.getUser().id) {
+            Promise.all(deck_promises).then(() => {
               this.all_decks_sorted.push({
-                user: this.user_dict[user],
-                decks: deck_dict[user]
+                user: this.user_dict[this.tokenStorage.getUser().id],
+                decks: deck_dict[this.tokenStorage.getUser().id]
               });
-            }
-          }
-          this.loading = false;
-        });
+              for (let user of Object.keys(deck_dict)) {
+                if (user != this.tokenStorage.getUser().id) {
+                  this.all_decks_sorted.push({
+                    user: this.user_dict[user],
+                    decks: deck_dict[user]
+                  });
+                }
+              }
+              this.loading = false;
+            });
+          });
+        })
       });
     }
   }
