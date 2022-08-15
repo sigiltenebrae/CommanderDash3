@@ -18,6 +18,7 @@ export class DeckDataService {
   private user_dict: any = null; //dictionary of user ids and usernames
   private ban_dict: any = null; //dictionary of ban types by key of id
   private ban_list: any = null;
+  private ban_list_images = null;
 
   /**
    * Returns a dictionary of usernames by key of user id
@@ -99,8 +100,8 @@ export class DeckDataService {
    */
   public getBanListWithImages(): Promise<any> {
     return new Promise<any>((resolve_bans, reject) => {
-      if (this.ban_list) {
-        resolve_bans(this.ban_list)
+      if (this.ban_list_images) {
+        resolve_bans(this.ban_list_images)
       }
       this.http.get(environment.bans_url).subscribe(async (banlist) => {
         let bans: any = banlist;
@@ -137,6 +138,7 @@ export class DeckDataService {
           }
         }
         this.ban_list = ban_dict;
+        this.ban_list_images = ban_dict;
         resolve_bans(ban_dict);
       }, (error) => {
         resolve_bans({});
