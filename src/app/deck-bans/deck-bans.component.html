@@ -1,12 +1,42 @@
 <div *ngIf="loading" fxLayout="row" fxFlex="100" fxLayoutAlign="center center" style="margin: 20px;">
   <mat-spinner></mat-spinner>
 </div>
-<div style="margin: 20px">
-  <mat-accordion *ngIf="!loading" class="deck-headers-align" multi>
+<div *ngIf="!loading" style="margin: 20px">
+  <form (ngSubmit)="f.form.valid && banCard()" #f="ngForm" novalidate>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xl-6">
+          <mat-form-field appearance="fill" style="width: 100%">
+            <mat-label>Card To Ban</mat-label>
+            <input matInput [type]="'text'"
+                   name="commander" [(ngModel)]="form.card"
+                   [ngbTypeahead]="card_search"
+                   required minlength="1"
+                   [editable]="false">
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Ban Type</mat-label>
+            <mat-select [(ngModel)]="form.type">
+              <mat-option *ngFor="let ban_type of getBanIds()" value="{{ban_type}}">{{ban_type_dict[ban_type]}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-2">
+          <button mat-raised-button color="primary" type="submit">Ban Card</button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div *ngIf="cards_to_ban.length > 0">
+    <p>{{cards_to_ban | json}}</p>
+  </div>
+  <mat-accordion class="deck-headers-align" multi>
     <mat-expansion-panel *ngFor="let ban_type of all_bans_sorted" [expanded]="true">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          {{ban_type.type}}
+          {{ban_type.type.toUpperCase()}}
         </mat-panel-title>
       </mat-expansion-panel-header>
       <div class="container-fluid">

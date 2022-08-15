@@ -24,7 +24,7 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatButtonModule } from "@angular/material/button";
 import { MatChipsModule } from "@angular/material/chips";
-import { MatRippleModule } from "@angular/material/core";
+import {MatOptionModule, MatRippleModule} from "@angular/material/core";
 import {MatInputModule} from "@angular/material/input";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
@@ -41,6 +41,7 @@ import { DeckRecsComponent } from './deck-recs/deck-recs.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { DeckAllComponent } from './deck-all/deck-all.component';
 import { DeckBansComponent } from './deck-bans/deck-bans.component';
+import {MatSelectModule} from "@angular/material/select";
 
 
 
@@ -103,7 +104,9 @@ import { DeckBansComponent } from './deck-bans/deck-bans.component';
     MatRippleModule,
     MatInputModule,
     MatProgressSpinnerModule,
-    NgChartsModule
+    NgChartsModule,
+    MatOptionModule,
+    MatSelectModule
   ],
   exports: [RouterModule],
   providers: [],

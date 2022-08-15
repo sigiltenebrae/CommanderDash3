@@ -3,6 +3,8 @@ import {Router} from "@angular/router";
 
 import {DeckDataService} from "../../services/deck-data.service";
 import {TokenStorageService} from "../../services/token-storage.service";
+import {debounceTime, distinctUntilChanged, Observable, OperatorFunction, switchMap, tap} from "rxjs";
+import * as Scry from "scryfall-sdk";
 
 @Component({
   selector: 'app-deck-bans',
@@ -11,9 +13,18 @@ import {TokenStorageService} from "../../services/token-storage.service";
 })
 export class DeckBansComponent implements OnInit {
 
+  public form: any = {
+    card: null,
+    type: 1
+  }
+
   public loading = false; //display spinner while page is loading
+  public searching = false; //searching for autocomplete scryfall
   public ban_type_dict: any = {}; //dictionary of ban types by key of id
   public all_bans_sorted: any = {}; //the ban list
+  public cards_to_ban: any = [];
+  public cards_to_remove: any = [];
+
 
   constructor(private deckData: DeckDataService, private tokenStorage: TokenStorageService, private router: Router) { }
 
@@ -56,4 +67,37 @@ export class DeckBansComponent implements OnInit {
     }
   }
 
+  /**
+   * OperatorFunction for Scryfall autocomplete on typeahead.
+   * @param text$ string to autocomplete
+   */
+    // @ts-ignore
+  public card_search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(() => this.searching = true),
+      // @ts-ignore
+      switchMap(async term => {
+        this.searching = true;
+        return await Scry.Cards.autoCompleteName(term);
+      }),
+      tap(() => {
+        this.searching = false;
+      }));
+
+  public getBanIds() {
+    return Object.keys(this.ban_type_dict);
+  }
+
+  public banCard() {
+    if (this.form.card) {
+      this.cards_to_ban.push({
+        card_name: this.form.card,
+        ban_type: this.form.type
+      });
+    }
+    this.form.card = null;
+    this.form.type = 1;
+  }
 }
