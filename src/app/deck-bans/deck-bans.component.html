@@ -33,7 +33,7 @@
     <p>Adding: {{cards_to_ban | json}}</p>
     <p>Removing: {{cards_to_remove | json}}</p>
   </div>
-  <div style="margin: 10px">
+  <div *ngIf="isAdmin()" style="margin: 10px">
     <button mat-raised-button color="primary" (click)="submitBans()">Submit Bans</button>&nbsp;
   </div>
   <mat-accordion class="deck-headers-align" multi>

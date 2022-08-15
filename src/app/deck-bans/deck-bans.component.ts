@@ -34,12 +34,12 @@ export class DeckBansComponent implements OnInit {
       this.router.navigate(['login']);
     }
     else {
+      console.log(this.tokenStorage.getUser());
       this.loading = true;
       this.deckData.getBanDict().then((ban_type_data) => {
         this.ban_type_dict = ban_type_data;
         this.deckData.getBanList().then((ban_data) => {
           let ban_list_data: any = ban_data;
-          console.log(ban_list_data);
           let ban_list_sorted = [];
           if (ban_list_data[3]) { //Banned as commander
             ban_list_sorted.push({
@@ -60,15 +60,14 @@ export class DeckBansComponent implements OnInit {
             });
           }
           this.all_bans_sorted = ban_list_sorted;
-          console.log(this.all_bans_sorted);
           this.loading = false;
         });
       })
     }
   }
 
-  isAdmin(): boolean {
-    return this.tokenStorage.getUser().roles.includes("admin");
+  public isAdmin(): boolean {
+    return this.tokenStorage.getUser().isAdmin;
   }
 
   /**

@@ -23,6 +23,13 @@ export class TokenStorageService {
   }
 
   public saveUser(user: any): void {
+    user.isAdmin = false;
+    for (let role of user.roles) {
+      if (role.name === "admin") {
+        user.isAdmin = true;
+        break;
+      }
+    }
     window.sessionStorage.removeItem(USER_KEY);
     window.sessionStorage.setItem(USER_KEY, JSON.stringify(user));
   }
