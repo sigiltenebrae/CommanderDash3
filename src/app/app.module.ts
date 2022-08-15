@@ -40,6 +40,7 @@ import { DeckStatsComponent } from './deck-stats/deck-stats.component';
 import { DeckRecsComponent } from './deck-recs/deck-recs.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { DeckAllComponent } from './deck-all/deck-all.component';
+import { DeckBansComponent } from './deck-bans/deck-bans.component';
 
 
 
@@ -57,6 +58,7 @@ import { DeckAllComponent } from './deck-all/deck-all.component';
     DeckRecsComponent,
     ChangePasswordComponent,
     DeckAllComponent,
+    DeckBansComponent,
   ],
   imports: [
     BrowserModule,
@@ -78,6 +80,8 @@ import { DeckAllComponent } from './deck-all/deck-all.component';
       {path: 'decks/all', component: DeckAllComponent},
       {path: 'decks', component: DeckListComponent},
       {path: 'decks/:deckId', component: DeckEditComponent},
+
+      {path: 'bans', component: DeckBansComponent},
       {path: 'stats', component: DeckStatsComponent},
       {path: 'recs', component: DeckRecsComponent}
 

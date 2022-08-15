@@ -59,7 +59,8 @@
         </form>
         <div class="alert alert-success" *ngIf="isLoggedIn" style="width: 100%; text-align: center">
           <h2>
-            Logged in as {{ roles }}
+            Login Successful!
+            If you aren't automatically redirected, click <a [routerLink]="['/']">here</a>
           </h2>
         </div>
       </div>

@@ -10,6 +10,7 @@ export const environment = {
   decks_url: mtg_api_url + '/decks/',
   deck_themes_url: mtg_api_url + '/deckthemesname/',
   themes_url: mtg_api_url + '/themes',
+  bans_url: mtg_api_url + '/bans',
 
   auth_url: mtg_api_url + '/auth/'
 };

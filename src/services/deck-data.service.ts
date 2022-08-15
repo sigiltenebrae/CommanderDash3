@@ -15,7 +15,11 @@ export class DeckDataService {
   private my_decks: any = null; //list of all decks for user
   private themes: any = null; //list of all themes
   private user_dict: any = null; //dictionary of user ids and usernames
+  private ban_dict: any = null; //dictionary of ban types by key of id
 
+  /**
+   * Returns a dictionary of usernames by key of user id
+   */
   public getUserDict(): Promise<any> {
     return new Promise<any>( (resolve_users, reject) => {
       if (this.user_dict) {
@@ -31,6 +35,63 @@ export class DeckDataService {
           resolve_users(this.user_dict);
         });
       }
+    });
+  }
+
+  /**
+   * Returns dictionary of ban types by key of id
+   */
+  public getBanDict(): Promise<any> {
+    return new Promise<any>( (resolve_bans, reject) => {
+      if (this.ban_dict) {
+        resolve_bans(this.ban_dict);
+      }
+      else {
+        this.http.get(environment.bans_url + '/types').subscribe(async (banlist) => {
+          let all_ban_types: any = banlist;
+          this.ban_dict = {};
+          for (let ban of all_ban_types) {
+            this.ban_dict[ban.id] = ban.type;
+          }
+          resolve_bans(this.ban_dict);
+        });
+      }
+    })
+  }
+
+  /**
+   * Returns the ban list in the form of a dictionary of keys of ban_type and arrays of cards.
+   */
+  public getBanList(): Promise<any> {
+    return new Promise<any>((resolve_bans, reject) => {
+      this.http.get(environment.bans_url).subscribe(async (banlist) => {
+        let bans: any = banlist;
+        let ban_dict: any = {};
+        for (let ban of bans) {
+          let cur = await Scry.Cards.byName(ban.card_name);
+          let cur_prints = await cur.getPrints();
+          let image: string | undefined = '';
+          if (cur_prints) {
+            image = cur_prints[0].image_uris?.png;
+          }
+          if (ban_dict[ban.ban_type] != null) {
+            ban_dict[ban.ban_type].push({
+              name: ban.card_name,
+              image: image
+            });
+          }
+          else {
+            ban_dict[ban.ban_type] = [];
+            ban_dict[ban.ban_type].push({
+              name: ban.card_name,
+              image: image
+            });
+          }
+        }
+        resolve_bans(ban_dict);
+      }, (error) => {
+        resolve_bans({});
+      });
     });
   }
 
