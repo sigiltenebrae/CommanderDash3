@@ -68,23 +68,33 @@ export class DeckDataService {
         let bans: any = banlist;
         let ban_dict: any = {};
         for (let ban of bans) {
-          let cur = await Scry.Cards.byName(ban.card_name);
+          let commander = ban.card_name;
+          let cur = await Scry.Cards.byName(commander.indexOf('//') > -1 ? commander.substring(0, commander.indexOf('//') - 1): commander);
           let cur_prints = await cur.getPrints();
           let image: string | undefined = '';
+          let image_back: string | undefined = '';
           if (cur_prints) {
-            image = cur_prints[0].image_uris?.png;
+            if (cur_prints[0].card_faces && cur_prints[0].card_faces.length > 1) {
+              image = cur_prints[0].card_faces[0].image_uris?.png;
+              image_back = cur_prints[0].card_faces[1].image_uris?.png;
+            }
+            else {
+              image = cur_prints[0].image_uris?.png;
+            }
           }
           if (ban_dict[ban.ban_type] != null) {
             ban_dict[ban.ban_type].push({
               name: ban.card_name,
-              image: image
+              image: image,
+              image_back: image_back !== '' ? image_back: null
             });
           }
           else {
             ban_dict[ban.ban_type] = [];
             ban_dict[ban.ban_type].push({
               name: ban.card_name,
-              image: image
+              image: image,
+              image_back: image_back !== '' ? image_back: null
             });
           }
         }

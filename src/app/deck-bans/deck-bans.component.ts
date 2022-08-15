@@ -34,36 +34,45 @@ export class DeckBansComponent implements OnInit {
       this.router.navigate(['login']);
     }
     else {
-      console.log(this.tokenStorage.getUser());
-      this.loading = true;
-      this.deckData.getBanDict().then((ban_type_data) => {
-        this.ban_type_dict = ban_type_data;
-        this.deckData.getBanList().then((ban_data) => {
-          let ban_list_data: any = ban_data;
-          let ban_list_sorted = [];
-          if (ban_list_data[3]) { //Banned as commander
-            ban_list_sorted.push({
-              type: this.ban_type_dict[3],
-              cards: ban_data[3]
-            });
-          }
-          if (ban_list_data[1]) {
-            ban_list_sorted.push({
-              type: this.ban_type_dict[1],
-              cards: ban_data[1]
-            });
-          }
-          if (ban_list_data[2]) {
-            ban_list_sorted.push({
-              type: this.ban_type_dict[2],
-              cards: ban_data[2]
-            });
-          }
-          this.all_bans_sorted = ban_list_sorted;
-          this.loading = false;
-        });
-      })
+      this.loadPage().then();
     }
+  }
+
+  public async loadPage() {
+    this.loading = true;
+    this.deckData.getBanDict().then((ban_type_data) => {
+      this.ban_type_dict = ban_type_data;
+      this.deckData.getBanList().then((ban_data) => {
+        let ban_list_data: any = ban_data;
+        let ban_list_sorted = [];
+        if (ban_list_data[4]) { //Allowed as commander
+          ban_list_sorted.push({
+            type: this.ban_type_dict[4],
+            cards: ban_data[4]
+          });
+        }
+        if (ban_list_data[3]) { //Banned as commander
+          ban_list_sorted.push({
+            type: this.ban_type_dict[3],
+            cards: ban_data[3]
+          });
+        }
+        if (ban_list_data[1]) {
+          ban_list_sorted.push({
+            type: this.ban_type_dict[1],
+            cards: ban_data[1]
+          });
+        }
+        if (ban_list_data[2]) {
+          ban_list_sorted.push({
+            type: this.ban_type_dict[2],
+            cards: ban_data[2]
+          });
+        }
+        this.all_bans_sorted = ban_list_sorted;
+        this.loading = false;
+      });
+    })
   }
 
   public isAdmin(): boolean {
@@ -89,6 +98,13 @@ export class DeckBansComponent implements OnInit {
         this.searching = false;
       }));
 
+  public switchImage(card: any) {
+    let temp:any = {};
+    temp.image = card.image;
+    card.image = card.image_back;
+    card.image_back = temp.image;
+  }
+
   public getBanIds() {
     return Object.keys(this.ban_type_dict);
   }
@@ -111,17 +127,22 @@ export class DeckBansComponent implements OnInit {
   }
 
   public submitBans() {
+
+    let ban_promises: any = [];
     if (this.cards_to_ban.length > 0) {
       this.cards_to_ban.forEach((card: any) => {
-        this.deckData.banCard(card).then();
+        ban_promises.push(this.deckData.banCard(card));
       });
-      this.cards_to_ban = [];
     }
     if (this.cards_to_remove.length > 0) {
       this.cards_to_remove.forEach((card: any) => {
-        this.deckData.removeCardBan(card.name).then();
+        ban_promises.push(this.deckData.removeCardBan(card.name));
       });
-      this.cards_to_remove = [];
     }
+    Promise.all(ban_promises).then(() => {
+      this.cards_to_remove = [];
+      this.cards_to_ban = [];
+      this.loadPage().then();
+    });
   }
 }

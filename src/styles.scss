@@ -427,6 +427,17 @@ h2 a {
   right: 12px;
 }
 
-.ban-card-holder:hover .delete-button {
+.ban-card-holder .switch-side {
+  cursor: pointer;
+  position: absolute;
+  display: none;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translateY(-50%) translateX(-50%) scale(8);
+  transform: translateY(-50%) translateX(-50%) scale(8);
+}
+
+.ban-card-holder:hover .delete-button,
+.ban-card-holder:hover .switch-side{
   display: block;
 }
