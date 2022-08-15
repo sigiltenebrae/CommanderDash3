@@ -96,6 +96,30 @@ export class DeckDataService {
   }
 
   /**
+   * Adds the given card object to the ban list. Card object needs to include card_name and type.
+   * @param card_to_ban
+   */
+  public banCard(card_to_ban: any): Promise<void> {
+    return new Promise<void>((resolve_ban, reject) => {
+      this.http.post(environment.bans_url + '/add', JSON.stringify(card_to_ban), {headers : new HttpHeaders({'Content-Type': 'application/json'})}).subscribe(() => {
+        resolve_ban();
+      }, (error) => {
+        resolve_ban();
+      });
+    })
+  }
+
+  public removeCardBan(card_name: string): Promise<void> {
+    return new Promise<void>((resolve) => {
+      this.http.post(environment.bans_url + '/remove', JSON.stringify({card_name: card_name}), {headers: new HttpHeaders({'Content-Type': 'application/json'})}).subscribe(() => {
+        resolve();
+      }, (error) => {
+        resolve();
+      });
+    });
+  }
+
+  /**
    * Returns all decks from the db, sorted by user.
    */
   public async getAllDecks(): Promise<any> {

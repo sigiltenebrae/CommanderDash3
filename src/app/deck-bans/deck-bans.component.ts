@@ -67,6 +67,10 @@ export class DeckBansComponent implements OnInit {
     }
   }
 
+  isAdmin(): boolean {
+    return this.tokenStorage.getUser().roles.includes("admin");
+  }
+
   /**
    * OperatorFunction for Scryfall autocomplete on typeahead.
    * @param text$ string to autocomplete
@@ -99,5 +103,26 @@ export class DeckBansComponent implements OnInit {
     }
     this.form.card = null;
     this.form.type = 1;
+  }
+
+  public unBanCard(card: any) {
+    if (!this.cards_to_remove.includes(card)) {
+      this.cards_to_remove.push(card);
+    }
+  }
+
+  public submitBans() {
+    if (this.cards_to_ban.length > 0) {
+      this.cards_to_ban.forEach((card: any) => {
+        this.deckData.banCard(card).then();
+      });
+      this.cards_to_ban = [];
+    }
+    if (this.cards_to_remove.length > 0) {
+      this.cards_to_remove.forEach((card: any) => {
+        this.deckData.removeCardBan(card.name).then();
+      });
+      this.cards_to_remove = [];
+    }
   }
 }

@@ -395,3 +395,38 @@ a, h1, h2, h3, h4, h5, h6 .nav-button{
 h2 a {
   text-decoration: none;
 }
+
+.ban-card-holder {
+  position: relative;
+  float: left;
+  height: 384px;
+  width: 275px;
+}
+
+.ban-card-holder .mtg-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.ban-card-holder .delete-button {
+  cursor: pointer;
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 48px;
+  width: 48px;
+  border-bottom-left-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.ban-card-holder .delete-button .delete-icon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.ban-card-holder:hover .delete-button {
+  display: block;
+}

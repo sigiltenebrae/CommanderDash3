@@ -2,7 +2,7 @@
   <mat-spinner></mat-spinner>
 </div>
 <div *ngIf="!loading" style="margin: 20px">
-  <form (ngSubmit)="f.form.valid && banCard()" #f="ngForm" novalidate>
+  <form *ngIf="isAdmin()" (ngSubmit)="f.form.valid && banCard()" #f="ngForm" novalidate>
     <div class="container-fluid">
       <div class="row">
         <div class="col-xl-6">
@@ -29,8 +29,12 @@
       </div>
     </div>
   </form>
-  <div *ngIf="cards_to_ban.length > 0">
-    <p>{{cards_to_ban | json}}</p>
+  <div *ngIf="isAdmin()">
+    <p>Adding: {{cards_to_ban | json}}</p>
+    <p>Removing: {{cards_to_remove | json}}</p>
+  </div>
+  <div style="margin: 10px">
+    <button mat-raised-button color="primary" (click)="submitBans()">Submit Bans</button>&nbsp;
   </div>
   <mat-accordion class="deck-headers-align" multi>
     <mat-expansion-panel *ngFor="let ban_type of all_bans_sorted" [expanded]="true">
@@ -42,7 +46,10 @@
       <div class="container-fluid">
         <div class="row justify-content-center">
           <div *ngFor="let card of ban_type.cards" class="col-auto" style="margin: 10px 0 10px 0">
-            <img [class.mat-elevation-z4]="true" class="mtg-card" src="{{card.image}}" alt="{{card.name}}" loading="lazy">
+            <div class="ban-card-holder">
+              <img [class.mat-elevation-z4]="true" class="mtg-card" src="{{card.image}}" alt="{{card.name}}" loading="lazy">
+              <a *ngIf="isAdmin()" class="delete-button" (click)="unBanCard(card)"><mat-icon class="delete-icon">close</mat-icon></a>
+            </div>
           </div>
         </div>
       </div>
