@@ -73,6 +73,39 @@ export class DeckDataService {
         let bans: any = banlist;
         let ban_dict: any = {};
         for (let ban of bans) {
+          if (ban_dict[ban.ban_type] != null) {
+            ban_dict[ban.ban_type].push({
+              name: ban.card_name,
+            });
+          }
+          else {
+            ban_dict[ban.ban_type] = [];
+            ban_dict[ban.ban_type].push({
+              name: ban.card_name,
+            });
+          }
+        }
+        this.ban_list = ban_dict;
+        resolve_bans(ban_dict);
+      }, (error) => {
+        resolve_bans({});
+      });
+    });
+  }
+
+
+  /**
+   * Returns the ban list in the form of a dictionary of keys of ban_type and arrays of cards as well as Scryfall image data.
+   */
+  public getBanListWithImages(): Promise<any> {
+    return new Promise<any>((resolve_bans, reject) => {
+      if (this.ban_list) {
+        resolve_bans(this.ban_list)
+      }
+      this.http.get(environment.bans_url).subscribe(async (banlist) => {
+        let bans: any = banlist;
+        let ban_dict: any = {};
+        for (let ban of bans) {
           let commander = ban.card_name;
           let cur = await Scry.Cards.byName(commander.indexOf('//') > -1 ? commander.substring(0, commander.indexOf('//') - 1): commander);
           let cur_prints = await cur.getPrints();
@@ -146,9 +179,6 @@ export class DeckDataService {
     return new Promise<any>( (resolve_decks, reject) => {
       this.http.get(environment.decks_url).subscribe(async (decklist) => {
         let all_decks: any = decklist;
-        for (let deck of all_decks) {
-          await this.getDeckScryfallData(deck);
-        }
         resolve_decks(all_decks);
       }, (error) => {
         resolve_decks([]);
@@ -166,11 +196,7 @@ export class DeckDataService {
       }
       else {
         this.http.get(environment.decks_url + 'byuser/' + this.token.getUser().id).subscribe(async (decklist) => {
-          let decks: any = decklist;
-          for (let deck of decks) {
-            await this.getDeckScryfallData(deck);
-          }
-          this.my_decks = decks;
+          this.my_decks = decklist;
           resolve_decks(this.my_decks);
         }, (error) => {
           resolve_decks([]);
@@ -200,7 +226,9 @@ export class DeckDataService {
     return new Promise<any>((resolve) => {
       this.getDecks().then((decks) => {
         decks.forEach((deck: any) => {
-          if(deck.id == deckId) { resolve(deck) }
+          if(deck.id == deckId) {
+            resolve(deck);
+          }
         });
         resolve(null);
       });
@@ -248,23 +276,9 @@ export class DeckDataService {
         deck.deleteThemes = [];
         let scryfall_data = await Scry.Cards.byName(deck.commander);
         deck.colors = scryfall_data.color_identity;
-        deck.images = [deck.image_url];
-        let cur_prints = await scryfall_data.getPrints();
-        cur_prints.forEach((print: any) => {
-          if (print.image_uris?.png) {
-            deck.images.push(print.image_uris?.png);
-          }
-        });
         if (deck.partner_commander != null) {
           let partner_scryfall_data = await Scry.Cards.byName(deck.partner_commander);
           deck.colors = deck.colors.concat(partner_scryfall_data.color_identity);
-          deck.partner_images = [deck.partner_image_url];
-          let cur_partner_prints = await partner_scryfall_data.getPrints();
-          cur_partner_prints.forEach((print: any) => {
-            if (print.image_uris?.png) {
-              deck.partner_images.push(print.image_uris.png);
-            }
-          })
         }
         resolve_scryfall();
       }, (error) => {

@@ -27,13 +27,18 @@ export class DeckListComponent implements OnInit {
           (temp) => {
             this.decks = temp;
             let deck_promises: any = [];
+            let scryfall_promises: any = [];
             for (let deck of this.decks) {
               deck.hovered = false;
+              deck.legality = "Unknown";
+              scryfall_promises.push(this.deckData.getDeckScryfallData(deck));
               deck_promises.push(this.deckData.getDeckLegality(deck));
             }
-            Promise.all(deck_promises).then(() => {
-              this.loading = false;
-            })
+            this.loading = false;
+            Promise.all(scryfall_promises).then(() => {
+              Promise.all(deck_promises).then(() => {
+              });
+            });
           }
         );
       });

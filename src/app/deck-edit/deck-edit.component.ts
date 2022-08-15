@@ -85,6 +85,8 @@ export class DeckEditComponent implements OnInit {
         this.loading = true;
         this.deckData.getDeck(deckId).then((deck) => {
           this.current_deck = JSON.parse(JSON.stringify(deck));
+          this.current_deck.themes = [];
+          this.current_deck.colors = null;
           this.has_partner = (this.current_deck.partner_commander != null);
 
           this.form.commander = this.current_deck.commander;
@@ -97,10 +99,31 @@ export class DeckEditComponent implements OnInit {
           this.form.image_url = this.current_deck.image_url;
           this.form.partner_image_url = this.current_deck.partner_image_url;
           this.image_index = 0;
-          if (this.form.partner_image_url) {
-            this.partner_image_index = 0;
+          this.current_deck.images = [this.form.image_url];
+          if (this.form.partner_commander) {
+            this.current_deck.partner_images = [this.form.partner_image_url];
           }
           this.loading = false;
+          this.deckData.getDeckScryfallData(this.current_deck).then(async () => {
+            let cur = await Scry.Cards.byName(this.form.commander);
+            let cur_prints = await cur.getPrints();
+            cur_prints.forEach((print: any) => {
+              if (print.image_uris?.png) {
+                this.current_deck.images.push(print.image_uris?.png);
+              }
+            });
+            if (this.form.partner_commander) {
+
+              let cur = await Scry.Cards.byName(this.form.partner_commander);
+              let cur_prints = await cur.getPrints();
+              cur_prints.forEach((print: any) => {
+                if (print.image_uris?.png) {
+                  this.current_deck.partner_images.push(print.image_uris?.png);
+                }
+              });
+              this.partner_image_index = 0;
+            }
+          });
         });
       }
       this.deleting = false;

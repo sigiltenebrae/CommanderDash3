@@ -36,12 +36,15 @@
             <h2 *ngIf="deck.url == null || deck.url === ''">{{deck.friendly_name}}</h2>
             <h4 class="commander-name">{{deck.commander}}</h4>
             <h4 *ngIf="deck.partner_commander" class="commander-name">{{deck.partner_commander}}</h4>
-            <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">
+            <div *ngIf="deck.colors && deck.colors != null" fxLayout="row" fxLayoutAlign="center" class="commander-colors">
               <img *ngIf="deck.colors.includes('W');" class="commander-color" src="assets/color_symbols/W.png">
               <img *ngIf="deck.colors.includes('U');" class="commander-color" src="assets/color_symbols/U.png">
               <img *ngIf="deck.colors.includes('B');" class="commander-color" src="assets/color_symbols/B.png">
               <img *ngIf="deck.colors.includes('R');" class="commander-color" src="assets/color_symbols/R.png">
               <img *ngIf="deck.colors.includes('G');" class="commander-color" src="assets/color_symbols/G.png">
+            </div>
+            <div *ngIf="!deck.colors || deck.colors == null" fxLayout="row" fxLayoutAlign="center" class="commander-colors">
+              <mat-spinner class="commander-color" [diameter]="16"></mat-spinner>
             </div>
             <div fxLayout="row" fxLayoutAlign="end" class="commander-legality">
               <p *ngIf="deck.legality === 'Unknown'">{{deck.legality}}</p>

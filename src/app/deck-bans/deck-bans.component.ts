@@ -42,7 +42,7 @@ export class DeckBansComponent implements OnInit {
     this.loading = true;
     this.deckData.getBanDict().then((ban_type_data) => {
       this.ban_type_dict = ban_type_data;
-      this.deckData.getBanList().then((ban_data) => {
+      this.deckData.getBanListWithImages().then((ban_data) => {
         let ban_list_data: any = ban_data;
         let ban_list_sorted = [];
         if (ban_list_data[4]) { //Allowed as commander

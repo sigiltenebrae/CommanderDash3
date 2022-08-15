@@ -195,12 +195,15 @@
                   <h2 *ngIf="form.url == null || form.url === ''">{{form.friendly_name}}</h2>
                   <h4 class="commander-name">{{form.commander}}</h4>
                   <h4 *ngIf="form.partner_commander" class="commander-name">{{form.partner_commander}}</h4>
-                  <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">
+                  <div *ngIf="current_deck.colors && current_deck.colors != null" fxLayout="row" fxLayoutAlign="center" class="commander-colors">
                     <img *ngIf="current_deck.colors.includes('W');" class="commander-color" src="assets/color_symbols/W.png">
                     <img *ngIf="current_deck.colors.includes('U');" class="commander-color" src="assets/color_symbols/U.png">
                     <img *ngIf="current_deck.colors.includes('B');" class="commander-color" src="assets/color_symbols/B.png">
                     <img *ngIf="current_deck.colors.includes('R');" class="commander-color" src="assets/color_symbols/R.png">
                     <img *ngIf="current_deck.colors.includes('G');" class="commander-color" src="assets/color_symbols/G.png">
+                  </div>
+                  <div *ngIf="!current_deck.colors || current_deck.colors == null" fxLayout="row" fxLayoutAlign="center" class="commander-colors">
+                    <mat-spinner class="commander-color" [diameter]="16"></mat-spinner>
                   </div>
                   <div fxLayout="row" fxLayoutAlign="center" class="commander-ratings commander-ratings-tilt-no-anim">
                     <mat-icon *ngFor="let i of [].constructor(form.play_rating)" class="commander-rating" color="primary">star</mat-icon>
@@ -227,12 +230,15 @@
                 <h2 *ngIf="form.url == null || form.url === ''">{{form.friendly_name}}</h2>
                 <h4 class="commander-name">{{form.commander}}</h4>
                 <h4 *ngIf="form.partner_commander" class="commander-name">{{form.partner_commander}}</h4>
-                <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">
+                <div *ngIf="current_deck.colors && current_deck.colors != null" fxLayout="row" fxLayoutAlign="center" class="commander-colors">
                   <img *ngIf="current_deck.colors.includes('W');" class="commander-color" src="assets/color_symbols/W.png">
                   <img *ngIf="current_deck.colors.includes('U');" class="commander-color" src="assets/color_symbols/U.png">
                   <img *ngIf="current_deck.colors.includes('B');" class="commander-color" src="assets/color_symbols/B.png">
                   <img *ngIf="current_deck.colors.includes('R');" class="commander-color" src="assets/color_symbols/R.png">
                   <img *ngIf="current_deck.colors.includes('G');" class="commander-color" src="assets/color_symbols/G.png">
+                </div>
+                <div *ngIf="!current_deck.colors || current_deck.colors == null" fxLayout="row" fxLayoutAlign="center" class="commander-colors">
+                  <mat-spinner class="commander-color" [diameter]="16"></mat-spinner>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="center" class="commander-ratings">
                   <mat-icon *ngFor="let i of [].constructor(form.play_rating)" class="commander-rating" color="primary">star</mat-icon>
@@ -258,12 +264,15 @@
                 <h2 *ngIf="form.url == null || form.url === ''">{{form.friendly_name}}</h2>
                 <h4 class="commander-name">{{form.commander}}</h4>
                 <h4 *ngIf="form.partner_commander" class="commander-name">{{form.partner_commander}}</h4>
-                <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">
+                <div *ngIf="current_deck.colors && current_deck.colors != null" fxLayout="row" fxLayoutAlign="center" class="commander-colors">
                   <img *ngIf="current_deck.colors.includes('W');" class="commander-color" src="assets/color_symbols/W.png">
                   <img *ngIf="current_deck.colors.includes('U');" class="commander-color" src="assets/color_symbols/U.png">
                   <img *ngIf="current_deck.colors.includes('B');" class="commander-color" src="assets/color_symbols/B.png">
                   <img *ngIf="current_deck.colors.includes('R');" class="commander-color" src="assets/color_symbols/R.png">
                   <img *ngIf="current_deck.colors.includes('G');" class="commander-color" src="assets/color_symbols/G.png">
+                </div>
+                <div *ngIf="!current_deck.colors || current_deck.colors == null" fxLayout="row" fxLayoutAlign="center" class="commander-colors">
+                  <mat-spinner class="commander-color" [diameter]="16"></mat-spinner>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="center" class="commander-ratings commander-ratings-tilt-no-anim">
                   <mat-icon *ngFor="let i of [].constructor(form.play_rating)" class="commander-rating" color="primary">star</mat-icon>
@@ -290,12 +299,15 @@
                 <h2 *ngIf="form.url == null || form.url === ''">{{form.friendly_name}}</h2>
                 <h4 class="commander-name">{{form.commander}}</h4>
                 <h4 *ngIf="form.partner_commander" class="commander-name">{{form.partner_commander}}</h4>
-                <div fxLayout="row" fxLayoutAlign="center" class="commander-colors">
+                <div *ngIf="current_deck.colors && current_deck.colors != null" fxLayout="row" fxLayoutAlign="center" class="commander-colors">
                   <img *ngIf="current_deck.colors.includes('W');" class="commander-color" src="assets/color_symbols/W.png">
                   <img *ngIf="current_deck.colors.includes('U');" class="commander-color" src="assets/color_symbols/U.png">
                   <img *ngIf="current_deck.colors.includes('B');" class="commander-color" src="assets/color_symbols/B.png">
                   <img *ngIf="current_deck.colors.includes('R');" class="commander-color" src="assets/color_symbols/R.png">
                   <img *ngIf="current_deck.colors.includes('G');" class="commander-color" src="assets/color_symbols/G.png">
+                </div>
+                <div *ngIf="!current_deck.colors || current_deck.colors == null" fxLayout="row" fxLayoutAlign="center" class="commander-colors">
+                  <mat-spinner class="commander-color" [diameter]="16"></mat-spinner>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="center" class="commander-ratings">
                   <mat-icon *ngFor="let i of [].constructor(form.play_rating)" class="commander-rating" color="primary">star</mat-icon>
