@@ -33,13 +33,15 @@ export class DeckAllComponent implements OnInit {
           this.all_decks = deck_data;
           let deck_dict: any = {};
           for (let deck of this.all_decks) {
-            deck.hovered = false;
-            if (deck_dict[deck.creator] != null) {
-              deck_dict[deck.creator].push(deck);
-            }
-            else {
-              deck_dict[deck.creator] = [];
-              deck_dict[deck.creator].push(deck);
+            if (deck.active) {
+              deck.hovered = false;
+              if (deck_dict[deck.creator] != null) {
+                deck_dict[deck.creator].push(deck);
+              }
+              else {
+                deck_dict[deck.creator] = [];
+                deck_dict[deck.creator].push(deck);
+              }
             }
           }
           this.all_decks_sorted.push({
