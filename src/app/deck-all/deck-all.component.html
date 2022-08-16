@@ -14,20 +14,24 @@
           <div *ngFor="let deck of user.decks" class="col-auto" style="margin: 10px 0 10px 0">
             <mat-card class="commander-viewer" matRipple [matRippleCentered]="false" [matRippleDisabled]="!deck.hovered" [class.mat-elevation-z8]="true">
 
-              <div *ngIf="deck.partner_commander == null" [ngClass]="{'commander-background-card-closed': deck.hovered, 'commander-background-card-open-no-anim': !deck.hovered}">
+              <div *ngIf="deck.partner_commander == null" [ngClass]="{'commander-background-card-closed': deck.hovered,
+              'commander-background-card-open-no-anim': !deck.hovered && !isAdmin(),
+              'commander-background-card-open': !deck.hovered && isAdmin()}">
                 <div>
                   <img src="{{deck.image_url}}" alt="{{deck.commander}}" class="commander-crop">
                 </div>
                 <button class="commander-edit" mat-icon-button [routerLink]="['/decks', deck.id]"><mat-icon>edit</mat-icon></button>
               </div>
 
-              <div *ngIf="deck.partner_commander != null" [ngClass]="{'commander-background-card-closed': deck.hovered, 'commander-background-card-open-no-anim': !deck.hovered}">
+              <div *ngIf="deck.partner_commander != null" [ngClass]="{'commander-background-card-closed': deck.hovered,
+              'commander-background-card-open-no-anim': !deck.hovered && !isAdmin(),
+              'commander-background-card-open': !deck.hovered && isAdmin()}">
                 <div>
-                  <div class="commander-background-card-partner-left-no-anim">
-                    <img src="{{deck.image_url}}" alt="{{deck.commander}}" class="commander-crop">
+                  <div [ngClass]="{'commander-background-card-partner-left-no-anim': !isAdmin(), 'commander-background-card-partner-left': isAdmin()}">
+                    <img src="{{deck.image_url}}" alt="{{deck.commander}}" [ngClass]="{'commander-crop': !isAdmin(), 'commander-crop-partner': isAdmin()}">
                   </div>
-                  <div class="commander-background-card-partner-right-no-anim">
-                    <img src="{{deck.partner_image_url}}" alt="{{deck.partner_commander}}" class="commander-crop">
+                  <div [ngClass]="{'commander-background-card-partner-right-no-anim': !isAdmin(), 'commander-background-card-partner-right': isAdmin()}">
+                    <img src="{{deck.partner_image_url}}" alt="{{deck.partner_commander}}" [ngClass]="{'commander-crop': !isAdmin(), 'commander-crop-partner': isAdmin()}">
                   </div>
                 </div>
                 <button class="commander-edit" mat-icon-button [routerLink]="['/decks', deck.id]"><mat-icon>edit</mat-icon></button>

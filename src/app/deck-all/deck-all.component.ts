@@ -73,4 +73,9 @@ export class DeckAllComponent implements OnInit {
       });
     }
   }
+
+  public isAdmin(): boolean {
+    return this.tokenStorage.getUser().isAdmin;
+  }
+
 }
