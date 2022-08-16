@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
+import * as CryptoJS from 'crypto-js';
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'auth-user';
+const SECRET_KEY = '0123456789123456';
+
 
 @Injectable({
   providedIn: 'root'
@@ -31,13 +34,32 @@ export class TokenStorageService {
       }
     }
     window.sessionStorage.removeItem(USER_KEY);
-    window.sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+    let _key = CryptoJS.enc.Utf8.parse(SECRET_KEY);
+    let _iv = CryptoJS.enc.Utf8.parse(SECRET_KEY);
+    let encrypted_user = CryptoJS.AES.encrypt(
+      JSON.stringify(user), _key, {
+        keySize: 16,
+        iv: _iv,
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+      });
+    window.sessionStorage.setItem(USER_KEY, encrypted_user.toString());
   }
 
   public getUser(): any {
     const user = window.sessionStorage.getItem(USER_KEY);
     if (user) {
-      return JSON.parse(user);
+      let _key = CryptoJS.enc.Utf8.parse(SECRET_KEY);
+      let _iv = CryptoJS.enc.Utf8.parse(SECRET_KEY);
+      let decrypted_user = CryptoJS.AES.decrypt(
+        user, _key, {
+          keySize: 16,
+          iv: _iv,
+          mode: CryptoJS.mode.ECB,
+          padding: CryptoJS.pad.Pkcs7
+        }).toString(CryptoJS.enc.Utf8);
+      console.log(decrypted_user);
+      return JSON.parse(decrypted_user);
     }
     return {};
   }
