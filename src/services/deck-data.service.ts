@@ -247,8 +247,12 @@ export class DeckDataService {
           if(deck.id == deckId) {
             resolve(deck);
           }
+        }); //See if it belongs to the user
+        this.http.get(environment.decks_url + deckId).subscribe((deck) => { //in this case it does not
+          resolve(deck);
+        }, (error) => {
+          resolve(null);
         });
-        resolve(null);
       });
     });
   }

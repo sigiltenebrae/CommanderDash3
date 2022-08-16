@@ -30,7 +30,6 @@ export class DeckEditComponent implements OnInit {
   public has_partner = false; //does the commander have a partner
   public searching = false; //is the typeahead still searching
 
-  private current_user: any = null; //who is currently logged in
   public current_deck: any = null; //the deck that is currently open
   public image_index = -1; //index of image currently being used in the list of all images
   public partner_image_index = -1; //same as above for partner
@@ -84,6 +83,9 @@ export class DeckEditComponent implements OnInit {
       else {
         this.loading = true;
         this.deckData.getDeck(deckId).then((deck) => {
+          if (deck.creator !== this.tokenStorage.getUser().id && !this.tokenStorage.getUser().isAdmin) {
+            this.router.navigate(['/']);
+          }
           this.current_deck = JSON.parse(JSON.stringify(deck));
           this.current_deck.themes = [];
           this.current_deck.colors = null;
