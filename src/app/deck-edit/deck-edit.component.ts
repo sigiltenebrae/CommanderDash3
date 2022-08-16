@@ -18,6 +18,8 @@ import {TokenStorageService} from "../../services/token-storage.service";
 export class DeckEditComponent implements OnInit {
   readonly  seperatorKeysCodes = [ENTER, COMMA] as const;
 
+  userdata: any = null;
+
   public errorMessage = ''; //error to display on form submission failure
   public isSubmitFailed = false; //toggle if the form failed to submit
 
@@ -43,7 +45,8 @@ export class DeckEditComponent implements OnInit {
     partner_image_url: null,
     play_rating: null,
     active: null,
-    themes: null
+    themes: null,
+    creator: -1
   }
 
   constructor(private router: Router, private route: ActivatedRoute,
@@ -62,7 +65,6 @@ export class DeckEditComponent implements OnInit {
     else {
       const routeParams = this.route.snapshot.paramMap;
       const deckId = Number(routeParams.get('deckId')); //get deck id from route
-
       if (deckId == -1) {
         this.new_deck = true;
         this.has_partner = false;
@@ -76,57 +78,62 @@ export class DeckEditComponent implements OnInit {
         this.form.play_rating = 3;
         this.form.themes = [];
         this.form.active = true;
+        this.form.creator = this.tokenStorage.getUser().id;
       }
       else if (deckId < 0) {
         this.router.navigate(['/']); //if deck id is invalid, go back to home
       }
       else {
         this.loading = true;
-        this.deckData.getDeck(deckId).then((deck) => {
-          if (deck.creator !== this.tokenStorage.getUser().id && !this.tokenStorage.getUser().isAdmin) {
-            this.router.navigate(['/']);
-          }
-          this.current_deck = JSON.parse(JSON.stringify(deck));
-          this.current_deck.themes = [];
-          this.current_deck.colors = null;
-          this.has_partner = (this.current_deck.partner_commander != null);
+        this.deckData.getUserDict().then((userdata) => {
+          this.userdata = userdata;
+          this.deckData.getDeck(deckId).then((deck) => {
+            if (deck.creator !== this.tokenStorage.getUser().id && !this.tokenStorage.getUser().isAdmin) {
+              this.router.navigate(['/']);
+            }
+            this.current_deck = JSON.parse(JSON.stringify(deck));
+            this.current_deck.themes = [];
+            this.current_deck.colors = null;
+            this.has_partner = (this.current_deck.partner_commander != null);
 
-          this.form.commander = this.current_deck.commander;
-          this.form.partner_commander = this.current_deck.partner_commander;
-          this.form.friendly_name = this.current_deck.friendly_name;
-          this.form.url = this.current_deck.url;
-          this.form.play_rating = this.current_deck.play_rating;
-          this.form.active = this.current_deck.active;
-          this.form.themes = [...this.current_deck.themes];
-          this.form.image_url = this.current_deck.image_url;
-          this.form.partner_image_url = this.current_deck.partner_image_url;
-          this.image_index = 0;
-          this.current_deck.images = [this.form.image_url];
-          if (this.form.partner_commander) {
-            this.current_deck.partner_images = [this.form.partner_image_url];
-          }
-          this.loading = false;
-          this.deckData.getDeckScryfallData(this.current_deck).then(async () => {
-            let cur = await Scry.Cards.byName(this.form.commander);
-            let cur_prints = await cur.getPrints();
-            cur_prints.forEach((print: any) => {
-              if (print.image_uris?.png) {
-                this.current_deck.images.push(print.image_uris?.png);
-              }
-            });
+            this.form.commander = this.current_deck.commander;
+            this.form.partner_commander = this.current_deck.partner_commander;
+            this.form.friendly_name = this.current_deck.friendly_name;
+            this.form.url = this.current_deck.url;
+            this.form.play_rating = this.current_deck.play_rating;
+            this.form.active = this.current_deck.active;
+            this.form.themes = [...this.current_deck.themes];
+            this.form.image_url = this.current_deck.image_url;
+            this.form.partner_image_url = this.current_deck.partner_image_url;
+            this.image_index = 0;
+            this.current_deck.images = [this.form.image_url];
             if (this.form.partner_commander) {
-
-              let cur = await Scry.Cards.byName(this.form.partner_commander);
+              this.current_deck.partner_images = [this.form.partner_image_url];
+            }
+            this.form.creator = this.current_deck.creator;
+            this.loading = false;
+            this.deckData.getDeckScryfallData(this.current_deck).then(async () => {
+              let cur = await Scry.Cards.byName(this.form.commander);
               let cur_prints = await cur.getPrints();
               cur_prints.forEach((print: any) => {
                 if (print.image_uris?.png) {
-                  this.current_deck.partner_images.push(print.image_uris?.png);
+                  this.current_deck.images.push(print.image_uris?.png);
                 }
               });
-              this.partner_image_index = 0;
-            }
+              if (this.form.partner_commander) {
+
+                let cur = await Scry.Cards.byName(this.form.partner_commander);
+                let cur_prints = await cur.getPrints();
+                cur_prints.forEach((print: any) => {
+                  if (print.image_uris?.png) {
+                    this.current_deck.partner_images.push(print.image_uris?.png);
+                  }
+                });
+                this.partner_image_index = 0;
+              }
+            });
           });
-        });
+        })
       }
       this.deleting = false;
       this.deckData.getThemeList().then((themes) => {
@@ -134,6 +141,14 @@ export class DeckEditComponent implements OnInit {
       })
     }
 
+  }
+
+  public isAdmin(): boolean {
+    return this.tokenStorage.getUser().isAdmin;
+  }
+
+  getUserIds() {
+    return Object.keys(this.userdata);
   }
 
   /**
@@ -307,6 +322,7 @@ export class DeckEditComponent implements OnInit {
     out_deck.active = this.form.active;
     out_deck.themes = [];
     out_deck.deleteThemes = [];
+    out_deck.creator = this.form.creator;
     if (this.current_deck.themes && this.current_deck.themes.length > 0) {
       this.current_deck.themes.forEach(
         (theme: any) => {
@@ -361,9 +377,17 @@ export class DeckEditComponent implements OnInit {
     }
     else {
       this.deckData.updateDeck(out_deck, this.current_deck.id).subscribe((response) => {
-        this.deckData.refreshDeck(this.current_deck.id).then( () => {
+        if (this.current_deck.creator == this.tokenStorage.getUser().id) {
+          this.deckData.removeDeckFromUserDecks(this.current_deck.id);
+        }
+        if (out_deck.creator == this.tokenStorage.getUser().id) {
+          this.deckData.refreshDeck(this.current_deck.id).then( () => {
+            this.router.navigate(['decks']).then();
+          });
+        }
+        else {
           this.router.navigate(['decks']).then();
-        })
+        }
       }, (error) => {
         if (error) {
           console.log(error);

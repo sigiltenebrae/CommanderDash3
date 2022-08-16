@@ -86,6 +86,14 @@
           </div>
           <mat-slide-toggle name="active" [(ngModel)]="form.active" #active="ngModel">Active</mat-slide-toggle>
         </div>
+        <div *ngIf="isAdmin() && userdata != null && form.creator" fxLayout="row">
+          <mat-form-field appearance="fill">
+            <mat-label>Creator</mat-label>
+            <mat-select [(ngModel)]="form.creator" required>
+              <mat-option *ngFor="let userid of getUserIds()" value="{{userid}}">{{userdata[userid]}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
         <div fxLayout="row">
           <mat-form-field style="width:100%">
             <mat-label>Themes</mat-label>

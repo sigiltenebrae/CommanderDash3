@@ -287,6 +287,20 @@ export class DeckDataService {
     });
   }
 
+  public removeDeckFromUserDecks(deckId: number) {
+    this.getDecks().then((decks) => {
+      let deck_index = -1;
+      decks.forEach((deck: any) => {
+        if (deck.id == deckId) {
+          deck_index = decks.indexOf(deck);
+        }
+      });
+      if (deck_index > -1) {
+        this.my_decks.splice(deck_index, 1);
+      }
+    })
+  }
+
   /**
    * Loads in images and themes for a deck and adds them to the object
    * @param deck deck to get data for
@@ -343,7 +357,6 @@ export class DeckDataService {
    * @param deck deck to create
    */
   public createDeck(deck: any) {
-    deck.creator = this.token.getUser().id;
     return this.http.post(environment.decks_url, JSON.stringify(deck), {headers : new HttpHeaders({'Content-Type': 'application/json'})})
   }
 
@@ -368,27 +381,29 @@ export class DeckDataService {
         resolve_legality();
       }
       else {
-        this.getBanList().then((banlist) => {
-          let ban_list = banlist;
-          let deckId = deck.url.substring(0, deck.url.indexOf('#')).substring(deck.url.indexOf('/decks/') + 7);
-          this.http.get('/archidekt/api/decks/' + deckId + '/').pipe(delay(1000)).subscribe((archidektDeckInfo) => {
-            let archidekt_deck: any = archidektDeckInfo;
-            let banned_cards: any = [];
-            archidekt_deck.cards.forEach((card: any) => {
-              for (let i = 0; i < ban_list[this.dict_ban["banned"]].length; i++) {
-                if (card.card.oracleCard.name === ban_list[this.dict_ban["banned"]][i].name) {
-                  banned_cards.push(card.card.oracleCard.name);
-                  break;
+        this.getBanDict().then(() => {
+          this.getBanList().then((banlist) => {
+            let ban_list = banlist;
+            let deckId = deck.url.substring(0, deck.url.indexOf('#')).substring(deck.url.indexOf('/decks/') + 7);
+            this.http.get('/archidekt/api/decks/' + deckId + '/').pipe(delay(1000)).subscribe((archidektDeckInfo) => {
+              let archidekt_deck: any = archidektDeckInfo;
+              let banned_cards: any = [];
+              archidekt_deck.cards.forEach((card: any) => {
+                for (let i = 0; i < ban_list[this.dict_ban["banned"]].length; i++) {
+                  if (card.card.oracleCard.name === ban_list[this.dict_ban["banned"]][i].name) {
+                    banned_cards.push(card.card.oracleCard.name);
+                    break;
+                  }
                 }
-              }
+              });
+              deck.legality = banned_cards.length > 0 ? "Illegal": "Legal";
+              deck.issues = banned_cards;
+              resolve_legality();
+            }, (error) => {
+              deck.legality = "Unknown";
+              deck.issues = [];
+              resolve_legality();
             });
-            deck.legality = banned_cards.length > 0 ? "Illegal": "Legal";
-            deck.issues = banned_cards;
-            resolve_legality();
-          }, (error) => {
-            deck.legality = "Unknown";
-            deck.issues = [];
-            resolve_legality();
           });
         });
       }
