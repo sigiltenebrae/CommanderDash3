@@ -216,13 +216,20 @@ export class DeckEditComponent implements OnInit {
       this.current_deck.images = [];
       let cur = await Scry.Cards.byName(this.form.commander);
       let cur_prints = await cur.getPrints();
-      cur_prints.forEach((print: any) => {
-        if (print.image_uris?.png) {
-          this.current_deck.images.push(print.image_uris?.png);
-        }
-      });
+      if (cur_prints) {
+        cur_prints.forEach((print: any) => {
+          if (print.card_faces && print.card_faces.length > 1) {
+            print.card_faces.forEach((face: any) => {
+              this.current_deck.images.push(face.image_uris?.png);
+            });
+          }
+          else {
+            this.current_deck.images.push(print.image_uris?.png);
+          }
+        });
+      }
       this.image_index = 0;
-      this.form.image_url = this.current_deck.images[0];
+      this.form.image_url = this.current_deck.images.length > 0 ? this.current_deck.images[0]: "";
     }
   }
 
