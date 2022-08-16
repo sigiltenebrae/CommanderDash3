@@ -66,19 +66,22 @@ export class DeckEditComponent implements OnInit {
       const routeParams = this.route.snapshot.paramMap;
       const deckId = Number(routeParams.get('deckId')); //get deck id from route
       if (deckId == -1) {
-        this.new_deck = true;
-        this.has_partner = false;
-        this.current_deck = {};
-        this.current_deck.images = [];
-        this.current_deck.colors = [];
-        this.form.friendly_name = "";
-        this.form.deck_url = "";
-        this.form.image_url = "";
-        this.form.partner_image_url = "";
-        this.form.play_rating = 3;
-        this.form.themes = [];
-        this.form.active = true;
-        this.form.creator = this.tokenStorage.getUser().id;
+        this.deckData.getUserDict().then((userdata) => {
+          this.userdata = userdata;
+          this.new_deck = true;
+          this.has_partner = false;
+          this.current_deck = {};
+          this.current_deck.images = [];
+          this.current_deck.colors = [];
+          this.form.friendly_name = "";
+          this.form.deck_url = "";
+          this.form.image_url = "";
+          this.form.partner_image_url = "";
+          this.form.play_rating = 3;
+          this.form.themes = [];
+          this.form.active = true;
+          this.form.creator = this.tokenStorage.getUser().id;
+        });
       }
       else if (deckId < 0) {
         this.router.navigate(['/']); //if deck id is invalid, go back to home
@@ -366,9 +369,14 @@ export class DeckEditComponent implements OnInit {
       this.deckData.createDeck(out_deck).subscribe((response) => {
         let new_id: any = response;
         if (new_id && new_id.id) {
-          this.deckData.refreshDeck(new_id.id).then( () => {
+          if (out_deck.creator == this.tokenStorage.getUser().id) {
+            this.deckData.refreshDeck(new_id.id).then( () => {
+              this.router.navigate(['decks']).then();
+            });
+          }
+          else {
             this.router.navigate(['decks']).then();
-          });
+          }
         }
       }, (error) => {
         if (error.status == 201) {
