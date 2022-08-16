@@ -74,7 +74,7 @@ export class DeckEditComponent implements OnInit {
         this.form.deck_url = "";
         this.form.image_url = "";
         this.form.partner_image_url = "";
-        this.form.play_rating = 1;
+        this.form.play_rating = 3;
         this.form.themes = [];
         this.form.active = true;
       }
