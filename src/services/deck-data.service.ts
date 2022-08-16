@@ -17,6 +17,7 @@ export class DeckDataService {
   private themes: any = null; //list of all themes
   private user_dict: any = null; //dictionary of user ids and usernames
   private ban_dict: any = null; //dictionary of ban types by key of id
+  private dict_ban: any = null; //reverse dictionary of ban types by key of type
   private ban_list: any = null;
   private ban_list_images = null;
 
@@ -53,13 +54,28 @@ export class DeckDataService {
         this.http.get(environment.bans_url + '/types').subscribe(async (banlist) => {
           let all_ban_types: any = banlist;
           this.ban_dict = {};
+          this.dict_ban = {};
           for (let ban of all_ban_types) {
             this.ban_dict[ban.id] = ban.type;
+            this.dict_ban[ban.type] = ban.id;
           }
           resolve_bans(this.ban_dict);
         });
       }
     })
+  }
+
+  public getDictBan(): Promise<any> {
+    return new Promise<any> ((resolve_bans) => {
+      if (this.dict_ban) {
+        resolve_bans(this.dict_ban);
+      }
+      else {
+        this.getBanDict().then(() => {
+          resolve_bans(this.dict_ban);
+        })
+      }
+    });
   }
 
   /**
@@ -355,8 +371,8 @@ export class DeckDataService {
             let archidekt_deck: any = archidektDeckInfo;
             let banned_cards: any = [];
             archidekt_deck.cards.forEach((card: any) => {
-              for (let i = 0; i < ban_list[1].length; i++) {
-                if (card.card.oracleCard.name === ban_list[1][i].name) {
+              for (let i = 0; i < ban_list[this.dict_ban["banned"]].length; i++) {
+                if (card.card.oracleCard.name === ban_list[this.dict_ban["banned"]][i].name) {
                   banned_cards.push(card.card.oracleCard.name);
                   break;
                 }

@@ -42,37 +42,39 @@ export class DeckBansComponent implements OnInit {
     this.loading = true;
     this.deckData.getBanDict().then((ban_type_data) => {
       this.ban_type_dict = ban_type_data;
-      this.deckData.getBanListWithImages().then((ban_data) => {
-        let ban_list_data: any = ban_data;
-        let ban_list_sorted = [];
-        if (ban_list_data[4]) { //Allowed as commander
-          ban_list_sorted.push({
-            type: this.ban_type_dict[4],
-            cards: ban_data[4]
-          });
-        }
-        if (ban_list_data[3]) { //Banned as commander
-          ban_list_sorted.push({
-            type: this.ban_type_dict[3],
-            cards: ban_data[3]
-          });
-        }
-        if (ban_list_data[1]) { //Banned
-          ban_list_sorted.push({
-            type: this.ban_type_dict[1],
-            cards: ban_data[1]
-          });
-        }
-        if (ban_list_data[2]) { //Allowed
-          ban_list_sorted.push({
-            type: this.ban_type_dict[2],
-            cards: ban_data[2]
-          });
-        }
-        this.all_bans_sorted = ban_list_sorted;
-        this.loading = false;
+      this.deckData.getDictBan().then((dict_ban) => {
+        this.deckData.getBanListWithImages().then((ban_data) => {
+          let ban_list_data: any = ban_data;
+          let ban_list_sorted = [];
+          if (ban_list_data[dict_ban["allowed as commander"]]) { //Allowed as commander
+            ban_list_sorted.push({
+              type: this.ban_type_dict[dict_ban["allowed as commander"]],
+              cards: ban_data[dict_ban["allowed as commander"]]
+            });
+          }
+          if (ban_list_data[dict_ban["banned as commander"]]) { //Banned as commander
+            ban_list_sorted.push({
+              type: this.ban_type_dict[dict_ban["banned as commander"]],
+              cards: ban_data[dict_ban["banned as commander"]]
+            });
+          }
+          if (ban_list_data[dict_ban["banned"]]) { //Banned
+            ban_list_sorted.push({
+              type: this.ban_type_dict[dict_ban["banned"]],
+              cards: ban_data[dict_ban["banned"]]
+            });
+          }
+          if (ban_list_data[dict_ban["unbanned"]]) { //Allowed
+            ban_list_sorted.push({
+              type: this.ban_type_dict[dict_ban["unbanned"]],
+              cards: ban_data[dict_ban["unbanned"]]
+            });
+          }
+          this.all_bans_sorted = ban_list_sorted;
+          this.loading = false;
+        });
       });
-    })
+    });
   }
 
   public isAdmin(): boolean {
