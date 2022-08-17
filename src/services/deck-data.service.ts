@@ -408,7 +408,11 @@ export class DeckDataService {
         this.getBanDict().then(() => {
           this.getBanList().then((banlist) => {
             let ban_list = banlist;
-            let deckId = deck.url.substring(0, deck.url.indexOf('#')).substring(deck.url.indexOf('/decks/') + 7);
+
+            let deckId = deck.url.indexOf('#') > 0 ?
+              deck.url.substring(0, deck.url.indexOf('#')).substring(deck.url.indexOf('/decks/') + 7):
+              deck.url.substring(deck.url.indexOf('/decks/') + 7);
+
             this.http.get('/archidekt/api/decks/' + deckId + '/').pipe(delay(1000)).subscribe((archidektDeckInfo) => {
               let archidekt_deck: any = archidektDeckInfo;
               let banned_cards: any = [];
