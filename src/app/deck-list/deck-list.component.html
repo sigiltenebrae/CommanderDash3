@@ -36,6 +36,8 @@
             <h2 *ngIf="deck.url == null || deck.url === ''">{{deck.friendly_name}}</h2>
             <h4 class="commander-name">{{deck.commander}}</h4>
             <h4 *ngIf="deck.partner_commander" class="commander-name">{{deck.partner_commander}}</h4>
+            <p *ngIf="deck.play_data == null">--No Game Data--</p>
+            <p *ngIf="deck.play_data && deck.play_data != null">Win: {{deck.play_data.wins}} Loss: {{deck.play_data.losses}}</p>
             <div *ngIf="deck.colors && deck.colors != null" fxLayout="row" fxLayoutAlign="center" class="commander-colors">
               <img *ngIf="deck.colors.includes('W');" class="commander-color" src="assets/color_symbols/W.png">
               <img *ngIf="deck.colors.includes('U');" class="commander-color" src="assets/color_symbols/U.png">

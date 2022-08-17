@@ -35,11 +35,13 @@ export class DeckAllComponent implements OnInit {
             let deck_dict: any = {};
             let deck_promises: any = [];
             let scryfall_promises: any = [];
+            let playdata_promises: any = [];
             for (let deck of this.all_decks) {
               if (deck.active) {
                 deck.hovered = false;
                 deck.legality = "Unknown"
                 deck.colors = null;
+                playdata_promises.push(this.deckData.getGameDataForDeck(deck));
                 scryfall_promises.push(this.deckData.getDeckScryfallData(deck));
                 deck_promises.push(this.deckData.getDeckLegality(deck));
                 if (deck_dict[deck.creator] != null) {
@@ -64,10 +66,12 @@ export class DeckAllComponent implements OnInit {
               }
             }
             this.loading = false;
-            Promise.all(scryfall_promises).then(() => {
-              Promise.all(deck_promises).then(() => {
+            Promise.all(playdata_promises).then(() => {
+              Promise.all(scryfall_promises).then(() => {
+                Promise.all(deck_promises).then(() => {
+                });
               });
-            })
+            });
           });
         })
       });

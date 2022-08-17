@@ -364,6 +364,26 @@ export class DeckDataService {
     return this.http.post(environment.games_url, JSON.stringify(game), {headers : new HttpHeaders({'Content-Type': 'application/json'})})
   }
 
+  public async getGameDataForDeck(deck: any): Promise<void> {
+    return new Promise<void> ((resolve) => {
+      let gameData: any = { wins: 0, losses: 0 }
+      this.http.get(environment.games_url + '/deck/' + deck.id).subscribe((gameList: any) => {
+        gameList.forEach((game: any) => {
+          if(game.win) {
+            gameData.wins ++;
+          }
+          else {
+            gameData.losses ++;
+          }
+        });
+        deck.play_data = gameData;
+        resolve();
+      }, (error) => {
+        resolve();
+      })
+    });
+  }
+
   /**
    * Deletes a deck from the database and removes it from 'my_decks'
    * @param deck deck to delete

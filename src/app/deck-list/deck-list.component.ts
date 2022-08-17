@@ -28,15 +28,20 @@ export class DeckListComponent implements OnInit {
             this.decks = temp;
             let deck_promises: any = [];
             let scryfall_promises: any = [];
+            let playdata_promises: any = [];
             for (let deck of this.decks) {
               deck.hovered = false;
               deck.legality = "Unknown";
+              deck.play_data = null;
+              playdata_promises.push(this.deckData.getGameDataForDeck(deck));
               scryfall_promises.push(this.deckData.getDeckScryfallData(deck));
               deck_promises.push(this.deckData.getDeckLegality(deck));
             }
             this.loading = false;
-            Promise.all(scryfall_promises).then(() => {
-              Promise.all(deck_promises).then(() => {
+            Promise.all(playdata_promises).then(() => {
+              Promise.all(scryfall_promises).then(() => {
+                Promise.all(deck_promises).then(() => {
+                });
               });
             });
           }
