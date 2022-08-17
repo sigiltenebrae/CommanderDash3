@@ -360,6 +360,10 @@ export class DeckDataService {
     return this.http.post(environment.decks_url, JSON.stringify(deck), {headers : new HttpHeaders({'Content-Type': 'application/json'})})
   }
 
+  public addGame(game: any) {
+    return this.http.post(environment.games_url, JSON.stringify(game), {headers : new HttpHeaders({'Content-Type': 'application/json'})})
+  }
+
   /**
    * Deletes a deck from the database and removes it from 'my_decks'
    * @param deck deck to delete

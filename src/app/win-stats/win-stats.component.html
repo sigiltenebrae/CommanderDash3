@@ -1,0 +1,56 @@
+<div fxLayoutAlign="center center" style="height: 90vh; width: 100vw; overflow: hidden;">
+  <mat-stepper fxFlex.gt-sm="50" fxFlex.lt-md="80"
+               [linear]="true"
+               [orientation]="(stepperOrientation | async)!">
+    <mat-step [stepControl]="decksPlayedGroup" label="Enter the decks that played">
+      <form fxFlex fxLayout="column">
+        <ng-template #playerrt let-r="result" let-t="term">
+          <ngb-highlight [result]="r.creatorName + ': ' + r.deckName + ' (' + r.commander + ')'" [term]="t"></ngb-highlight>
+        </ng-template>
+        <mat-form-field appearance="fill">
+          <mat-label>Player</mat-label>
+          <input matInput [type]="'text'" fxFlex="100"
+                 name="player" [(ngModel)]="temp_deck"
+                 [ngbTypeahead]="player_search" [resultTemplate]="playerrt" [inputFormatter]="player_formatter"
+                 (ngModelChange)="addPlayer()" [editable]="false" [container]="'body'">
+        </mat-form-field>
+        <mat-chip-list class="mat-chip-list-stacked">
+          <mat-chip *ngFor="let player of current_players; let i = index;" color="primary" (removed)="removePlayer(i)">
+            {{player.creatorName + ': ' + player.deckName + ' (' + player.commander + ')'}}
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+        </mat-chip-list>
+        <div fxFlex fxLayoutAlign="end">
+          <button mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="winnerGroup" label="Select the winner">
+      <form [formGroup]="winnerGroup" fxFlex fxLayout="column">
+        <mat-form-field appearance="fill" fxFlex="100">
+          <mat-label>Winner</mat-label>
+          <mat-select [(ngModel)]="current_winner" name="winner" required>
+            <mat-option *ngFor="let player of current_players" [value]="player">
+              {{player.creatorName + ': ' + player.deckName + ' (' + player.commander + ')'}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div fxFlex fxLayoutAlign="end">
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Done</ng-template>
+      <p>Record match?</p>
+      <div fxFlex fxLayoutAlign="end">
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button type="submit" (click)="saveMatch()">Submit</button>
+      </div>
+    </mat-step>
+  </mat-stepper>
+</div>
+

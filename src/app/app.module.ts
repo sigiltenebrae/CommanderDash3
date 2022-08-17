@@ -43,6 +43,8 @@ import { DeckAllComponent } from './deck-all/deck-all.component';
 import { DeckBansComponent } from './deck-bans/deck-bans.component';
 import {MatSelectModule} from "@angular/material/select";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import { WinStatsComponent } from './win-stats/win-stats.component';
+import {MatStepperModule} from "@angular/material/stepper";
 
 
 
@@ -61,6 +63,7 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     ChangePasswordComponent,
     DeckAllComponent,
     DeckBansComponent,
+    WinStatsComponent,
   ],
   imports: [
     BrowserModule,
@@ -85,7 +88,9 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 
       {path: 'bans', component: DeckBansComponent},
       {path: 'stats', component: DeckStatsComponent},
-      {path: 'recs', component: DeckRecsComponent}
+      {path: 'recs', component: DeckRecsComponent},
+
+      {path: 'wins', component: WinStatsComponent}
 
     ], {useHash: true}),
     MatSidenavModule,
@@ -108,7 +113,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     NgChartsModule,
     MatOptionModule,
     MatSelectModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatStepperModule
   ],
   exports: [RouterModule],
   providers: [],

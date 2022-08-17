@@ -58,7 +58,6 @@ export class TokenStorageService {
           mode: CryptoJS.mode.ECB,
           padding: CryptoJS.pad.Pkcs7
         }).toString(CryptoJS.enc.Utf8);
-      console.log(decrypted_user);
       return JSON.parse(decrypted_user);
     }
     return {};
