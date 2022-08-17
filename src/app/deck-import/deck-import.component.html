@@ -1,0 +1,46 @@
+<div fxLayout="row wrap" fxFlex="100" fxLayoutAlign="center" style="margin-bottom: 20px">
+  <mat-card fxFlex="40" fxFlex.md="70" fxFlex.lt-md="90" [class.mat-elevation-z3]="true">
+    <div *ngIf="!deckList || deckList.length == 0" fxLayout="column">
+      <div fxLayout="row">
+        <mat-form-field appearance="outline" fxFlex="100">
+          <mat-label>Archidekt Username</mat-label>
+          <input matInput [type]="'text'" required minlength="1"
+                 name="userid" [(ngModel)]="username">
+        </mat-form-field>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="end">
+        <button mat-raised-button (click)="getDeckList()" color="primary">Get Decks!</button>
+      </div>
+    </div>
+    <div *ngIf="deckList && deckList.length > 0 && !loading_imports && !done_imports" fxLayout="column">
+      <h4>{{deckList.length}} decks found. Select imports:</h4>
+      <p><mat-checkbox (change)="setAll($event.checked)">Select All</mat-checkbox></p>
+      <p *ngFor="let deck of deckList"><mat-checkbox [(ngModel)]="deck.checked">{{deck.name}}, Last Update: {{deck.updatedAt}}</mat-checkbox>&nbsp;
+        <ngb-rating *ngIf="deck.checked" [(rate)]="deck.play_rating" [max]="5">
+          <ng-template let-fill="fill" let-index="index">
+            <span class="star" [class.filled]="fill === 100">&#9733;</span>
+          </ng-template>
+        </ngb-rating>
+      </p>
+      <div fxLayout="row" fxLayoutAlign="end">
+        <button mat-raised-button (click)="importDecks()" color="primary">Import!</button>
+      </div>
+    </div>
+    <div *ngIf="loading_imports" fxLayout="column" fxLayoutAlign="center">
+      <h3>Importing...</h3>
+      <ngb-progressbar type="primary" [striped]="true" [animated]="true" style="height: 28px"
+                       [value]="(current_deck/total_decks) * 100"></ngb-progressbar>
+    </div>
+    <div *ngIf="done_imports">
+      <h3>Import Complete!</h3>
+      <div *ngIf="errors.length > 0">
+        <h3>errors: </h3>
+        <p *ngFor="let error of errors">{{error}}</p>
+      </div>
+    </div>
+  </mat-card>
+</div>
+
+
+
+

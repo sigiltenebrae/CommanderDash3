@@ -45,6 +45,7 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import { WinStatsComponent } from './win-stats/win-stats.component';
 import {MatStepperModule} from "@angular/material/stepper";
+import { DeckImportComponent } from './deck-import/deck-import.component';
 
 
 
@@ -64,6 +65,7 @@ import {MatStepperModule} from "@angular/material/stepper";
     DeckAllComponent,
     DeckBansComponent,
     WinStatsComponent,
+    DeckImportComponent,
   ],
   imports: [
     BrowserModule,
@@ -90,7 +92,8 @@ import {MatStepperModule} from "@angular/material/stepper";
       {path: 'stats', component: DeckStatsComponent},
       {path: 'recs', component: DeckRecsComponent},
 
-      {path: 'wins', component: WinStatsComponent}
+      {path: 'wins', component: WinStatsComponent},
+      {path: 'imports', component: DeckImportComponent}
 
     ], {useHash: true}),
     MatSidenavModule,

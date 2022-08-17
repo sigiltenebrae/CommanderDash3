@@ -29,6 +29,10 @@ export class AppComponent implements OnInit {
     }
   }
 
+  public isAdmin(): boolean {
+    return this.tokenStorage.getUser().isAdmin;
+  }
+
   /**
    * Signs the current user out
    */
