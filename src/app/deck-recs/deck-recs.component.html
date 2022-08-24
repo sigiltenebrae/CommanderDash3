@@ -120,6 +120,7 @@
         </div>
       </div>
       <br>
+<!--      <p>Max Search Time: {{secondsToString(maxSearchTime() / 1000)}}</p>-->
       <div fxLayout="row" fxLayoutAlign="end">
         <button mat-raised-button color="accent" (click)="calculateRecommendations()">Calculate</button>
       </div>
@@ -146,6 +147,7 @@
         <h3 style="width: 90%; text-align: center"><h4>Applying Weights: </h4>&nbsp;<ngb-progressbar type="secondary" [striped]="true" [animated]="true" style="height: 28px"
                                                                                                      [value]="(weight_position/weight_total) * 100"></ngb-progressbar></h3>
       </div>
+<!--      <p>Max Search Time: {{secondsToString(maxSearchTime() / 1000)}}</p>-->
       <p>Elapsed Time: {{secondsToString(calc_clock)}}</p>
     </mat-card>
   </div>

@@ -81,6 +81,10 @@ export class DeckRecsComponent implements OnInit {
     }
   }
 
+  public maxSearchTime() {
+    return 1200000 - ((this.user_randomness / 100) * 1200000) > 30000 ? 1200000 - ((this.user_randomness / 100) * 1200000): 30000;
+  }
+
   /**
    * Start the calculations for recommendations
    */
@@ -145,6 +149,7 @@ export class DeckRecsComponent implements OnInit {
   private async calculateRecommendationsForCommander(deck: any) {
     return new Promise<void>((resolve_commander) => {
       //setTimeout(() => { resolve_commander(); }, 600000);
+      setTimeout(() => { resolve_commander(); }, this.maxSearchTime());
       let creator_promises: any[] = [];
 
       if (deck.active || this.toggle_inactive) {

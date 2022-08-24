@@ -35,7 +35,7 @@
             <h2 *ngIf="deck.url != null && deck.url !== ''"><a href="{{deck.url}}" target="_blank">{{deck.friendly_name}}</a></h2>
             <h2 *ngIf="deck.url == null || deck.url === ''">{{deck.friendly_name}}</h2>
             <h4 class="commander-name"><a href="{{deck.edhrec_url}}" target="_blank" style="text-decoration: none">{{deck.commander}}</a></h4>
-            <h4 *ngIf="deck.partner_commander" class="commander-name">{{deck.partner_commander}}</h4>
+            <h4 *ngIf="deck.partner_commander" class="commander-name"><a href="{{deck.edhrec_url}}" target="_blank" style="text-decoration: none">{{deck.partner_commander}}</a></h4>
             <p *ngIf="deck.play_data == null">--No Game Data--</p>
             <p *ngIf="deck.play_data && deck.play_data != null">Win: {{deck.play_data.wins}} Loss: {{deck.play_data.losses}}</p>
             <div *ngIf="deck.colors && deck.colors != null" fxLayout="row" fxLayoutAlign="center" class="commander-colors">
