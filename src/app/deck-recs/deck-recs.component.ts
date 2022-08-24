@@ -56,6 +56,7 @@ export class DeckRecsComponent implements OnInit {
   public toggle_partner = true; //allow partners to be selected
   public toggle_partner_priority = false; ///prioritize partners in selection
   public toggle_other_players = false;
+  public toggle_inactive = false; //whether inactive decks should count towards recommendations
 
   private recommendation_data: any = {}; //weighted dictionary of commanders
 
@@ -146,7 +147,7 @@ export class DeckRecsComponent implements OnInit {
       //setTimeout(() => { resolve_commander(); }, 600000);
       let creator_promises: any[] = [];
 
-      if (deck.active) {
+      if (deck.active || this.toggle_inactive) {
         this.http.get('/archidekt/api/decks/cards/?deckFormat=3&commanders="' + deck.commander + '"&orderBy=-viewCount&pageSize=100').pipe(delay(1000)).subscribe((archidekt_decks) => {
           let linked_decks: any = archidekt_decks;
           if (deck.partner_commander) {
@@ -271,7 +272,7 @@ export class DeckRecsComponent implements OnInit {
     let w = 0; let u = 0; let b = 0; let r = 0; let g = 0;
     let w_play = 0; let u_play = 0; let b_play = 0; let r_play = 0; let g_play = 0;
     this.decks.forEach((deck) => {
-      if (deck.active && deck.colors) {
+      if ((deck.active || this.toggle_inactive) && deck.colors) {
         if (deck.colors.includes('W')) { w_play += deck.play_rating; w++}
         if (deck.colors.includes('U')) { u_play += deck.play_rating; u++}
         if (deck.colors.includes('B')) { b_play += deck.play_rating; b++}
@@ -337,7 +338,7 @@ export class DeckRecsComponent implements OnInit {
   private getThemeRatings(): any {
     let themeDict: any = {};
     this.decks.forEach((deck) => {
-      if (deck.active && deck.themes) {
+      if ((deck.active || this.toggle_inactive) && deck.themes) {
         deck.themes.forEach((theme: any) => {
           if (themeDict[theme] != null) {
             themeDict[theme] += (deck.play_rating / 5);

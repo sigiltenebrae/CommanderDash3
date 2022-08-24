@@ -41,6 +41,11 @@ export class DeckAllComponent implements OnInit {
                 deck.hovered = false;
                 deck.legality = "Unknown"
                 deck.colors = null;
+                let edhrec_name = deck.commander.toLowerCase().replace(/[`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, '').replace(/\ /g, '-');
+                if (deck.partner_commander) {
+                  edhrec_name += '-' + deck.partner_commander.toLowerCase().replace(/[`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, '').replace(/\ /g, '-');
+                }
+                deck.edhrec_url = 'https://edhrec.com/commanders/' + edhrec_name;
                 playdata_promises.push(this.deckData.getGameDataForDeck(deck));
                 scryfall_promises.push(this.deckData.getDeckScryfallData(deck));
                 deck_promises.push(this.deckData.getDeckLegality(deck));
