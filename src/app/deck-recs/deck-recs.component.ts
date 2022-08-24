@@ -129,6 +129,7 @@ export class DeckRecsComponent implements OnInit {
    */
   private async calculateRecommendationsForCommander(deck: any) {
     return new Promise<void>((resolve_commander) => {
+      setTimeout(() => { resolve_commander(); }, 120000);
       let creator_promises: any[] = [];
 
       if (deck.active) {
@@ -165,6 +166,7 @@ export class DeckRecsComponent implements OnInit {
    */
   private async getDecksForCreator(username: string, playRating: number) {
     return new Promise<void>((resolve_user) => {
+      setTimeout(() => { resolve_user(); }, 15000);
       let recommended_promises: any[] = [];
 
       this.http.get('/archidekt/api/decks/cards/?owner=' + username + '&orderBy=-viewCount&deckFormat=3').pipe(delay(1000)).subscribe((recommend_decks) => {
@@ -183,6 +185,7 @@ export class DeckRecsComponent implements OnInit {
    */
   private async getDeckFromServer(deckId: number, playRating: number) {
     return new Promise<void>((resolve_deck) => {
+      setTimeout(() => { resolve_deck(); }, 3000);
       this.http.get('/archidekt/api/decks/' + deckId + '/').pipe(delay(1000)).subscribe((archidektDeckInfo) => {
         let deckInfo: any = archidektDeckInfo;
         deckInfo.cards.forEach(async (card: any) => {
@@ -301,6 +304,7 @@ export class DeckRecsComponent implements OnInit {
    */
   private async filterDecks() {
     return new Promise<void>( (resolve_filter) => {
+      setTimeout(() => { resolve_filter(); }, 5000);
       this.decks.forEach((deck) => { //Remove the commanders already in use.
         if (this.recommendation_data[deck.commander]) {
           this.recommendation_data[deck.commander] = null;
