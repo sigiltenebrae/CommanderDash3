@@ -105,7 +105,6 @@ export class DeckEditComponent implements OnInit {
             this.form.url = this.current_deck.url;
             this.form.play_rating = this.current_deck.play_rating;
             this.form.active = this.current_deck.active;
-            this.form.themes = [...this.current_deck.themes];
             this.form.image_url = this.current_deck.image_url;
             this.form.partner_image_url = this.current_deck.partner_image_url;
             this.image_index = 0;
@@ -116,6 +115,7 @@ export class DeckEditComponent implements OnInit {
             this.form.creator = this.current_deck.creator;
             this.loading = false;
             this.deckData.getDeckScryfallData(this.current_deck).then(async () => {
+              this.form.themes = this.current_deck.themes;
               let cur = await Scry.Cards.byName(this.form.commander);
               let cur_prints = await cur.getPrints();
               cur_prints.forEach((print: any) => {
