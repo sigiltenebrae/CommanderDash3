@@ -167,7 +167,7 @@ export class DeckRecsComponent implements OnInit {
     return new Promise<void>((resolve_user) => {
       let recommended_promises: any[] = [];
 
-      this.http.get('/archidekt/api/decks/cards/?owner=' + username + '&orderBy=-viewCount').pipe(delay(1000)).subscribe((recommend_decks) => {
+      this.http.get('/archidekt/api/decks/cards/?owner=' + username + '&orderBy=-viewCount&deckFormat=3').pipe(delay(1000)).subscribe((recommend_decks) => {
         let recommended_decks: any = recommend_decks;
 
         recommended_decks.results.forEach((recommended_deck: any) => { recommended_promises.push(this.getDeckFromServer(recommended_deck.id, playRating)); });
@@ -216,7 +216,7 @@ export class DeckRecsComponent implements OnInit {
     let w = 0; let u = 0; let b = 0; let r = 0; let g = 0;
     let w_play = 0; let u_play = 0; let b_play = 0; let r_play = 0; let g_play = 0;
     this.decks.forEach((deck) => {
-      if (deck.active) {
+      if (deck.active && deck.colors) {
         if (deck.colors.includes('W')) { w_play += deck.play_rating; w++}
         if (deck.colors.includes('U')) { u_play += deck.play_rating; u++}
         if (deck.colors.includes('B')) { b_play += deck.play_rating; b++}
@@ -313,11 +313,11 @@ export class DeckRecsComponent implements OnInit {
       });
       if (this.toggle_colors) { //Remove commanders that do not have the desired color
         Object.keys(this.recommendation_data).forEach((commander) => {
-          if (this.toggle_w && this.recommendation_data[commander]) { if (!this.recommendation_data[commander].colors.includes['W']) { this.recommendation_data[commander] = null; } }
-          if (this.toggle_u && this.recommendation_data[commander]) { if (!this.recommendation_data[commander].colors.includes['U']) { this.recommendation_data[commander] = null; } }
-          if (this.toggle_b && this.recommendation_data[commander]) { if (!this.recommendation_data[commander].colors.includes['B']) { this.recommendation_data[commander] = null; } }
-          if (this.toggle_r && this.recommendation_data[commander]) { if (!this.recommendation_data[commander].colors.includes['R']) { this.recommendation_data[commander] = null; } }
-          if (this.toggle_g && this.recommendation_data[commander]) { if (!this.recommendation_data[commander].colors.includes['G']) { this.recommendation_data[commander] = null; } }
+          if (this.toggle_w && this.recommendation_data[commander] && this.recommendation_data[commander].colors) { if (!this.recommendation_data[commander].colors.includes['W']) { this.recommendation_data[commander] = null; } }
+          if (this.toggle_u && this.recommendation_data[commander] && this.recommendation_data[commander].colors) { if (!this.recommendation_data[commander].colors.includes['U']) { this.recommendation_data[commander] = null; } }
+          if (this.toggle_b && this.recommendation_data[commander] && this.recommendation_data[commander].colors) { if (!this.recommendation_data[commander].colors.includes['B']) { this.recommendation_data[commander] = null; } }
+          if (this.toggle_r && this.recommendation_data[commander] && this.recommendation_data[commander].colors) { if (!this.recommendation_data[commander].colors.includes['R']) { this.recommendation_data[commander] = null; } }
+          if (this.toggle_g && this.recommendation_data[commander] && this.recommendation_data[commander].colors) { if (!this.recommendation_data[commander].colors.includes['G']) { this.recommendation_data[commander] = null; } }
         });
       }
       if (!this.toggle_top) { //Remove commanders from the top list
