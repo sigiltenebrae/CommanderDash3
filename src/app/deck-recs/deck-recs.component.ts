@@ -15,6 +15,8 @@ import {HttpClient} from "@angular/common/http";
 })
 export class DeckRecsComponent implements OnInit {
 
+  public overloaded = false;
+
   public loading = false; //display the spinner while the page is loading
   public calculating = false; //display the loading bar while calculating
   public calculated = false; //display the recommendations after calculations
@@ -28,8 +30,12 @@ export class DeckRecsComponent implements OnInit {
   public commander_total = 0; //how many commanders there are (for loading bar)
   public weight_total = 0; //how many commanders to apply weight calculations to (for loading bar)
   public weight_position = 0; //how many commanders have completed weights (for loading bar)
+  public user_count = 0;
+  public approx_users = 0;
+  public deck_count = 0;
 
   private decks: any[] = []; //list of all decks for user
+  private all_decks: any[] = []; //list of all decks
   private colorData: any = {}; //color averages for weight calculations
   private themeData: any = {}; //theme averages for weight calculations
 
@@ -49,6 +55,7 @@ export class DeckRecsComponent implements OnInit {
   public toggle_top = false; //allow commanders from the top edhrec commanders to be selected for recommendations
   public toggle_partner = true; //allow partners to be selected
   public toggle_partner_priority = false; ///prioritize partners in selection
+  public toggle_other_players = false;
 
   private recommendation_data: any = {}; //weighted dictionary of commanders
 
@@ -68,6 +75,8 @@ export class DeckRecsComponent implements OnInit {
           this.decks = temp;
           this.loading = false;
         });
+      this.deckData.getAllDecks().then((deck_data) => {
+        this.all_decks = deck_data; });
     }
   }
 
@@ -89,6 +98,9 @@ export class DeckRecsComponent implements OnInit {
     this.commander_position = 0;
 
     let commander_promises: any[] = [];
+
+    this.approx_users = this.commander_total * (100 - this.user_randomness);
+
     this.decks.forEach((deck) => { commander_promises.push(this.calculateRecommendationsForCommander(deck)); });
     Promise.all(commander_promises).then(() => {
       console.log('commanders done');
@@ -104,6 +116,7 @@ export class DeckRecsComponent implements OnInit {
         this.filterDecks().then(() => {
           //add in theme multiplication
           let sortedDeckList = this.sortDecks();
+          console.log(sortedDeckList);
           let recommendation_promises: any[] = [];
           for (let j = 0; j < sortedDeckList.length; j++) {
             if (j == this.recommendation_count) {
@@ -113,6 +126,7 @@ export class DeckRecsComponent implements OnInit {
           }
           Promise.all(recommendation_promises).then(() => {
             console.log('done');
+            console.log(this.recommendations);
             this.subject.next();
             this.calculating = false;
             this.calculated = true;
@@ -129,7 +143,7 @@ export class DeckRecsComponent implements OnInit {
    */
   private async calculateRecommendationsForCommander(deck: any) {
     return new Promise<void>((resolve_commander) => {
-      setTimeout(() => { resolve_commander(); }, 120000);
+      //setTimeout(() => { resolve_commander(); }, 600000);
       let creator_promises: any[] = [];
 
       if (deck.active) {
@@ -145,6 +159,8 @@ export class DeckRecsComponent implements OnInit {
                 if ((Math.random() * 100) > this.user_randomness - 1) { creator_promises.push(this.getDecksForCreator(linked_partner_deck.owner.username, deck.play_rating / 2)); }
               });
               Promise.all(creator_promises).then(() => { this.commander_position++; resolve_commander(); }).catch((err) => { console.log(err); resolve_commander(); });
+            }, error => {
+              Promise.all(creator_promises).then(() => { this.commander_position++; resolve_commander(); }).catch((err) => { console.log(err); resolve_commander(); });
             }); //Partner commanders have their rating halved to account for mandatory partners.
           }
           else {
@@ -153,6 +169,8 @@ export class DeckRecsComponent implements OnInit {
             });
             Promise.all(creator_promises).then(() => { this.commander_position++; resolve_commander(); }).catch((err) => { console.log(err); resolve_commander(); });
           }
+        }, error => {
+          resolve_commander();
         });
       }
     });
@@ -166,14 +184,44 @@ export class DeckRecsComponent implements OnInit {
    */
   private async getDecksForCreator(username: string, playRating: number) {
     return new Promise<void>((resolve_user) => {
-      setTimeout(() => { resolve_user(); }, 15000);
+      //setTimeout(() => { this.user_count++; resolve_user();  }, 300000);
       let recommended_promises: any[] = [];
 
-      this.http.get('/archidekt/api/decks/cards/?owner=' + username + '&orderBy=-viewCount&deckFormat=3').pipe(delay(1000)).subscribe((recommend_decks) => {
+      this.http.get('/archidekt/api/decks/cards/?owner=' + username + '&orderBy=-viewCount&deckFormat=3').pipe(delay(1000)).subscribe(async (recommend_decks) => {
         let recommended_decks: any = recommend_decks;
-
-        recommended_decks.results.forEach((recommended_deck: any) => { recommended_promises.push(this.getDeckFromServer(recommended_deck.id, playRating)); });
-        Promise.all(recommended_promises).then(() => { resolve_user(); }).catch((err) => { console.log(err); resolve_user(); });
+        let page = 2;
+        recommended_decks.results.forEach((recommended_deck: any) => {
+          recommended_promises.push(this.getDeckFromServer(recommended_deck.id, playRating));
+        });
+        while (recommended_decks.next) {
+          recommended_decks = await new Promise<any>((res) => {
+            this.http.get('/archidekt/api/decks/cards/?owner=' + username + '&orderBy=-viewCount&deckFormat=3&page=' + page).subscribe((deck_res) => {
+              res(deck_res);
+            }, error => {
+              res(null);
+            })
+          });
+          if (recommended_decks) {
+            recommended_decks.results.forEach((recommended_deck: any) => {
+              recommended_promises.push(this.getDeckFromServer(recommended_deck.id, playRating));
+            });
+            page++;
+          }
+          else {
+            break;
+          }
+        }
+        Promise.all(recommended_promises).then(() => {
+          this.user_count++;
+          resolve_user();
+        }).catch((err) => {
+          console.log(err);
+          this.user_count++;
+          resolve_user();
+        });
+      }, error => {
+        this.user_count++;
+        resolve_user();
       });
     });
   }
@@ -190,7 +238,10 @@ export class DeckRecsComponent implements OnInit {
         let deckInfo: any = archidektDeckInfo;
         deckInfo.cards.forEach(async (card: any) => {
           if (card.categories.includes("Commander")) {
-            if (card.card.oracleCard.name !== "Golos, Tireless Pilgrim") {
+            if (card.card.oracleCard.name !== "Golos, Tireless Pilgrim" &&
+                card.card.oracleCard.name !== "Tymna the Weaver" &&
+                card.card.oracleCard.name !== "Thrasios, Triton Hero" &&
+                card.card.oracleCard.name !== "Vial Smasher the Fierce") {
               if (this.recommendation_data[card.card.oracleCard.name] != null) {
                 this.recommendation_data[card.card.oracleCard.name].score += (playRating / 5);
               }
@@ -204,9 +255,10 @@ export class DeckRecsComponent implements OnInit {
             }
           }
         });
+        this.deck_count++;
         resolve_deck();
       }, (err) => {
-        console.log(err);
+        this.deck_count++;
         resolve_deck();
       });
     });
@@ -243,7 +295,7 @@ export class DeckRecsComponent implements OnInit {
    */
   private async weighCommanderByColors(commander: string) {
     return new Promise<void>(async (resolve_colors) => {
-      setTimeout(() => { this.weight_position++; resolve_colors()}, 3000);
+      setTimeout(() => { this.weight_position++; resolve_colors()}, 20000);
       if (this.recommendation_data[commander]) {
         Scry.Cards.byName(commander.indexOf('//') > -1 ? commander.substring(0, commander.indexOf('//') - 1): commander).then( (cur) => {
           if (this.recommendation_data[commander]) {
@@ -285,7 +337,7 @@ export class DeckRecsComponent implements OnInit {
   private getThemeRatings(): any {
     let themeDict: any = {};
     this.decks.forEach((deck) => {
-      if (deck.active) {
+      if (deck.active && deck.themes) {
         deck.themes.forEach((theme: any) => {
           if (themeDict[theme] != null) {
             themeDict[theme] += (deck.play_rating / 5);
@@ -304,7 +356,7 @@ export class DeckRecsComponent implements OnInit {
    */
   private async filterDecks() {
     return new Promise<void>( (resolve_filter) => {
-      setTimeout(() => { resolve_filter(); }, 5000);
+      setTimeout(() => { resolve_filter(); }, 10000);
       this.decks.forEach((deck) => { //Remove the commanders already in use.
         if (this.recommendation_data[deck.commander]) {
           this.recommendation_data[deck.commander] = null;
@@ -315,6 +367,18 @@ export class DeckRecsComponent implements OnInit {
           }
         }
       });
+      if (!this.toggle_other_players) {
+        this.all_decks.forEach((deck) => {
+          if (this.recommendation_data[deck.commander]) {
+            this.recommendation_data[deck.commander] = null;
+            if (deck.partner_commander) {
+              if (this.recommendation_data[deck.partner_commander]) {
+                this.recommendation_data[deck.partner_commander] = null;
+              }
+            }
+          }
+        })
+      }
       if (this.toggle_colors) { //Remove commanders that do not have the desired color
         Object.keys(this.recommendation_data).forEach((commander) => {
           if (this.toggle_w && this.recommendation_data[commander] && this.recommendation_data[commander].colors) { if (!this.recommendation_data[commander].colors.includes['W']) { this.recommendation_data[commander] = null; } }
@@ -341,11 +405,9 @@ export class DeckRecsComponent implements OnInit {
             }
             resolve_filter();
           }, (err) => {
-            console.log(err);
             resolve_filter();
           });
         }, (err) => {
-          console.log(err);
           resolve_filter();
         });
       }
@@ -378,6 +440,8 @@ export class DeckRecsComponent implements OnInit {
       setTimeout(() => { resolve_recommendation(); }, 3000);
       let outData: any = {};
       outData.commander = commander;
+      outData.imported = false;
+      outData.importing = false;
       commander = commander.indexOf('//') > -1 ? commander.substring(0, commander.indexOf('//') - 1): commander;
       let cur = await Scry.Cards.byName(commander);
       let cur_prints = await cur.getPrints();
@@ -614,4 +678,33 @@ export class DeckRecsComponent implements OnInit {
     hours = (hours < 10) ? '0' + hours : hours;
     return `${hours}:${minutes}:${seconds}`;
   }
+
+  public async importRec(deck: any): Promise<void> {
+    return new Promise<void> ((resolve_deck) => {
+      deck.imported = true;
+      deck.importing = true;
+      let out_deck: any = {};
+      out_deck.friendly_name = deck.name;
+      out_deck.commander = deck.commander;
+      out_deck.url = "";
+      out_deck.image_url = deck.image_url;
+      out_deck.play_rating = 3;
+      out_deck.build_rating = null; //comment this out
+      out_deck.win_rating = null; //comment this out
+      out_deck.active = false;
+      out_deck.themes = [];
+      out_deck.deleteThemes = [];
+      out_deck.creator = this.tokenStorage.getUser().id;
+      out_deck.partner_commander = deck.partner ? deck.partner: null;
+      out_deck.partner_image_url = deck.partner_image_url ? deck.partner_image_url: null;
+      this.deckData.createDeck(out_deck).subscribe(() => {
+          deck.importing = false;
+          resolve_deck();
+        }, (error) => {
+          deck.importing = false;
+          resolve_deck();
+        })
+    });
+  }
 }
+
