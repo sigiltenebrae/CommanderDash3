@@ -59,6 +59,7 @@
                     <img *ngIf="deck.colors.includes('B');" class="commander-color" src="assets/color_symbols/B.png">
                     <img *ngIf="deck.colors.includes('R');" class="commander-color" src="assets/color_symbols/R.png">
                     <img *ngIf="deck.colors.includes('G');" class="commander-color" src="assets/color_symbols/G.png">
+                    <img *ngIf="deck.colors.length == 0" class="commander-color" src="assets/color_symbols/C.png">
                   </div>
                   <div *ngIf="!deck.colors || deck.colors == null" fxLayout="row" fxLayoutAlign="center" class="commander-colors">
                     <mat-spinner class="commander-color" [diameter]="16"></mat-spinner>
