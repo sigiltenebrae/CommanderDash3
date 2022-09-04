@@ -66,7 +66,7 @@
                   <div fxLayout="row" fxLayoutAlign="end" class="commander-legality">
                     <p *ngIf="deck.legality === 'Unknown'">{{deck.legality}}</p>
                     <p *ngIf="deck.legality === 'Legal'" style="color: #63a785">{{deck.legality}}</p>
-                    <ng-template #popContent><p *ngFor="let issue of deck.issues">{{issue}}</p></ng-template>
+                    <ng-template #popContent><p *ngFor="let issue of deck.issues"><a href="{{issue.gatherer}}" target="_blank">{{issue.card}}</a></p></ng-template>
                     <p *ngIf="deck.legality === 'Illegal'" style="color: #d23632; cursor: pointer"
                        [ngbPopover]="popContent" popoverClass="issue-popover">{{deck.legality}}</p>
                   </div>

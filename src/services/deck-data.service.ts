@@ -419,8 +419,70 @@ export class DeckDataService {
               archidekt_deck.cards.forEach((card: any) => {
                 for (let i = 0; i < ban_list[this.dict_ban["banned"]].length; i++) {
                   if (card.card.oracleCard.name === ban_list[this.dict_ban["banned"]][i].name) {
-                    banned_cards.push(card.card.oracleCard.name);
+                    banned_cards.push({card: card.card.oracleCard.name,
+                      gatherer: "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=" + card.card.multiverseid});
                     break;
+                  }
+                }
+                if (card.card.oracleCard.legalities.commander !== "legal" || card.card.prices.tcg > 25) {
+                  let allowed_card = false;
+                  let dual_lands = [
+                    "Tundra",
+                    "Underground Sea",
+                    "Badlands",
+                    "Taiga",
+                    "Savannah",
+                    "Scrubland",
+                    "Volcanic Island",
+                    "Bayou",
+                    "Plateau",
+                    "Tropical Island",
+                    "Flooded Strand",
+                    "Polluted Delta",
+                    "Bloodstained Mire",
+                    "Wooded Foothills",
+                    "Windswept Heath",
+                    "Marsh Flats",
+                    "Scalding Tarn",
+                    "Verdant Catacombs",
+                    "Arid Mesa",
+                    "Misty Rainforest",
+                    "Hallowed Fountain",
+                    "Watery Grave",
+                    "Blood Crypt",
+                    "Stomping Ground",
+                    "Temple Garden",
+                    "Godless Shrine",
+                    "Overgrown Tomb",
+                    "Breeding Pool",
+                    "Steam Vents",
+                    "Sacred Foundry",
+                    "Urborg, Tomb of Yawgmoth",
+                  ];
+                  if (card.card.oracleCard.types.includes("Land")) {
+                    if (dual_lands.includes(card.card.oracleCard.name)) {
+                      allowed_card = true;
+                    }
+                  }
+                  if (card.categories.includes("Commander")) {
+                    for (let j = 0; j < ban_list[this.dict_ban["allowed as commander"]].length; j++) {
+                      if (card.card.oracleCard.name === ban_list[this.dict_ban["allowed as commander"]][j].name) {
+                        allowed_card = true;
+                        break;
+                      }
+                    }
+                  }
+                  if (!allowed_card) {
+                    for (let j = 0; j < ban_list[this.dict_ban["unbanned"]].length; j++) {
+                      if (card.card.oracleCard.name === ban_list[this.dict_ban["unbanned"]][j].name) {
+                        allowed_card = true;
+                        break;
+                      }
+                    }
+                  }
+                  if (!allowed_card) {
+                    banned_cards.push({card: card.card.oracleCard.name,
+                      gatherer: "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=" + card.card.multiverseid});
                   }
                 }
               });

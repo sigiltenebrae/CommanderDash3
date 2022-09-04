@@ -24,9 +24,12 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatButtonModule } from "@angular/material/button";
 import { MatChipsModule } from "@angular/material/chips";
-import {MatOptionModule, MatRippleModule} from "@angular/material/core";
-import {MatInputModule} from "@angular/material/input";
-import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import { MatOptionModule, MatRippleModule } from "@angular/material/core";
+import { MatInputModule } from "@angular/material/input";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatStepperModule } from "@angular/material/stepper";
+import { MatSelectModule } from "@angular/material/select";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 import { NgChartsModule } from 'ng2-charts';
 
@@ -41,10 +44,7 @@ import { DeckRecsComponent } from './deck-recs/deck-recs.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { DeckAllComponent } from './deck-all/deck-all.component';
 import { DeckBansComponent } from './deck-bans/deck-bans.component';
-import {MatSelectModule} from "@angular/material/select";
-import {MatTooltipModule} from "@angular/material/tooltip";
 import { WinStatsComponent } from './win-stats/win-stats.component';
-import {MatStepperModule} from "@angular/material/stepper";
 import { DeckImportComponent } from './deck-import/deck-import.component';
 
 
