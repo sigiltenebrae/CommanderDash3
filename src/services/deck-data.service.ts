@@ -19,7 +19,6 @@ export class DeckDataService {
   private ban_dict: any = null; //dictionary of ban types by key of id
   private dict_ban: any = null; //reverse dictionary of ban types by key of type
   private ban_list: any = null;
-  private ban_list_images = null;
 
   /**
    * Returns a dictionary of usernames by key of user id
@@ -103,58 +102,6 @@ export class DeckDataService {
           }
         }
         this.ban_list = ban_dict;
-        resolve_bans(ban_dict);
-      }, (error) => {
-        resolve_bans({});
-      });
-    });
-  }
-
-
-  /**
-   * Returns the ban list in the form of a dictionary of keys of ban_type and arrays of cards as well as Scryfall image data.
-   */
-  public getBanListWithImages(): Promise<any> {
-    return new Promise<any>((resolve_bans, reject) => {
-      if (this.ban_list_images) {
-        resolve_bans(this.ban_list_images)
-      }
-      this.http.get(environment.bans_url).subscribe(async (banlist) => {
-        let bans: any = banlist;
-        let ban_dict: any = {};
-        for (let ban of bans) {
-          let commander = ban.card_name;
-          let cur = await Scry.Cards.byName(commander.indexOf('//') > -1 ? commander.substring(0, commander.indexOf('//') - 1): commander);
-          let cur_prints = await cur.getPrints();
-          let image: string | undefined = '';
-          let image_back: string | undefined = '';
-          if (cur_prints) {
-            if (cur_prints[0].card_faces && cur_prints[0].card_faces.length > 1) {
-              image = cur_prints[0].card_faces[0].image_uris?.png;
-              image_back = cur_prints[0].card_faces[1].image_uris?.png;
-            }
-            else {
-              image = cur_prints[0].image_uris?.png;
-            }
-          }
-          if (ban_dict[ban.ban_type] != null) {
-            ban_dict[ban.ban_type].push({
-              name: ban.card_name,
-              image: image,
-              image_back: image_back !== '' ? image_back: null
-            });
-          }
-          else {
-            ban_dict[ban.ban_type] = [];
-            ban_dict[ban.ban_type].push({
-              name: ban.card_name,
-              image: image,
-              image_back: image_back !== '' ? image_back: null
-            });
-          }
-        }
-        this.ban_list = ban_dict;
-        this.ban_list_images = ban_dict;
         resolve_bans(ban_dict);
       }, (error) => {
         resolve_bans({});
