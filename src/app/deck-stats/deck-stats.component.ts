@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {Router} from "@angular/router";
 
 import {ChartConfiguration} from "chart.js";
+import * as Scry from "scryfall-sdk";
 
 import {TokenStorageService} from "../../services/token-storage.service";
 import {DeckDataService} from "../../services/deck-data.service";
@@ -40,6 +41,7 @@ export class DeckStatsComponent implements OnInit {
   public card_counts: any = {};
   public sorted_card_counts: any[] = [];
   public counted_decks = 0;
+  public top_cards: any[] = [];
 
   constructor(private deckData: DeckDataService, private tokenStorage: TokenStorageService, private router: Router) { }
 
@@ -50,12 +52,15 @@ export class DeckStatsComponent implements OnInit {
     } else {
       this.theme = this.tokenStorage.getUser().theme;
       this.loading = true;
-      this.decks = await this.deckData.getDecks();
-      this.loadRatingData();
-      this.loadColorCountData();
-      this.loadThemeData();
-      this.loadCardData();
-      this.loading = false;
+      this.deckData.getDecks().then((temp_decks: any) => {
+        this.decks = temp_decks;
+        this.loadRatingData();
+        this.loadColorCountData();
+        this.loadThemeData();
+        this.loadCardData();
+        this.loading = false;
+      });
+
     }
   }
 
@@ -312,15 +317,14 @@ export class DeckStatsComponent implements OnInit {
     this.decks.forEach((deck: any) => {
       card_promises.push(this.deckData.getDeckCardCount(deck));
     });
-    Promise.all(card_promises).then(() => {
+    Promise.all(card_promises).then(async () => {
       this.decks.forEach((deck: any) => {
         if (deck.cards.length > 0) {
           this.counted_decks++;
           deck.cards.forEach((card: any) => {
             if (this.card_counts[card]) {
-              this.card_counts[card] ++;
-            }
-            else {
+              this.card_counts[card]++;
+            } else {
               this.card_counts[card] = 1;
             }
           });
@@ -332,9 +336,31 @@ export class DeckStatsComponent implements OnInit {
           count: this.card_counts[card]
         });
       }
-      this.sorted_card_counts.sort((a: any, b: any) => (a.count > b.count) ? -1: 1);
-      console.log(this.sorted_card_counts);
+      this.sorted_card_counts.sort((a: any, b: any) => (a.count > b.count) ? -1 : 1);
       this.counting_cards = false;
+      for (let i = 0; i < 10; i++) {
+        if (i == this.sorted_card_counts.length) {
+          break;
+        }
+        let cur = await Scry.Cards.byName(this.sorted_card_counts[i].card);
+        let cur_prints = await cur.getPrints();
+        let image: string | undefined = '';
+        let image_back: string | undefined = '';
+        if (cur_prints) {
+          if (cur_prints[0].card_faces && cur_prints[0].card_faces.length > 1) {
+            image = cur_prints[0].card_faces[0].image_uris?.png;
+            image_back = cur_prints[0].card_faces[1].image_uris?.png;
+          } else {
+            image = cur_prints[0].image_uris?.png;
+          }
+        }
+        this.top_cards.push({
+            card: this.sorted_card_counts[i].card,
+            percent: this.sorted_card_counts[i].count / this.counted_decks,
+            image: image,
+            image_back: image_back
+          });
+      }
     });
   }
 }
