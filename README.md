@@ -9,3 +9,6 @@ Capable of managing a table-banlist and determining deck legality using it.
 ![](src/assets/dash_screen.png)
 ![](src/assets/stats_screen.png)
 ![](src/assets/rec_screen.png)
+
+**NOW ABLE TO IMPORT DECKS FROM ARCHIDEKT USERNAME!**
+![](src/assets/import_screen.png)
