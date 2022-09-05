@@ -2,7 +2,7 @@
   <div *ngIf="loading" fxLayout="row" fxFlex="100" fxLayoutAlign="center center" >
     <mat-spinner></mat-spinner>
   </div>
-  <div *ngIf="!loading" fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center" fxFlex>
+  <div *ngIf="!loading" fxLayout.gt-sm="row" fxLayout.lt-md="row wrap" fxLayoutGap="20px" fxLayoutAlign="center" fxFlex>
     <div fxLayout="column" fxLayoutAlign="center">
       <mat-card *ngIf="ratingChartData" fxflex style="height: 100%">
         <mat-card-content fxLayout="row" fxLayoutAlign="center center" fxFlex>
