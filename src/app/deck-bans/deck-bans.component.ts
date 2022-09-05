@@ -43,7 +43,8 @@ export class DeckBansComponent implements OnInit {
     this.deckData.getBanDict().then((ban_type_data) => {
       this.ban_type_dict = ban_type_data;
       this.deckData.getDictBan().then((dict_ban) => {
-        this.deckData.getBanListWithImages().then((ban_data) => {
+
+        this.deckData.getBanList().then(async (ban_data) => {
           let ban_list_data: any = ban_data;
           let ban_list_sorted = [];
           if (ban_list_data[dict_ban["allowed as commander"]]) { //Allowed as commander
@@ -72,7 +73,28 @@ export class DeckBansComponent implements OnInit {
           }
           this.all_bans_sorted = ban_list_sorted;
           this.loading = false;
-        });
+
+          for (let ban_type of this.all_bans_sorted) {
+            for (let banned_card of ban_type.cards) {
+              let commander = banned_card.name;
+              let cur = await Scry.Cards.byName(commander.indexOf('//') > -1 ? commander.substring(0, commander.indexOf('//') - 1) : commander);
+              let cur_prints = await cur.getPrints();
+              let image: string | undefined = '';
+              let image_back: string | undefined = '';
+              if (cur_prints) {
+                if (cur_prints[0].card_faces && cur_prints[0].card_faces.length > 1) {
+                  image = cur_prints[0].card_faces[0].image_uris?.png;
+                  image_back = cur_prints[0].card_faces[1].image_uris?.png;
+                } else {
+                  image = cur_prints[0].image_uris?.png;
+                }
+              }
+
+              banned_card.image = image;
+              banned_card.image_back = image_back !== '' ? image_back : null;
+            }
+          }
+        })
       });
     });
   }
