@@ -2,7 +2,7 @@
   <mat-spinner></mat-spinner>
 </div>
 <div *ngIf="current_deck || new_deck" fxLayout="row wrap" fxFlex="100" fxLayoutAlign="center" style="margin-bottom: 20px">
-  <mat-card fxFlex="40" fxFlex.md="70" fxFlex.lt-md="90" [class.mat-elevation-z3]="true">
+  <mat-card fxFlex="50" fxFlex.md="70" fxFlex.lt-md="90" [class.mat-elevation-z3]="true">
     <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
       <div fxLayout="column">
         <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px" fxLayoutAlign="center">

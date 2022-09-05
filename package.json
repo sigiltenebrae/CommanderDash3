@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --proxy-config proxy.conf.js --host 0.0.0.0 --port 4300 --c=tenebris",
-    "start-local": "ng serve --proxy-config proxy.conf.js --host 0.0.0.0 --port 4300 --c=localhost",
+    "start": "ng serve --proxy-config proxy.conf.js --host 0.0.0.0 --port 4300 --c=tenebris --watch",
+    "start-local": "ng serve --proxy-config proxy.conf.js --host 0.0.0.0 --port 4300 --c=localhost --watch",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"

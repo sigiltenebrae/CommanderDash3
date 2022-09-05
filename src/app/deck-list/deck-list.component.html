@@ -1,7 +1,50 @@
 <div *ngIf="!loading" class="container-fluid" style="margin-top: 20px;">
   <div *ngIf="decks" class="row justify-content-center">
-    <div *ngFor="let deck of decks" class="col-auto" style="margin: 10px 0 10px 0">
-      <mat-card class="commander-viewer" matRipple [matRippleCentered]="false" [matRippleDisabled]="!deck.hovered">
+    <mat-accordion *ngIf="!loading" class="deck-headers-align" multi>
+      <mat-expansion-panel [expanded]="false">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Filters
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div fxFlexFill fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-between" fxLayoutAlign.lt-md="center">
+          <div fxLayout="column">
+            <mat-form-field appearance="outline">
+              <mat-label>Sort</mat-label>
+              <mat-select [(value)]="current_sort" (valueChange)="sortDecks()">
+                <mat-option value="id">Deck ID</mat-option>
+                <mat-option value="name">Deck Name</mat-option>
+                <mat-option value="commander">Commander</mat-option>
+                <mat-option value="legal">Legality</mat-option>
+                <mat-option value="rating">Rating</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Themes</mat-label>
+              <mat-select [(value)]="filter_themes" (valueChange)="filterDecks()" multiple>
+                <mat-option (click)="filter_themes = themes">Select All</mat-option>
+                <mat-option (click)="filter_themes = []">Select None</mat-option>
+                <mat-option *ngFor="let theme of themes" [value]="theme">
+                  {{theme.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <section fxLayout="column" style="margin-left: 10px; margin-right: 10px">
+            <mat-checkbox [(ngModel)]="filter_active" (ngModelChange)="filterDecks()">Active</mat-checkbox>
+            <mat-checkbox [(ngModel)]="filter_inactive" (ngModelChange)="filterDecks()">Inactive</mat-checkbox>
+            <mat-checkbox [(ngModel)]="filter_legal" (ngModelChange)="filterDecks()">Legal</mat-checkbox>
+            <mat-checkbox [(ngModel)]="filter_illegal" (ngModelChange)="filterDecks()">Illegal</mat-checkbox>
+            <mat-checkbox [(ngModel)]="filter_uklegal" (ngModelChange)="filterDecks()">Unknown Legality</mat-checkbox>
+            <mat-checkbox [(ngModel)]="filter_partner" (ngModelChange)="filterDecks()">Partner</mat-checkbox>
+            <mat-checkbox [(ngModel)]="filter_nopartner" (ngModelChange)="filterDecks()">Non-Partner</mat-checkbox>
+          </section>
+
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <div *ngFor="let deck of decks_visible" class="col-auto" style="margin: 10px 0 10px 0">
+      <mat-card *ngIf="deck.visible" class="commander-viewer" matRipple [matRippleCentered]="false" [matRippleDisabled]="!deck.hovered">
 
         <div *ngIf="deck.partner_commander == null" [ngClass]="{'commander-background-card-closed': deck.hovered, 'commander-background-card-open': !deck.hovered}">
           <div>
