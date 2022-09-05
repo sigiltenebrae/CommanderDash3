@@ -1,27 +1,11 @@
 # CommanderDash3
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.0.
+**APP IS STILL VERY MUCH IN DEVELOPMENT. THE BACKEND API ISN'T YET AVAILABLE, SO RIGHT NOW IT IS ONLY GOOD FOR USING THE SOURCE CODE!**
 
-## Development server
+A web dashboard for managing edh deck data, including match history and deck preferences. Working recommendation system to suggest commanders based on preferences.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Capable of managing a table-banlist and determining deck legality using it.
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+![](src/assets/dash_screen.png)
+![](src/assets/stats_screen.png)
+![](src/assets/rec_screen.png)
