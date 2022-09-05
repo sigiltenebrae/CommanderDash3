@@ -36,24 +36,26 @@ export class DeckStatsComponent implements OnInit {
   public colorCountChartDatasets: ChartConfiguration<'doughnut'>['data']['datasets'] | undefined;
   public colorCountChartOptions: ChartConfiguration<'doughnut'>['options'];
 
+  public counting_cards = false;
+  public card_counts: any = {};
+  public sorted_card_counts: any[] = [];
+  public counted_decks = 0;
+
   constructor(private deckData: DeckDataService, private tokenStorage: TokenStorageService, private router: Router) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (this.tokenStorage.getUser() == null || this.tokenStorage.getUser() == {} ||
       this.tokenStorage.getUser().id == null || this.tokenStorage.getUser().id < 0) {
       this.router.navigate(['login']);
-    }
-    else {
+    } else {
       this.theme = this.tokenStorage.getUser().theme;
       this.loading = true;
-      this.deckData.getDecks().then(
-        (temp) => {
-          this.decks = temp;
-          this.loadRatingData();
-          this.loadColorCountData();
-          this.loadThemeData();
-          this.loading = false;
-        });
+      this.decks = await this.deckData.getDecks();
+      this.loadRatingData();
+      this.loadColorCountData();
+      this.loadThemeData();
+      this.loadCardData();
+      this.loading = false;
     }
   }
 
@@ -65,11 +67,13 @@ export class DeckStatsComponent implements OnInit {
     let w_play = 0; let u_play = 0; let b_play = 0; let r_play = 0; let g_play = 0;
     this.decks.forEach((deck) => {
       if (deck.active) {
-        if (deck.colors.includes('W')) { w_play += deck.play_rating; w++}
-        if (deck.colors.includes('U')) { u_play += deck.play_rating; u++}
-        if (deck.colors.includes('B')) { b_play += deck.play_rating; b++}
-        if (deck.colors.includes('R')) { r_play += deck.play_rating; r++}
-        if (deck.colors.includes('G')) { g_play += deck.play_rating; g++}
+        if (deck.colors) {
+          if (deck.colors.includes('W')) { w_play += deck.play_rating; w++}
+          if (deck.colors.includes('U')) { u_play += deck.play_rating; u++}
+          if (deck.colors.includes('B')) { b_play += deck.play_rating; b++}
+          if (deck.colors.includes('R')) { r_play += deck.play_rating; r++}
+          if (deck.colors.includes('G')) { g_play += deck.play_rating; g++}
+        }
       }
     });
 
@@ -155,12 +159,14 @@ export class DeckStatsComponent implements OnInit {
     let w = 0; let u = 0; let b = 0; let r = 0; let g = 0; let total = 0;
     this.decks.forEach((deck) => {
       if (deck.active) {
-        if (deck.colors.includes('W')) { w++; }
-        if (deck.colors.includes('U')) { u++; }
-        if (deck.colors.includes('B')) { b++; }
-        if (deck.colors.includes('R')) { r++; }
-        if (deck.colors.includes('G')) { g++; }
-        total++;
+        if (deck.colors) {
+          if (deck.colors.includes('W')) { w++; }
+          if (deck.colors.includes('U')) { u++; }
+          if (deck.colors.includes('B')) { b++; }
+          if (deck.colors.includes('R')) { r++; }
+          if (deck.colors.includes('G')) { g++; }
+          total++;
+        }
       }
     });
     this.colorCountChartOptions = {
@@ -214,15 +220,17 @@ export class DeckStatsComponent implements OnInit {
     let themeDict: any = {};
     this.decks.forEach((deck) => {
       if (deck.active) {
-        deck.themes.forEach((theme: any) => {
-          if (themeDict[theme.name] != null) {
-            themeDict[theme.name].rating += (deck.play_rating / 5);
-            themeDict[theme.name].count ++;
-          }
-          else {
-            themeDict[theme.name] = { rating: (deck.play_rating / 5), count: 1 };
-          }
-        });
+        if (deck.themes) {
+          deck.themes.forEach((theme: any) => {
+            if (themeDict[theme.name] != null) {
+              themeDict[theme.name].rating += (deck.play_rating / 5);
+              themeDict[theme.name].count ++;
+            }
+            else {
+              themeDict[theme.name] = { rating: (deck.play_rating / 5), count: 1 };
+            }
+          });
+        }
       }
     });
     let theme_data: any[] = [];
@@ -296,5 +304,37 @@ export class DeckStatsComponent implements OnInit {
         }
       }
     };
+  }
+
+  public loadCardData() {
+    this.counting_cards = true;
+    let card_promises: any[] = [];
+    this.decks.forEach((deck: any) => {
+      card_promises.push(this.deckData.getDeckCardCount(deck));
+    });
+    Promise.all(card_promises).then(() => {
+      this.decks.forEach((deck: any) => {
+        if (deck.cards.length > 0) {
+          this.counted_decks++;
+          deck.cards.forEach((card: any) => {
+            if (this.card_counts[card]) {
+              this.card_counts[card] ++;
+            }
+            else {
+              this.card_counts[card] = 1;
+            }
+          });
+        }
+      });
+      for (let card of Object.keys(this.card_counts)) {
+        this.sorted_card_counts.push({
+          card: card,
+          count: this.card_counts[card]
+        });
+      }
+      this.sorted_card_counts.sort((a: any, b: any) => (a.count > b.count) ? -1: 1);
+      console.log(this.sorted_card_counts);
+      this.counting_cards = false;
+    });
   }
 }

@@ -446,4 +446,33 @@ export class DeckDataService {
       }
     });
   }
+
+  public async getDeckCardCount(deck: any): Promise<void> {
+    return new Promise<void>((resolve_cards) => {
+      if (deck.url == null || deck.url === "") {
+        deck.cards = [];
+        resolve_cards();
+      }
+      else {
+        let deckId = deck.url.indexOf('#') > 0 ?
+          deck.url.substring(0, deck.url.indexOf('#')).substring(deck.url.indexOf('/decks/') + 7):
+          deck.url.substring(deck.url.indexOf('/decks/') + 7);
+
+        this.http.get('/archidekt/api/decks/' + deckId + '/').pipe(delay(1000)).subscribe((archidektDeckInfo) => {
+          let archidekt_deck: any = archidektDeckInfo;
+          let card_dict: any[] = [];
+          archidekt_deck.cards.forEach((card: any) => {
+            if (!card.card.oracleCard.types.includes("Land")) {
+              card_dict.push(card.card.oracleCard.name);
+            }
+          });
+          deck.cards = card_dict;
+          resolve_cards();
+        }, (error) => {
+          deck.cards = [];
+          resolve_cards();
+        });
+      }
+    });
+  }
 }
