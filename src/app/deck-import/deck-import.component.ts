@@ -112,6 +112,7 @@ export class DeckImportComponent implements OnInit {
           else {
             out_deck.partner_commander = null;
             out_deck.partner_image_url = null;
+          }
             this.deckData.createDeck(out_deck).subscribe(() => {
               this.current_deck++;
               resolve_deck();
@@ -119,7 +120,6 @@ export class DeckImportComponent implements OnInit {
               this.current_deck++;
               resolve_deck();
             })
-          }
         }
       }, (error) => {
         this.current_deck++;
